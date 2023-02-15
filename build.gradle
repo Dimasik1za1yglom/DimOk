@@ -3,12 +3,10 @@ plugins {
 }
 
 subprojects {
-
     group = 'ru.sen'
     version = '0.1'
 
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java-library'
-
 }
