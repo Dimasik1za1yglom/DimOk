@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/dim_ok
+    url: jdbc:postgresql://localhost:5432/social_network
     username: postgres
     password: "112348Diman"
   liquibase:
