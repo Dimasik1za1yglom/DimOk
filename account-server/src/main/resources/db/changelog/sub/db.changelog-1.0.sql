@@ -41,7 +41,7 @@ create table dialogs
 create table messages
 (
     id            bigserial primary key,
-    dialogue_id   bigint,
+    dialog_id   bigint,
     foreign key (dialogue_id) references dialogs (id),
     user_id       bigint,
     foreign key (user_id) references users (id),
