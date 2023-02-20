@@ -1,18 +1,18 @@
 --liquibase formatted sql
 
---changeset dim_ok:1
+--changeset social_network:1
 create table roles
 (
     id   bigserial primary key,
     name varchar
 );
 
---changeset dim_ok:2
+--changeset social_network:2
 insert into roles (name)
 values ('User'),
        ('Admin');
 
---changeset dim_ok:3
+--changeset social_network:3
 create table users
 (
     id         bigserial primary key,
@@ -28,7 +28,7 @@ create table users
     foreign key (role_id) references roles (id)
 );
 
---changeset dim_ok:4
+--changeset social_network:4
 create table dialogs
 (
     id      bigserial primary key,
@@ -37,7 +37,7 @@ create table dialogs
     foreign key (user_id) references users (id)
 );
 
---changeset dim_ok:5
+--changeset social_network:5
 create table messages
 (
     id            bigserial primary key,
@@ -50,7 +50,7 @@ create table messages
     time_creation timestamp      not null
 );
 
---changeset dim_ok:6
+--changeset social_network:6
 create table posts
 (
     id            bigserial primary key,
@@ -61,7 +61,7 @@ create table posts
     time_creation timestamp      not null
 );
 
---changeset dim_ok:7
+--changeset social_network:7
 create table search_requests
 (
     id            bigserial primary key,
@@ -71,7 +71,7 @@ create table search_requests
     time_creation timestamp
 );
 
---changeset dim_ok:8
+--changeset social_network:8
 create table authorization_data
 (
     email    varchar(100) primary key,
@@ -80,7 +80,7 @@ create table authorization_data
     foreign key (user_id) references users (id)
 );
 
---changeset dim_ok:9
+--changeset social_network:9
 create table permissions
 (
     id      bigserial primary key,
