@@ -2,3 +2,6 @@ rootProject.name = 'DimOk'
 
 includeBuild('account-server')
 includeBuild('eureka-server')
+includeBuild('post-server')
+includeBuild('messages-server')
+includeBuild('search-server')
