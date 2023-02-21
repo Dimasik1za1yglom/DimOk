@@ -1,4 +1,9 @@
+server:
+  port: 0
+
 spring:
+  application:
+    name: accountServer
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/social_network
@@ -6,4 +11,12 @@ spring:
     password: "112348Diman"
   liquibase:
     change-log: classpath:db/changelog/db.changelog-root.xml
-    enabled: true
+  enabled: true
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8081/eureka/
+
