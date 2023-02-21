@@ -1,0 +1,15 @@
+server:
+  port: 0
+
+#-id
+spring:
+  application:
+    name: searchServer
+
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8081/eureka/
