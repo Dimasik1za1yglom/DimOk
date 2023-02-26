@@ -12,10 +12,25 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        - id: test
+        - id: messages_get
           uri: lb://messagesServer
           predicates:
             - Path=/messages/test
+            - Method=GET
+        - id: account_get
+          uri: lb://accountServer
+          predicates:
+            - Path=/account/test
+            - Method=GET
+        - id: post_get
+          uri: lb://postServer
+          predicates:
+            - Path=/post/test
+            - Method=GET
+        - id: search_get
+          uri: lb://searchServer
+          predicates:
+            - Path=/search/test
             - Method=GET
 
 
