@@ -26,6 +26,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql:42.2.2'
 
     compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
 dependencyManagement {
