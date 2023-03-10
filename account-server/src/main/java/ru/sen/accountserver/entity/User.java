@@ -13,6 +13,7 @@ import java.sql.Date;
 @Builder
 public class User {
 
+    private Long id;
     private String firstName;
     private String lastName;
     private Date birthday;

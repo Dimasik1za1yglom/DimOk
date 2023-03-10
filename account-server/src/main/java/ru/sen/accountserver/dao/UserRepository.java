@@ -32,11 +32,10 @@ public interface UserRepository {
 
     /**
      * changing one or more values in one row in the database.
-     * @param id the user who is subject to change
      * @changUser user with changed fields
      * @return true if the changes were successful and false if not
      */
-    boolean updateUserById(Long id, User changUser);
+    boolean updateUser(User changUser);
 
     /**
      * deleting a user by its primary key

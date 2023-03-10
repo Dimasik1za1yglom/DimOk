@@ -40,6 +40,7 @@ public class UserRepositoryImpl implements UserRepository {
      * fields can be empty bio, country, city, phone
      */
     private static final RowMapper<Optional<User>> userRowMapper = (row, ignore) -> {
+        Optional<Long> id = Optional.of(row.getLong("id"));
         Optional<String> firstName = Optional.ofNullable(row.getString("first_name"));
         Optional<String> lastName = Optional.ofNullable(row.getString("last_name"));
         Optional<Date> birthday = Optional.ofNullable(row.getDate("birthday"));
@@ -50,6 +51,7 @@ public class UserRepositoryImpl implements UserRepository {
         Optional<Long> roleId = Optional.of(row.getLong("role_id"));
         if (firstName.isPresent() && lastName.isPresent() && birthday.isPresent()) {
             return Optional.of(User.builder()
+                    .id(id.get())
                     .firstName(firstName.get())
                     .lastName(lastName.get())
                     .birthday(birthday.get())
@@ -89,7 +91,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean updateUserById(Long id, User changUser) {
+    public boolean updateUser(User changUser) {
         int rowsAffected = jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(SQL_CHANGE_USER);
             ps.setString(1, changUser.getFirstName());
@@ -99,7 +101,7 @@ public class UserRepositoryImpl implements UserRepository {
             ps.setString(5, changUser.getCountry());
             ps.setString(6, changUser.getCity());
             ps.setString(7, changUser.getPhone());
-            ps.setLong(8, id);
+            ps.setLong(8, changUser.getId());
             return ps;
         });
         return rowsAffected > 0;

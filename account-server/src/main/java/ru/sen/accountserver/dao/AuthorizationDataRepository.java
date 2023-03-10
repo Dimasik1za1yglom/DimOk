@@ -29,7 +29,7 @@ public interface AuthorizationDataRepository {
      * @param email is the primary key in the table
      * @return an Optional<AuthorizationData> type class. Perhaps the object will not be in the database
      */
-    Optional<AuthorizationData> getDataByLogin(String email);
+    Optional<AuthorizationData> getDataByEmail(String email);
 
     /**
      * Deletes a string by userId
@@ -37,4 +37,6 @@ public interface AuthorizationDataRepository {
      * @return true if the deletion was successful, false if not
      */
     boolean deleteDataByUserId(Long userId);
+
+    boolean updateData(AuthorizationData data);
 }

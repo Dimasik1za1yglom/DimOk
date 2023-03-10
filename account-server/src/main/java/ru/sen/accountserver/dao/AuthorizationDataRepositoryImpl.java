@@ -1,6 +1,5 @@
 package ru.sen.accountserver.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -20,10 +19,11 @@ public class AuthorizationDataRepositoryImpl implements AuthorizationDataReposit
     private static final String SQL_GET_DATA = "select * from authorization_data where email = ?";
     //language=SQL
     private static final String SQL_DELETE_DATA = "delete from authorization_data where user_id = ?";
+    //language=SQL
+    private static final String SQL_CHANGE_DATA = "update authorization_data set password = ?, user_id = ? where email = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public AuthorizationDataRepositoryImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
@@ -50,7 +50,7 @@ public class AuthorizationDataRepositoryImpl implements AuthorizationDataReposit
     }
 
     @Override
-    public Optional<AuthorizationData> getDataByLogin(String email) {
+    public Optional<AuthorizationData> getDataByEmail(String email) {
         List<Optional<AuthorizationData>> result = jdbcTemplate.query(SQL_GET_DATA, dataRowMapper, email);
         return result.isEmpty() ? Optional.empty() : result.get(0);
     }
@@ -58,6 +58,12 @@ public class AuthorizationDataRepositoryImpl implements AuthorizationDataReposit
     @Override
     public boolean deleteDataByUserId(Long userId) {
         int rowsAffected = jdbcTemplate.update(SQL_DELETE_DATA, userId);
+        return rowsAffected > 0;
+    }
+
+    @Override
+    public boolean updateData(AuthorizationData data) {
+        int rowsAffected = jdbcTemplate.update(SQL_CHANGE_DATA, data.getPassword(), data.getUserId(), data.getEmail());
         return rowsAffected > 0;
     }
 }
