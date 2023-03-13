@@ -38,5 +38,11 @@ public interface AuthorizationDataRepository {
      */
     boolean deleteDataByUserId(Long userId);
 
+    /**
+     * Updating user data
+     * @param data an object with new updated fields
+     * @return true if it was possible to change in the database.
+     * false if it was not possible to change in the database
+     */
     boolean updateData(AuthorizationData data);
 }
