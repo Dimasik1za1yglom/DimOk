@@ -1,5 +1,6 @@
 package ru.sen.accountserver.dao;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Slf4j
 public class UserRepositoryImpl implements UserRepository {
 
     //language=SQL
@@ -81,12 +83,14 @@ public class UserRepositoryImpl implements UserRepository {
             return ps;
         }, keyHolder);
         Number id = keyHolder.getKey();
+        log.info("sending a request to save user data and get his id: {}", id);
         return id != null ? id.longValue() : 0;
     }
 
     @Override
     public Optional<User> getUserById(Long id) {
         List<Optional<User>> result = jdbcTemplate.query(SQL_GET_USER, userRowMapper, id);
+        log.info("sending a request to get a user by his id: {}", id);
         return result.isEmpty() ? Optional.empty() : result.get(0);
     }
 
@@ -104,12 +108,15 @@ public class UserRepositoryImpl implements UserRepository {
             ps.setLong(8, changUser.getId());
             return ps;
         });
+        log.info("sending a request to change the user by his id. User with changed data: {} \n" +
+                "number of modified rows: {}", changUser, rowsAffected);
         return rowsAffected > 0;
     }
 
     @Override
     public boolean deleteUserById(Long id) {
         int rowsAffected = jdbcTemplate.update(SQL_DELETE_USER, id);
+        log.error("request to delete a user by his id. number of modified rows: {}", rowsAffected);
         return rowsAffected > 0;
     }
 }

@@ -2,6 +2,7 @@ package ru.sen.accountserver.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import ru.sen.accountserver.services.UserService;
 
 @RequiredArgsConstructor
 @Controller
+@Slf4j
 @RequestMapping("/user")
 public class UserController {
 
@@ -31,16 +33,19 @@ public class UserController {
                              RedirectAttributes redirectAttributes) {
         try {
             if (!userService.userVerification(getEmailUser())) {
-                return "userFields";
+                log.info("Checking that the user's page is empty. Redirecting to a page with fields filled in");
+                return "redirect:/change";
             } else {
                 User user = userService.getUserById(dataService.getData(getEmailUser()).getUserId());
                 model.addAttribute("user", user);
+                log.info("Checking that the user's page is full. Redirection to the user's page.");
             }
         } catch (UsernameNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
+            log.error("An error occurred with the user's page: {}", e.getMessage());
             return "registration";
         }
-        return "myprofile";
+        return "myProfile";
     }
 
 
@@ -51,12 +56,15 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
             redirectAttributes.addFlashAttribute("error", error);
+            log.info("Errors were received when filling out the form for creating user page fields: {}", error);
         } else {
             try {
                 userService.addUser(userForm, getEmailUser());
+                log.info("Adding fields to the user's page was successful");
                 return "redirect:/myprofile";
             } catch (UsernameNotFoundException e) {
                 redirectAttributes.addFlashAttribute("error", e.getMessage());
+                log.error("Errors occurred when adding user data: {}", e.getMessage());
             }
         }
         return "redirect:userFields";
@@ -67,9 +75,11 @@ public class UserController {
                              RedirectAttributes redirectAttributes) {
         if (!userService.deleteUser(userId, getEmailUser())) {
             redirectAttributes.addFlashAttribute("error",
-                    "Не удалось удалить пользовател. Попробуйте позднее");
+                    "Не удалось удалить пользователя. Попробуйте позднее");
+            log.error("Error on deleting a user under id: {}", userId);
             return "myProfile";
         } else {
+            log.info("Deleting the user was successful, exiting the session");
             return "redirect:/user/logout";
         }
     }
@@ -81,21 +91,31 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
             redirectAttributes.addFlashAttribute("error", error);
+            log.info("Errors were received when filling out the form for change user page fields: {}", error);
             return "redirect:/change";
         }
         if (userService.updateUser(userForm, getEmailUser())) {
+            log.info("user data update was successful");
             return "redirect:myProfile";
         } else {
             redirectAttributes.addFlashAttribute("error", "Не удалось изменить данные");
+            log.error("Sending a message that the user's data could not be updated");
             return "redirect:/change";
         }
     }
 
     @GetMapping("/change")
-    public String changeFieldsUser(Model model) {
-        User user = userService.getUserById(dataService.getData(getEmailUser()).getUserId());
-        model.addAttribute("user", user);
-        return "changeFields";
+    public String changeFieldsUser(Model model, RedirectAttributes redirectAttributes) {
+        try {
+            User user = userService.getUserById(dataService.getData(getEmailUser()).getUserId());
+            model.addAttribute("user", user);
+            log.info("getting a form of fields for changing user data");
+            return "changeFields";
+        } catch (UsernameNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", "Заполните пожалуйста поля");
+            log.error("Errors occurred when change user data: {}", e.getMessage());
+            return "redirect:changeFields";
+        }
     }
 
     public String getEmailUser() {

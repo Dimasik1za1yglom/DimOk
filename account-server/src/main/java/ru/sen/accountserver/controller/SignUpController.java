@@ -2,6 +2,7 @@ package ru.sen.accountserver.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import ru.sen.accountserver.services.AuthorizationDataService;
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/registration")
+@Slf4j
 public class SignUpController {
 
     private final AuthorizationDataService authorizationDataService;
@@ -32,19 +34,23 @@ public class SignUpController {
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
             redirectAttributes.addFlashAttribute("error", error);
+            log.error("Errors were received when entering data. Do not meet certain requirements: {}", error);
             return "redirect:/registration";
         }
         if (authorizationDataService.dataVerification(dataForm)) {
             String error = "Пользователь с таким e-mail уже существует, попробуйте войти в систему";
             redirectAttributes.addFlashAttribute("error", error);
+            log.error("Attempt to register a user who is already in the system: {}", dataForm);
             return "redirect:/registration";
         }
         if (authorizationDataService.addData(dataForm)) {
             authService.setUpSecurity(dataForm);
-            return "redirect:myProfile";
+            log.info("user registration in Spring Security: {}", dataForm);
+            return "redirect:changeFields";
         } else {
             String error = "Не удалось зарегистрировать пользователя, попробуйте позднее";
             redirectAttributes.addFlashAttribute("error", error);
+            log.error("Failed to register user {}", dataForm);
             return "redirect:/registration";
         }
     }

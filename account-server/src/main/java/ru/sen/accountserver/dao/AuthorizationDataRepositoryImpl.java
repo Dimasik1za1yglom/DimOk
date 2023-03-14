@@ -1,5 +1,6 @@
 package ru.sen.accountserver.dao;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Slf4j
 public class AuthorizationDataRepositoryImpl implements AuthorizationDataRepository {
 
     //language=SQL
@@ -20,7 +22,8 @@ public class AuthorizationDataRepositoryImpl implements AuthorizationDataReposit
     //language=SQL
     private static final String SQL_DELETE_DATA = "delete from authorization_data where user_id = ?";
     //language=SQL
-    private static final String SQL_CHANGE_DATA = "update authorization_data set password = ?, user_id = ? where email = ?";
+    private static final String SQL_CHANGE_DATA = "update authorization_data set password = ?, user_id = ?" +
+            " where email = ?";
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -46,24 +49,30 @@ public class AuthorizationDataRepositoryImpl implements AuthorizationDataReposit
     @Override
     public boolean addAuthorizationData(AuthorizationData data) {
         int rowsAffected = jdbcTemplate.update(SQL_ADD_DATA, data.getEmail(), data.getPassword(), data.getUserId());
+        log.info("sending a request to the database to save authorization data: {}", data);
         return rowsAffected > 0;
     }
 
     @Override
     public Optional<AuthorizationData> getDataByEmail(String email) {
         List<Optional<AuthorizationData>> result = jdbcTemplate.query(SQL_GET_DATA, dataRowMapper, email);
+        log.info("sending a request to the database to receive authorization data by email");
         return result.isEmpty() ? Optional.empty() : result.get(0);
     }
 
     @Override
     public boolean deleteDataByUserId(Long userId) {
         int rowsAffected = jdbcTemplate.update(SQL_DELETE_DATA, userId);
+        log.info("sending a request to delete authorization data in the database. Number of deleted rows: {}",
+                rowsAffected);
         return rowsAffected > 0;
     }
 
     @Override
     public boolean updateData(AuthorizationData data) {
         int rowsAffected = jdbcTemplate.update(SQL_CHANGE_DATA, data.getPassword(), data.getUserId(), data.getEmail());
+        log.info("sending a request to update the authorization data in the database. Number of deleted rows: {}",
+                rowsAffected);
         return rowsAffected > 0;
     }
 }

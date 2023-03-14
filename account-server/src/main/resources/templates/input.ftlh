@@ -9,8 +9,6 @@
 </head>
 <body>
 <div style="text-align: center;">
-    <h2>Ресторан с доставкой</h2>
-    <hr>
     <h3>Авторизация</h3>
     <h2 style="color:red"><#if error??>${error}<#else></#if></h2>
     <form method="post" action="/input">
