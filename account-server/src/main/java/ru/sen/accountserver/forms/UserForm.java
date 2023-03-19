@@ -1,6 +1,7 @@
 package ru.sen.accountserver.forms;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -17,8 +18,7 @@ public class UserForm {
     @Size(min = 1, max = 80, message = "Поле lastName не должно быть пустым")
     private String lastName;
 
-    @NotBlank
-    @Size(min = 1, max = 80, message = "Поле birthday не должно быть пустым")
+    @Past
     private Date birthday;
 
     private String bio;

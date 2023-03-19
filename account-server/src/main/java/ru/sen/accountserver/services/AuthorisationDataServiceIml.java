@@ -44,6 +44,7 @@ public class AuthorisationDataServiceIml implements AuthorizationDataService {
 
     @Override
     public boolean deleteData(Long userId) {
+        log.info("we begin deleting the authorization data associated with the user with the id: {}", userId);
         try {
             return dataRepository.deleteDataByUserId(userId);
         } catch (Exception e) {

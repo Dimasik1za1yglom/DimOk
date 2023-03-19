@@ -34,24 +34,22 @@ public class SignUpController {
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
             redirectAttributes.addFlashAttribute("error", error);
-            log.error("Errors were received when entering data. Do not meet certain requirements: {}", error);
-            return "redirect:/registration";
+            log.error("/registration: Errors were received when entering data. Do not meet certain requirements: {}", error);
         }
         if (authorizationDataService.dataVerification(dataForm)) {
             String error = "Пользователь с таким e-mail уже существует, попробуйте войти в систему";
             redirectAttributes.addFlashAttribute("error", error);
-            log.error("Attempt to register a user who is already in the system: {}", dataForm);
-            return "redirect:/registration";
+            log.error("/registration: Attempt to register a user who is already in the system: {}", dataForm);
         }
         if (authorizationDataService.addData(dataForm)) {
             authService.setUpSecurity(dataForm);
-            log.info("user registration in Spring Security: {}", dataForm);
-            return "redirect:changeFields";
+            log.info("/registration: user registration in Spring Security: {}", dataForm);
+            return "redirect:/user/myprofile";
         } else {
             String error = "Не удалось зарегистрировать пользователя, попробуйте позднее";
             redirectAttributes.addFlashAttribute("error", error);
-            log.error("Failed to register user {}", dataForm);
-            return "redirect:/registration";
+            log.error("/registration: Failed to register user {}", dataForm);
         }
+        return "redirect:/registration";
     }
 }

@@ -47,13 +47,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean deleteUser(Long userToDeleteId, String email) {
+        log.info("deleting a user to id {}. We start with checking for permission rights", userToDeleteId);
         try {
             AuthorizationData data = dataService.getData(email);
+            User user = getUserById(data.getUserId());
+            log.info("authorization data, who wants to delete: {}", data);
+            log.info("user who wants to delete: {}", user);
             if (userToDeleteId.equals(data.getUserId())
-                    && getUserById(data.getUserId()).getRoleId().equals(2L)) {
+                    || (getUserById(data.getUserId()).getRoleId()).equals(2L)) {
                 log.info("satisfaction of the conditions for deleting the user");
                 return deleteUserAndAuthorizationData(userToDeleteId);
             }
+            log.warn("verification of the conditions for deleting the user failed");
         } catch (Exception e) {
             log.error("it was not possible to delete a user and authorization data: {}", e.getMessage());
         }
@@ -91,7 +96,7 @@ public class UserServiceImpl implements UserService {
     public boolean userVerification(String emailUser) {
         try {
             AuthorizationData data = dataService.getData(emailUser);
-            return data.getUserId() != null;
+            return data.getUserId() != 0;
         } catch (Exception e) {
             log.error("it was not possible to Verification a user and authorization data: {}", e.getMessage());
             return false;
@@ -104,16 +109,16 @@ public class UserServiceImpl implements UserService {
             Connection connection = dataSource.getConnection();
             try (connection) {
                 connection.setAutoCommit(false);
-                if (dataRepository.deleteDataByUserId(userToDeleteId) &&
-                        userRepository.deleteUserById(userToDeleteId)) {
-                    throw new SQLException(" not delete data");
+                if (!(dataRepository.deleteDataByUserId(userToDeleteId) &&
+                        userRepository.deleteUserById(userToDeleteId))) {
+                    throw new SQLException(" not delete data and user");
                 }
                 connection.commit();
                 log.info("successful transaction for by delete a user and authorization data");
             } catch (SQLException e) {
-                connection.rollback();
                 log.error("error when making a transaction for by delete a user and to authorization data: {}",
                         e.getMessage());
+                connection.rollback();
                 return false;
             }
         } catch (SQLException e) {
@@ -125,10 +130,9 @@ public class UserServiceImpl implements UserService {
 
     private boolean addUserAndAuthorizationData(User user, AuthorizationData data) {
         log.info("the beginning of the transaction by adding a user and binding to his authorization data");
-        try {
-            Connection connection = dataSource.getConnection();
-            try (connection) {
-                connection.setAutoCommit(false);
+        try (Connection connection = dataSource.getConnection()) {
+            connection.setAutoCommit(false);
+            try {
                 Long userId = userRepository.addUser(user);
                 data.setUserId(userId);
                 if (!dataRepository.updateData(data)) {
@@ -137,9 +141,9 @@ public class UserServiceImpl implements UserService {
                 connection.commit();
                 log.info("successful transaction for adding a user and linking it to authorization data");
             } catch (SQLException e) {
-                connection.rollback();
                 log.error("error when making a transaction for adding a user and linking it to authorization data: {}",
                         e.getMessage());
+                connection.rollback();
                 return false;
             }
         } catch (SQLException e) {

@@ -2,6 +2,7 @@ package ru.sen.accountserver.dao;
 
 import ru.sen.accountserver.entity.User;
 
+import java.sql.SQLException;
 import java.util.Optional;
 
 /**
@@ -21,7 +22,7 @@ public interface UserRepository {
      * @param user accepts an object of the User.class
      * @return primary key(id) created line
      */
-    Long addUser(User user);
+    Long addUser(User user) throws SQLException;
 
     /**
      * get an object User.class by his id

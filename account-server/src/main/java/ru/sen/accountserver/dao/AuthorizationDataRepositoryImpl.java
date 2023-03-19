@@ -71,7 +71,7 @@ public class AuthorizationDataRepositoryImpl implements AuthorizationDataReposit
     @Override
     public boolean updateData(AuthorizationData data) {
         int rowsAffected = jdbcTemplate.update(SQL_CHANGE_DATA, data.getPassword(), data.getUserId(), data.getEmail());
-        log.info("sending a request to update the authorization data in the database. Number of deleted rows: {}",
+        log.info("sending a request to update the authorization data in the database. Number of update rows: {}",
                 rowsAffected);
         return rowsAffected > 0;
     }

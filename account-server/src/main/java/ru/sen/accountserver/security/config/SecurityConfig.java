@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .loginPage("/input")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/user/myprofile")
+                .successForwardUrl("/user/myprofile")
                 .failureUrl("/input/error")
                 .permitAll()
                 .and()

@@ -12,6 +12,7 @@ import ru.sen.accountserver.entity.User;
 import javax.sql.DataSource;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,10 +70,11 @@ public class UserRepositoryImpl implements UserRepository {
     };
 
     @Override
-    public Long addUser(User user) {
+    public Long addUser(User user) throws SQLException {
         KeyHolder keyHolder = new GeneratedKeyHolder();
+        log.info("create GeneratedKeyHolder: {}", keyHolder);
         jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(SQL_ADD_USER);
+            PreparedStatement ps = con.prepareStatement(SQL_ADD_USER, new String[]{"id"});
             ps.setString(1, user.getFirstName());
             ps.setString(2, user.getLastName());
             ps.setDate(3, user.getBirthday());
@@ -82,9 +84,13 @@ public class UserRepositoryImpl implements UserRepository {
             ps.setString(7, user.getPhone());
             return ps;
         }, keyHolder);
-        Number id = keyHolder.getKey();
+        log.info("get generated Primary key in keyHolder: {}", keyHolder);
+        Long id = (Long) keyHolder.getKey();
         log.info("sending a request to save user data and get his id: {}", id);
-        return id != null ? id.longValue() : 0;
+        if (id == null) {
+            throw new SQLException("the id of the created user is not correct");
+        }
+        return id;
     }
 
     @Override
@@ -116,7 +122,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean deleteUserById(Long id) {
         int rowsAffected = jdbcTemplate.update(SQL_DELETE_USER, id);
-        log.error("request to delete a user by his id. number of modified rows: {}", rowsAffected);
+        log.info("request to delete a user by his id. number of modified rows: {}", rowsAffected);
         return rowsAffected > 0;
     }
 }

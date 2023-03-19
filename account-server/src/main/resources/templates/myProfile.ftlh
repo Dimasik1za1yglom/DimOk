@@ -8,6 +8,7 @@
     <title>Мой профиль</title>
 </head>
 <body>
+<h2 style="color:red"><#if error??>${error}<#else></#if></h2>
 Имя: ${user.firstName} <br>
 Фамилия: ${user.lastName} <br>
 Дата рождения: ${user.birthday} <br>
@@ -17,7 +18,7 @@
 Мой телефон: ${user.phone} <br>
 <hr>
 <form method="get" action="/user/change">
-    <input type="submit" value="Удалить аккаунт:(">
+    <input type="submit" value="Изменить аккаунт">
 </form>
 <hr>
 <form method="post" action="/user/${user.id}/delete">
