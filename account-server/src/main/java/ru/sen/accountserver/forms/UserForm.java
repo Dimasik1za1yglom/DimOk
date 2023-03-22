@@ -24,5 +24,8 @@ public class UserForm {
     private String bio;
     private String country;
     private String city;
+
+    @NotBlank
+    @Size(min = 1, max = 80, message = "Поле phone не должно быть пустым")
     private String phone;
 }
