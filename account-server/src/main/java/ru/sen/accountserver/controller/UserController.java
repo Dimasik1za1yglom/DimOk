@@ -17,6 +17,7 @@ import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.forms.UserForm;
 import ru.sen.accountserver.security.details.UserDetailsImpl;
 import ru.sen.accountserver.services.AuthorizationDataService;
+import ru.sen.accountserver.services.ErrorInterceptorService;
 import ru.sen.accountserver.services.UserService;
 
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class UserController {
 
     private final UserService userService;
     private final AuthorizationDataService dataService;
+    private final ErrorInterceptorService interceptorService;
 
     @GetMapping("/myprofile")
     public String getProfile(Model model,
@@ -37,16 +39,16 @@ public class UserController {
                         "Redirecting to a page with fields filled in");
                 return "userFields";
             } else {
-                User user = userService.getUserById(dataService.getData(getEmailUser()).getUserId());
+                User user = dataService.getData(getEmailUser()).getUser();
                 model.addAttribute("user", user);
                 log.info("/myprofile: Checking that the user's page is full. Redirection to the user's page.");
+                return "myProfile";
             }
         } catch (UsernameNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             log.error("/myprofile: An error occurred with the user's page: {}", e.getMessage());
             return "registration";
         }
-        return "myProfile";
     }
 
 
@@ -54,26 +56,30 @@ public class UserController {
     public String addUser(@Valid UserForm userForm,
                           RedirectAttributes redirectAttributes,
                           BindingResult bindingResult) {
+        log.info("receiving a request for /add");
         if (bindingResult.hasErrors()) {
+            log.warn("error entering values into the form");
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
             redirectAttributes.addFlashAttribute("error", error);
             log.info("/add: Errors were received when filling out the form for creating user page fields: {}", error);
+            return "userFields";
         }
-        if (userService.addUser(userForm, getEmailUser())) {
+
+        if (interceptorService.checkingAddingUser(userForm, getEmailUser())) {
             log.info("/add: Adding fields to the user's page was successful");
             return "redirect:/user/myprofile";
         } else {
             String error = "Добавление полей пользователя не удалось. Попробуйте позднее";
             redirectAttributes.addFlashAttribute("error", error);
             log.error("/add: Errors occurred when adding user data: {}", error);
+            return "userFields";
         }
-        return "redirect:userFields";
     }
 
     @PostMapping("/{user-id}/delete")
     public String deleteUser(@PathVariable("user-id") Long userId,
                              RedirectAttributes redirectAttributes) {
-        if (!userService.deleteUser(userId, getEmailUser())) {
+        if (!interceptorService.checkingDeletingUser(userId, getEmailUser())) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить пользователя. Попробуйте позднее");
             log.error("/delete: Error on deleting a user under id: {}", userId);
@@ -85,28 +91,29 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public String updateUser(UserForm userForm,
+    public String updateUser(@Valid UserForm userForm,
                              RedirectAttributes redirectAttributes,
                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
             redirectAttributes.addFlashAttribute("error", error);
             log.info("/update: Errors were received when filling out the form for change user page fields: {}", error);
+            return "redirect:/user/change";
         }
-        if (userService.updateUser(userForm, getEmailUser())) {
+        if (interceptorService.checkingUpdateUser(userForm, getEmailUser())) {
             log.info("/update: user data update was successful");
             return "redirect:/user/myprofile";
         } else {
             redirectAttributes.addFlashAttribute("error", "Не удалось изменить данные");
             log.error("/update: Sending a message that the user's data could not be updated");
+            return "redirect:/user/change";
         }
-        return "redirect:/user/change";
     }
 
     @GetMapping("/change")
     public String changeFieldsUser(Model model, RedirectAttributes redirectAttributes) {
         try {
-            User user = userService.getUserById(dataService.getData(getEmailUser()).getUserId());
+            User user = dataService.getData(getEmailUser()).getUser();
             model.addAttribute("user", user);
             log.info("/change: getting a form of fields for changing user data");
             return "changeFields";

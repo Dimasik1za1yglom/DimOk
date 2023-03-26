@@ -1,25 +1,25 @@
 package ru.sen.accountserver.forms;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Data
 public class UserForm {
 
-    @NotBlank
-    @Size(min = 1, max = 80, message = "Поле firstName не должно быть пустым")
+    @NotBlank()
+    @Size(min = 1, max = 80, message = "Поле firstName должно содержать от 1 до 80 символов")
     private String firstName;
 
-    @NotBlank
-    @Size(min = 1, max = 80, message = "Поле lastName не должно быть пустым")
+    @NotBlank()
+    @Size(min = 1, max = 80, message = "Поле lastName должно содержать от 1 до 80 символов")
     private String lastName;
 
-    @Past
-    private Date birthday;
+    @PastOrPresent(message = "Дата должна быть прошедшего временного периода")
+    private LocalDate birthday;
 
     private String bio;
     private String country;

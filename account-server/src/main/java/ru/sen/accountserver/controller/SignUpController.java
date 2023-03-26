@@ -35,11 +35,13 @@ public class SignUpController {
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
             redirectAttributes.addFlashAttribute("error", error);
             log.error("/registration: Errors were received when entering data. Do not meet certain requirements: {}", error);
+            return "redirect:/registration";
         }
         if (authorizationDataService.dataVerification(dataForm)) {
             String error = "Пользователь с таким e-mail уже существует, попробуйте войти в систему";
             redirectAttributes.addFlashAttribute("error", error);
             log.error("/registration: Attempt to register a user who is already in the system: {}", dataForm);
+            return "redirect:/registration";
         }
         if (authorizationDataService.addData(dataForm)) {
             authService.setUpSecurity(dataForm);
@@ -49,7 +51,7 @@ public class SignUpController {
             String error = "Не удалось зарегистрировать пользователя, попробуйте позднее";
             redirectAttributes.addFlashAttribute("error", error);
             log.error("/registration: Failed to register user {}", dataForm);
+            return "redirect:/registration";
         }
-        return "redirect:/registration";
     }
 }

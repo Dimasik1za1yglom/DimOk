@@ -11,7 +11,16 @@ spring:
     password: "112348Diman"
   liquibase:
     change-log: classpath:db/changelog/db.changelog-root.xml
-  enabled: true
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: UNSPECIFIED
+
 
 eureka:
   instance:
@@ -29,3 +38,7 @@ logging:
       max-file-size: 5MB
   file:
     name: logs/${spring.application.name}-today.log
+  level:
+    org:
+    hibernate:
+      sql: info

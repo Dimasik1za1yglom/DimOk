@@ -2,30 +2,32 @@ package ru.sen.accountserver.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.sen.accountserver.dao.AuthorizationDataRepository;
-import ru.sen.accountserver.dao.UserRepository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import ru.sen.accountserver.dao.jpa.AuthorizationDataRepository;
+import ru.sen.accountserver.dao.jpa.RolesRepository;
+import ru.sen.accountserver.dao.jpa.UserRepository;
 import ru.sen.accountserver.entity.AuthorizationData;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.forms.UserForm;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
+    private final RolesRepository rolesRepository;
     private final UserRepository userRepository;
-    private final DataSource dataSource;
     private final AuthorizationDataRepository dataRepository;
     private final AuthorizationDataService dataService;
 
     @Override
-    public boolean addUser(UserForm userForm, String email) {
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
+    public void addUser(UserForm userForm, String email) throws Exception {
         var user = User.builder()
                 .firstName(userForm.getFirstName().strip())
                 .lastName(userForm.getLastName().strip())
@@ -34,47 +36,52 @@ public class UserServiceImpl implements UserService {
                 .country(userForm.getCountry().strip())
                 .city(userForm.getCity().strip())
                 .phone(userForm.getPhone().strip())
-                .roleId(1L)
+                .role(rolesRepository.getReferenceById(1L))
                 .build();
         try {
             AuthorizationData data = dataService.getData(email);
-            return addUserAndAuthorizationData(user, data);
+            addUserAndAuthorizationData(user, data);
+            log.info("adding a new user by transaction was successful");
         } catch (Exception e) {
             log.error("it was not possible to add a user and update his authorization data: {}", e.getMessage());
-            return false;
+            throw new Exception("Throwing exception for demoing rollback");
         }
     }
 
     @Override
-    public boolean deleteUser(Long userToDeleteId, String email) {
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
+    public void deleteUser(Long userToDeleteId, String email) throws Exception {
         log.info("deleting a user to id {}. We start with checking for permission rights", userToDeleteId);
         try {
             AuthorizationData data = dataService.getData(email);
-            User user = getUserById(data.getUserId());
+            User user = data.getUser();
             log.info("authorization data, who wants to delete: {}", data);
-            log.info("user who wants to delete: {}", user);
-            if (userToDeleteId.equals(data.getUserId())
-                    || (getUserById(data.getUserId()).getRoleId()).equals(2L)) {
+            if (userToDeleteId.equals(user.getId())
+                    || (getUserById(user.getId()).getRole().getId()).equals(2L)) {
                 log.info("satisfaction of the conditions for deleting the user");
-                return deleteUserAndAuthorizationData(userToDeleteId);
+                deleteUserAndAuthorizationData(userToDeleteId);
+            } else {
+                log.error("verification of the conditions for deleting the user failed");
+                throw new Exception("Insufficient rights to delete a user");
             }
-            log.warn("verification of the conditions for deleting the user failed");
         } catch (Exception e) {
-            log.error("it was not possible to delete a user and authorization data: {}", e.getMessage());
+            log.error("it was not possible to add a user and update his authorization data: {}", e.getMessage());
+            throw new Exception(e.getMessage());
         }
-        return false;
+
     }
 
     @Override
     public User getUserById(Long userId) {
-        return userRepository.getUserById(userId).orElseThrow(() -> new UsernameNotFoundException("user not found"));
+        return userRepository.getReferenceById(userId);
     }
 
     @Override
-    public boolean updateUser(UserForm userForm, String email) {
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
+    public void updateUser(UserForm userForm, String email) throws Exception {
         try {
             var user = User.builder()
-                    .id(dataService.getData(email).getUserId())
+                    .id(dataService.getData(email).getUser().getId())
                     .firstName(userForm.getFirstName().strip())
                     .lastName(userForm.getLastName().strip())
                     .birthday(userForm.getBirthday())
@@ -82,74 +89,40 @@ public class UserServiceImpl implements UserService {
                     .country(userForm.getCountry().strip())
                     .city(userForm.getCity().strip())
                     .phone(userForm.getPhone().strip())
-                    .roleId(1L)
+                    .role(rolesRepository.getReferenceById(1L))
                     .build();
-            return userRepository.updateUser(user);
+            userRepository.save(user);
+            log.info("transaction update: the user upate transaction was successful");
         } catch (Exception e) {
-            log.error("it was not possible to update a user and authorization data: {}", e.getMessage());
-            return false;
+            log.error("it was not possible to add a user and update his authorization data: {}", e.getMessage());
+            throw new Exception(e.getMessage());
         }
-
     }
 
     @Override
     public boolean userVerification(String emailUser) {
         try {
             AuthorizationData data = dataService.getData(emailUser);
-            return data.getUserId() != 0;
+            return data.getUser() != null;
         } catch (Exception e) {
             log.error("it was not possible to Verification a user and authorization data: {}", e.getMessage());
             return false;
         }
     }
 
-    private boolean deleteUserAndAuthorizationData(Long userToDeleteId) {
+    private void deleteUserAndAuthorizationData(Long userToDeleteId) throws SQLException {
         log.info("the beginning of the transaction by delete a user and authorization data");
-        try {
-            Connection connection = dataSource.getConnection();
-            try (connection) {
-                connection.setAutoCommit(false);
-                if (!(dataRepository.deleteDataByUserId(userToDeleteId) &&
-                        userRepository.deleteUserById(userToDeleteId))) {
-                    throw new SQLException(" not delete data and user");
-                }
-                connection.commit();
-                log.info("successful transaction for by delete a user and authorization data");
-            } catch (SQLException e) {
-                log.error("error when making a transaction for by delete a user and to authorization data: {}",
-                        e.getMessage());
-                connection.rollback();
-                return false;
-            }
-        } catch (SQLException e) {
-            log.error("error with connecting to datasource: {}", e.getMessage());
-            return false;
-        }
-        return true;
+        dataRepository.deleteByUserId(userToDeleteId);
+        userRepository.deleteById(userToDeleteId);
+        log.info("successful transaction for by delete a user and authorization data");
     }
 
-    private boolean addUserAndAuthorizationData(User user, AuthorizationData data) {
+
+    private void addUserAndAuthorizationData(User user, AuthorizationData data) {
         log.info("the beginning of the transaction by adding a user and binding to his authorization data");
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(false);
-            try {
-                Long userId = userRepository.addUser(user);
-                data.setUserId(userId);
-                if (!dataRepository.updateData(data)) {
-                    throw new SQLException(" not update data");
-                }
-                connection.commit();
-                log.info("successful transaction for adding a user and linking it to authorization data");
-            } catch (SQLException e) {
-                log.error("error when making a transaction for adding a user and linking it to authorization data: {}",
-                        e.getMessage());
-                connection.rollback();
-                return false;
-            }
-        } catch (SQLException e) {
-            log.error("error with connecting to datasource: {}", e.getMessage());
-            return false;
-        }
-        return true;
+        User userAuth = userRepository.save(user);
+        data.setUser(userAuth);
+        dataRepository.save(data);
+        log.info("successful transaction for adding a user and linking it to authorization data");
     }
 }

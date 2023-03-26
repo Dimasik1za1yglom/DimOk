@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.sen.accountserver.dao.AuthorizationDataRepository;
+import ru.sen.accountserver.dao.jpa.AuthorizationDataRepository;
 import ru.sen.accountserver.entity.AuthorizationData;
 import ru.sen.accountserver.forms.AuthorizationDataForm;
 
@@ -21,7 +21,7 @@ public class AuthorisationDataServiceIml implements AuthorizationDataService {
     public boolean dataVerification(AuthorizationDataForm dataForm) {
         String emailNotEmpty = dataForm.getEmail().strip();
         log.info("Checking for the presence of existing authorization data by the specified email: {}", emailNotEmpty);
-        return dataRepository.getDataByEmail(emailNotEmpty).isPresent();
+        return dataRepository.findById(emailNotEmpty).isPresent();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class AuthorisationDataServiceIml implements AuthorizationDataService {
                 .password(passwordEncoder.encode(passwordNotEmpty))
                 .build();
         try {
-            dataRepository.addAuthorizationData(data);
+            dataRepository.save(data);
         } catch (Exception e) {
             log.error("Adding authorization data {} failed: {}", data, e.getMessage());
             return false;
@@ -46,17 +46,19 @@ public class AuthorisationDataServiceIml implements AuthorizationDataService {
     public boolean deleteData(Long userId) {
         log.info("we begin deleting the authorization data associated with the user with the id: {}", userId);
         try {
-            return dataRepository.deleteDataByUserId(userId);
+            dataRepository.deleteByUserId(userId);
         } catch (Exception e) {
             log.error("could not delete authorization data by userId {}: {}", userId, e.getMessage());
-            throw new IllegalArgumentException("Не удалось удалить AuthorizationData");
+            return false;
         }
+        log.info("The delete of authorization data by userId {} was successful", userId);
+        return true;
     }
 
     @Override
     public AuthorizationData getData(String email) {
         log.info("getting authorization data by email: {}", email);
-        return dataRepository.getDataByEmail(email)
+        return dataRepository.findById(email)
                 .orElseThrow(() -> new UsernameNotFoundException("AuthorizationData not found"));
     }
 

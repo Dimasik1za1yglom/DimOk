@@ -24,5 +24,9 @@
 <form method="post" action="/user/${user.id}/delete">
     <input type="submit" value="Удалить аккаунт:(">
 </form>
+<hr>
+<form method="get" action="/user/logout">
+    <input type="submit" value="Выйти из аккаунта">
+</form>
 </body>
 </html>
