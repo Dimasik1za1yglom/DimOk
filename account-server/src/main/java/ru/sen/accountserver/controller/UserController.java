@@ -53,14 +53,13 @@ public class UserController {
 
 
     @PostMapping("/add")
-    public String addUser(@Valid UserForm userForm,
-                          RedirectAttributes redirectAttributes,
-                          BindingResult bindingResult) {
+    public String addUser(@Valid UserForm userForm, BindingResult bindingResult,
+                          Model model) {
         log.info("receiving a request for /add");
         if (bindingResult.hasErrors()) {
             log.warn("error entering values into the form");
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
-            redirectAttributes.addFlashAttribute("error", error);
+            model.addAttribute("error", error);
             log.info("/add: Errors were received when filling out the form for creating user page fields: {}", error);
             return "userFields";
         }
@@ -70,7 +69,7 @@ public class UserController {
             return "redirect:/user/myprofile";
         } else {
             String error = "Добавление полей пользователя не удалось. Попробуйте позднее";
-            redirectAttributes.addFlashAttribute("error", error);
+            model.addAttribute("error", error);
             log.error("/add: Errors occurred when adding user data: {}", error);
             return "userFields";
         }
@@ -92,11 +91,11 @@ public class UserController {
 
     @PostMapping("/update")
     public String updateUser(@Valid UserForm userForm,
-                             RedirectAttributes redirectAttributes,
-                             BindingResult bindingResult) {
+                             BindingResult bindingResult,
+                             Model model) {
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
-            redirectAttributes.addFlashAttribute("error", error);
+            model.addAttribute("error", error);
             log.info("/update: Errors were received when filling out the form for change user page fields: {}", error);
             return "redirect:/user/change";
         }
@@ -104,7 +103,7 @@ public class UserController {
             log.info("/update: user data update was successful");
             return "redirect:/user/myprofile";
         } else {
-            redirectAttributes.addFlashAttribute("error", "Не удалось изменить данные");
+            model.addAttribute("error", "Не удалось изменить данные");
             log.error("/update: Sending a message that the user's data could not be updated");
             return "redirect:/user/change";
         }
