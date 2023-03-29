@@ -1,8 +1,10 @@
-package ru.sen.accountserver.services;
+package ru.sen.accountserver.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.sen.accountserver.forms.UserForm;
+import ru.sen.accountserver.services.ErrorInterceptorService;
+import ru.sen.accountserver.services.UserService;
 
 @RequiredArgsConstructor
 @Service

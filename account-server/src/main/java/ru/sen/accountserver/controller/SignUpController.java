@@ -37,7 +37,7 @@ public class SignUpController {
             log.error("/registration: Errors were received when entering data. Do not meet certain requirements: {}", error);
             return "redirect:/registration";
         }
-        if (authorizationDataService.dataVerification(dataForm)) {
+        if (authorizationDataService.verifyData(dataForm)) {
             String error = "Пользователь с таким e-mail уже существует, попробуйте войти в систему";
             redirectAttributes.addFlashAttribute("error", error);
             log.error("/registration: Attempt to register a user who is already in the system: {}", dataForm);

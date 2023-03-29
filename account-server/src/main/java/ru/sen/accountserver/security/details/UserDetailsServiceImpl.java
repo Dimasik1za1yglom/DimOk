@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.sen.accountserver.dao.jpa.AuthorizationDataRepository;
-import ru.sen.accountserver.dao.jpa.RolesRepository;
+import ru.sen.accountserver.repository.AuthorizationDataRepository;
+import ru.sen.accountserver.repository.RolesRepository;
 import ru.sen.accountserver.entity.AuthorizationData;
 import ru.sen.accountserver.entity.Role;
 

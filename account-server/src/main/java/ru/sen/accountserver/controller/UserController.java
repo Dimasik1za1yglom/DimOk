@@ -34,7 +34,7 @@ public class UserController {
     public String getProfile(Model model,
                              RedirectAttributes redirectAttributes) {
         try {
-            if (!userService.userVerification(getEmailUser())) {
+            if (!userService.verifyUser(getEmailUser())) {
                 log.info("/myprofile: Checking that the user's page is empty. " +
                         "Redirecting to a page with fields filled in");
                 return "userFields";

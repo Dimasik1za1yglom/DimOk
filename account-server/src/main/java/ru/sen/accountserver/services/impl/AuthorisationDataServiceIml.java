@@ -1,13 +1,14 @@
-package ru.sen.accountserver.services;
+package ru.sen.accountserver.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.sen.accountserver.dao.jpa.AuthorizationDataRepository;
+import ru.sen.accountserver.repository.AuthorizationDataRepository;
 import ru.sen.accountserver.entity.AuthorizationData;
 import ru.sen.accountserver.forms.AuthorizationDataForm;
+import ru.sen.accountserver.services.AuthorizationDataService;
 
 @RequiredArgsConstructor
 @Service
@@ -18,7 +19,7 @@ public class AuthorisationDataServiceIml implements AuthorizationDataService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public boolean dataVerification(AuthorizationDataForm dataForm) {
+    public boolean verifyData(AuthorizationDataForm dataForm) {
         String emailNotEmpty = dataForm.getEmail().strip();
         log.info("Checking for the presence of existing authorization data by the specified email: {}", emailNotEmpty);
         return dataRepository.findById(emailNotEmpty).isPresent();

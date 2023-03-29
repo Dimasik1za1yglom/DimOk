@@ -1,16 +1,18 @@
-package ru.sen.accountserver.services;
+package ru.sen.accountserver.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-import ru.sen.accountserver.dao.jpa.AuthorizationDataRepository;
-import ru.sen.accountserver.dao.jpa.RolesRepository;
-import ru.sen.accountserver.dao.jpa.UserRepository;
+import ru.sen.accountserver.repository.AuthorizationDataRepository;
+import ru.sen.accountserver.repository.RolesRepository;
+import ru.sen.accountserver.repository.UserRepository;
 import ru.sen.accountserver.entity.AuthorizationData;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.forms.UserForm;
+import ru.sen.accountserver.services.AuthorizationDataService;
+import ru.sen.accountserver.services.UserService;
 
 import java.sql.SQLException;
 
@@ -100,7 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean userVerification(String emailUser) {
+    public boolean verifyUser(String emailUser) {
         try {
             AuthorizationData data = dataService.getData(emailUser);
             return data.getUser() != null;

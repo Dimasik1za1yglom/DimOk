@@ -1,15 +1,10 @@
-package ru.sen.accountserver.dao.jpa;
+package ru.sen.accountserver.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.sen.accountserver.entity.AuthorizationData;
 
 /**
  * The interface interacts with the user in the database.
- * <p>
- * Contains methods for working with the object AuthorizationData.class:
- * - delete object
- * - added object
- * - getting object
  */
 public interface AuthorizationDataRepository extends JpaRepository<AuthorizationData, String> {
 

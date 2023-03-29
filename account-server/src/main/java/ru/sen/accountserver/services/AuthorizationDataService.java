@@ -14,7 +14,7 @@ public interface AuthorizationDataService {
      * @param dataForm contains the email and password of a possible new user
      * @return returns true if such a user exists, and false if not
      */
-    boolean dataVerification(AuthorizationDataForm dataForm);
+    boolean verifyData(AuthorizationDataForm dataForm);
 
     /**
      * creates an Authorization Data object from the received form,

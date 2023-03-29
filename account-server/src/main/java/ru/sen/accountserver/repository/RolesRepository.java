@@ -1,4 +1,4 @@
-package ru.sen.accountserver.dao.jpa;
+package ru.sen.accountserver.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.sen.accountserver.entity.Role;
