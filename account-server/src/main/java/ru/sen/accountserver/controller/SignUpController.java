@@ -5,10 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.sen.accountserver.controller.api.SignUpApi;
 import ru.sen.accountserver.forms.AuthorizationDataForm;
 import ru.sen.accountserver.security.service.AuthService;
 import ru.sen.accountserver.services.AuthorizationDataService;
@@ -17,17 +16,17 @@ import ru.sen.accountserver.services.AuthorizationDataService;
 @Controller
 @RequestMapping("/registration")
 @Slf4j
-public class SignUpController {
+public class SignUpController implements SignUpApi {
 
     private final AuthorizationDataService authorizationDataService;
     private final AuthService authService;
 
-    @GetMapping
+    @Override
     public String registration() {
         return "registration";
     }
 
-    @PostMapping
+    @Override
     public String registration(RedirectAttributes redirectAttributes,
                                @Valid AuthorizationDataForm dataForm,
                                BindingResult bindingResult) {

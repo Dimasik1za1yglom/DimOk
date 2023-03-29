@@ -1,6 +1,5 @@
 package ru.sen.accountserver.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -8,11 +7,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.sen.accountserver.controller.api.UserApi;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.forms.UserForm;
 import ru.sen.accountserver.security.details.UserDetailsImpl;
@@ -24,13 +21,13 @@ import ru.sen.accountserver.services.UserService;
 @Controller
 @Slf4j
 @RequestMapping("/user")
-public class UserController {
+public class UserController implements UserApi {
 
     private final UserService userService;
     private final AuthorizationDataService dataService;
     private final ErrorInterceptorService interceptorService;
 
-    @GetMapping("/myprofile")
+    @Override
     public String getProfile(Model model,
                              RedirectAttributes redirectAttributes) {
         try {
@@ -51,10 +48,8 @@ public class UserController {
         }
     }
 
-
-    @PostMapping("/add")
-    public String addUser(@Valid UserForm userForm, BindingResult bindingResult,
-                          Model model) {
+    @Override
+    public String addUser(UserForm userForm, BindingResult bindingResult, Model model) {
         log.info("receiving a request for /add");
         if (bindingResult.hasErrors()) {
             log.warn("error entering values into the form");
@@ -75,9 +70,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/{user-id}/delete")
-    public String deleteUser(@PathVariable("user-id") Long userId,
-                             RedirectAttributes redirectAttributes) {
+    @Override
+    public String deleteUser(Long userId, RedirectAttributes redirectAttributes) {
         if (!interceptorService.checkingDeletingUser(userId, getEmailUser())) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить пользователя. Попробуйте позднее");
@@ -89,10 +83,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/update")
-    public String updateUser(@Valid UserForm userForm,
-                             BindingResult bindingResult,
-                             Model model) {
+    @Override
+    public String updateUser(UserForm userForm, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
             model.addAttribute("error", error);
@@ -109,7 +101,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/change")
+    @Override
     public String changeFieldsUser(Model model, RedirectAttributes redirectAttributes) {
         try {
             User user = dataService.getData(getEmailUser()).getUser();

@@ -1,14 +1,14 @@
 package ru.sen.accountserver.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import ru.sen.accountserver.controller.api.SignInApi;
 
 @Controller
 @RequestMapping("/input")
-public class SignInController {
+public class SignInController implements SignInApi {
 
-    @GetMapping
+    @Override
     public String input() {
         return "input";
     }
