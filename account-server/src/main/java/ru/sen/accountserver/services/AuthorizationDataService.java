@@ -11,10 +11,10 @@ public interface AuthorizationDataService {
 
     /**
      * checking for the presence in the database of a user with such an email
-     * @param dataForm contains the email and password of a possible new user
+     * @param email contains the email and password of a possible new user
      * @return returns true if such a user exists, and false if not
      */
-    boolean verifyData(AuthorizationDataForm dataForm);
+    boolean checkIfEmailExists(String email);
 
     /**
      * creates an Authorization Data object from the received form,
@@ -23,7 +23,7 @@ public interface AuthorizationDataService {
      * @param dataForm contains the email and password of a possible new user
      * @return true if the user's authorization data was saved, and false if not
      */
-    boolean addData(AuthorizationDataForm dataForm);
+    boolean addDataWasSuccessful(AuthorizationDataForm dataForm);
 
     /**
      * deletes the user's authorization data by his Id,
@@ -31,7 +31,7 @@ public interface AuthorizationDataService {
      * @param userId id of the user who is being deleted
      * @return true if the user was deleted, false if not
      */
-    boolean deleteData(Long userId);
+    boolean deleteDataWasSuccessful(Long userId);
 
     /**
      * getting authorization data by email

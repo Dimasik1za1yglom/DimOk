@@ -8,10 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "authorization_data")
 public class AuthorizationData {
 
@@ -26,3 +26,4 @@ public class AuthorizationData {
     @JoinColumn(name = "user_id")
     private User user;
 }
+

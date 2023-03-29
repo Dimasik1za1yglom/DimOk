@@ -16,7 +16,7 @@ public interface ErrorInterceptorService {
      *                 will need to be changed according to his authorization data
      * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
      */
-    boolean checkingAddingUser(UserForm userForm, String email);
+    boolean checkIfAddingUserSuccessful(UserForm userForm, String email);
 
     /**
      * checking for a successful transaction to delete the user and his data with exception interception
@@ -26,7 +26,7 @@ public interface ErrorInterceptorService {
      *                       will need to be changed according to his authorization data
      * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
      */
-    boolean checkingDeletingUser(Long userToDeleteId, String email);
+    boolean checkIfDeletingUserSuccessful(Long userToDeleteId, String email);
 
     /**
      * checking for a successful transaction to update the user and his data with exception interception

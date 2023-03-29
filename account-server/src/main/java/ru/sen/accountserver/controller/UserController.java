@@ -1,9 +1,9 @@
 package ru.sen.accountserver.controller;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,9 +17,9 @@ import ru.sen.accountserver.services.AuthorizationDataService;
 import ru.sen.accountserver.services.ErrorInterceptorService;
 import ru.sen.accountserver.services.UserService;
 
-@RequiredArgsConstructor
-@Controller
 @Slf4j
+@Controller
+@RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController implements UserApi {
 
@@ -31,7 +31,7 @@ public class UserController implements UserApi {
     public String getProfile(Model model,
                              RedirectAttributes redirectAttributes) {
         try {
-            if (!userService.verifyUser(getEmailUser())) {
+            if (!userService.checkIfUserExists(getEmailUser())) {
                 log.info("/myprofile: Checking that the user's page is empty. " +
                         "Redirecting to a page with fields filled in");
                 return "userFields";
@@ -41,7 +41,7 @@ public class UserController implements UserApi {
                 log.info("/myprofile: Checking that the user's page is full. Redirection to the user's page.");
                 return "myProfile";
             }
-        } catch (UsernameNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             log.error("/myprofile: An error occurred with the user's page: {}", e.getMessage());
             return "registration";
@@ -52,14 +52,14 @@ public class UserController implements UserApi {
     public String addUser(UserForm userForm, BindingResult bindingResult, Model model) {
         log.info("receiving a request for /add");
         if (bindingResult.hasErrors()) {
-            log.warn("error entering values into the form");
+            log.warn("/add: Error entering values into the form");
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
             model.addAttribute("error", error);
             log.info("/add: Errors were received when filling out the form for creating user page fields: {}", error);
             return "userFields";
         }
 
-        if (interceptorService.checkingAddingUser(userForm, getEmailUser())) {
+        if (interceptorService.checkIfAddingUserSuccessful(userForm, getEmailUser())) {
             log.info("/add: Adding fields to the user's page was successful");
             return "redirect:/user/myprofile";
         } else {
@@ -72,7 +72,7 @@ public class UserController implements UserApi {
 
     @Override
     public String deleteUser(Long userId, RedirectAttributes redirectAttributes) {
-        if (!interceptorService.checkingDeletingUser(userId, getEmailUser())) {
+        if (!interceptorService.checkIfDeletingUserSuccessful(userId, getEmailUser())) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить пользователя. Попробуйте позднее");
             log.error("/delete: Error on deleting a user under id: {}", userId);
@@ -108,7 +108,7 @@ public class UserController implements UserApi {
             model.addAttribute("user", user);
             log.info("/change: getting a form of fields for changing user data");
             return "changeFields";
-        } catch (UsernameNotFoundException e) {
+        } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", "Заполните пожалуйста поля");
             log.error("/change: Errors occurred when change user data: {}", e.getMessage());
             return "redirect:changeFields";

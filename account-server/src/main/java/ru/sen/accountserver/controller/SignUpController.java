@@ -12,10 +12,10 @@ import ru.sen.accountserver.forms.AuthorizationDataForm;
 import ru.sen.accountserver.security.service.AuthService;
 import ru.sen.accountserver.services.AuthorizationDataService;
 
-@RequiredArgsConstructor
-@Controller
-@RequestMapping("/registration")
 @Slf4j
+@Controller
+@RequiredArgsConstructor
+@RequestMapping("/registration")
 public class SignUpController implements SignUpApi {
 
     private final AuthorizationDataService authorizationDataService;
@@ -36,13 +36,13 @@ public class SignUpController implements SignUpApi {
             log.error("/registration: Errors were received when entering data. Do not meet certain requirements: {}", error);
             return "redirect:/registration";
         }
-        if (authorizationDataService.verifyData(dataForm)) {
+        if (authorizationDataService.checkIfEmailExists(dataForm.getEmail())) {
             String error = "Пользователь с таким e-mail уже существует, попробуйте войти в систему";
             redirectAttributes.addFlashAttribute("error", error);
             log.error("/registration: Attempt to register a user who is already in the system: {}", dataForm);
             return "redirect:/registration";
         }
-        if (authorizationDataService.addData(dataForm)) {
+        if (authorizationDataService.addDataWasSuccessful(dataForm)) {
             authService.setUpSecurity(dataForm);
             log.info("/registration: user registration in Spring Security: {}", dataForm);
             return "redirect:/user/myprofile";

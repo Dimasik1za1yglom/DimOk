@@ -60,5 +60,5 @@ public interface UserService {
      * @return true if the user himself is linked to his authorization data,
      * and false if not
      */
-    boolean verifyUser(String emailUser);
+    boolean checkIfUserExists(String emailUser);
 }

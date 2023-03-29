@@ -6,14 +6,14 @@ import ru.sen.accountserver.forms.UserForm;
 import ru.sen.accountserver.services.ErrorInterceptorService;
 import ru.sen.accountserver.services.UserService;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class ErrorInterceptorServiceImpl implements ErrorInterceptorService {
 
     private final UserService userService;
 
     @Override
-    public boolean checkingAddingUser(UserForm userForm, String email) {
+    public boolean checkIfAddingUserSuccessful(UserForm userForm, String email) {
         try {
             userService.addUser(userForm, email);
             return true;
@@ -23,7 +23,7 @@ public class ErrorInterceptorServiceImpl implements ErrorInterceptorService {
     }
 
     @Override
-    public boolean checkingDeletingUser(Long userToDeleteId, String email) {
+    public boolean checkIfDeletingUserSuccessful(Long userToDeleteId, String email) {
         try {
             userService.deleteUser(userToDeleteId, email);
             return true;

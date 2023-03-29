@@ -3,11 +3,10 @@ package ru.sen.accountserver.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import ru.sen.accountserver.controller.api.ErrorApi;
 
-@Controller
 @Slf4j
+@Controller
 public class ErrorController implements ErrorApi {
 
     @Override
