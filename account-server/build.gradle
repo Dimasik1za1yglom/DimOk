@@ -22,6 +22,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     implementation 'org.liquibase:liquibase-core'
     runtimeOnly 'org.postgresql:postgresql:42.5.4'
@@ -31,7 +32,8 @@ dependencies {
 
     implementation 'org.freemarker:freemarker:2.3.31'
 
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 }
 
 dependencyManagement {

@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.sen.accountserver.entity.AuthorizationData;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.forms.UserForm;
+import ru.sen.accountserver.mappers.UserToEntityMapper;
 import ru.sen.accountserver.repository.AuthorizationDataRepository;
-import ru.sen.accountserver.repository.RolesRepository;
 import ru.sen.accountserver.repository.UserRepository;
 import ru.sen.accountserver.services.AuthorizationDataService;
 import ru.sen.accountserver.services.UserService;
@@ -20,25 +20,16 @@ import ru.sen.accountserver.services.UserService;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
-    private final RolesRepository rolesRepository;
     private final UserRepository userRepository;
     private final AuthorizationDataRepository dataRepository;
     private final AuthorizationDataService dataService;
+    private final UserToEntityMapper userToEntityMapper;
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = Exception.class)
     public void addUser(UserForm userForm, String email) throws Exception {
-        var user = User.builder()
-                .firstName(userForm.getFirstName().strip())
-                .lastName(userForm.getLastName().strip())
-                .birthday(userForm.getBirthday())
-                .bio(userForm.getBio().strip())
-                .country(userForm.getCountry().strip())
-                .city(userForm.getCity().strip())
-                .phone(userForm.getPhone().strip())
-                .role(rolesRepository.getReferenceById(1L))
-                .build();
         try {
+            User user = userToEntityMapper.userFormToUser(userForm);
             AuthorizationData data = dataService.getData(email);
             addUserAndAuthorizationData(user, data);
             log.info("Adding a new user and update his authorization data was successful");
@@ -81,17 +72,8 @@ public class UserServiceImpl implements UserService {
     public void updateUser(UserForm userForm, String email) throws Exception {
         log.info("Update a user: {}", userForm);
         try {
-            var user = User.builder()
-                    .id(dataService.getData(email).getUser().getId())
-                    .firstName(userForm.getFirstName().strip())
-                    .lastName(userForm.getLastName().strip())
-                    .birthday(userForm.getBirthday())
-                    .bio(userForm.getBio().strip())
-                    .country(userForm.getCountry().strip())
-                    .city(userForm.getCity().strip())
-                    .phone(userForm.getPhone().strip())
-                    .role(rolesRepository.getReferenceById(1L))
-                    .build();
+            User user = userToEntityMapper.userFormToUser(userForm);
+            user.setId(dataService.getData(email).getUser().getId());
             userRepository.save(user);
             log.info("User update was successful");
         } catch (Exception e) {
