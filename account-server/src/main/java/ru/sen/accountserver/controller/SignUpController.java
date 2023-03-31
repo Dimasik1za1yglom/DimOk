@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.accountserver.controller.api.SignUpApi;
 import ru.sen.accountserver.dto.AuthorizationDataDto;
-import ru.sen.accountserver.security.service.AuthService;
 import ru.sen.accountserver.services.AuthorizationDataService;
 
 @Slf4j
@@ -19,7 +18,6 @@ import ru.sen.accountserver.services.AuthorizationDataService;
 public class SignUpController implements SignUpApi {
 
     private final AuthorizationDataService authorizationDataService;
-    private final AuthService authService;
 
     @Override
     public String registration() {
@@ -43,7 +41,6 @@ public class SignUpController implements SignUpApi {
             return "redirect:/registration";
         }
         if (authorizationDataService.addDataWasSuccessful(dataDto)) {
-            authService.setUpSecurity(dataDto);
             log.info("/registration: user registration in Spring Security: {}", dataDto);
             return "redirect:/user/myprofile";
         } else {

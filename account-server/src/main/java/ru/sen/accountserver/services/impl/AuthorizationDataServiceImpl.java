@@ -72,7 +72,7 @@ public class AuthorizationDataServiceImpl implements AuthorizationDataService {
     @Override
     public boolean checkIfUserExists(String emailUser) {
         try {
-            return Objects.isNull(getData(emailUser));
+            return Objects.isNull(getData(emailUser).getUser());
         } catch (Exception e) {
             log.error("Not possible to Verification a user and authorization data: {}", e.getMessage());
             return false;
