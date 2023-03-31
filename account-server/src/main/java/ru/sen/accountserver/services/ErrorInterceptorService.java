@@ -36,5 +36,5 @@ public interface ErrorInterceptorService {
      *                 will need to be changed according to his authorization data
      * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
      */
-    boolean checkingUpdateUser(UserDto userForm, String email);
+    boolean checkIfUpdateUserSuccessful(UserDto userForm, String email);
 }

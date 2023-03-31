@@ -4,17 +4,19 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.sen.accountserver.dto.AuthorizationDataDto;
 import ru.sen.accountserver.entity.AuthorizationData;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.exception.runtime.DataNotFoundException;
-import ru.sen.accountserver.dto.AuthorizationDataDto;
 import ru.sen.accountserver.repository.AuthorizationDataRepository;
 import ru.sen.accountserver.services.AuthorizationDataService;
+
+import java.util.Objects;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthorizationDataServiceIml implements AuthorizationDataService {
+public class AuthorizationDataServiceImpl implements AuthorizationDataService {
 
     private final AuthorizationDataRepository dataRepository;
     private final PasswordEncoder passwordEncoder;
@@ -27,9 +29,9 @@ public class AuthorizationDataServiceIml implements AuthorizationDataService {
     }
 
     @Override
-    public boolean addDataWasSuccessful(AuthorizationDataDto dataForm) {
-        String emailNotEmpty = dataForm.getEmail().strip();
-        String passwordNotEmpty = dataForm.getPassword().strip();
+    public boolean addDataWasSuccessful(AuthorizationDataDto dataDto) {
+        String emailNotEmpty = dataDto.getEmail().strip();
+        String passwordNotEmpty = dataDto.getPassword().strip();
         var data = AuthorizationData.builder()
                 .email(emailNotEmpty)
                 .password(passwordEncoder.encode(passwordNotEmpty))
@@ -45,7 +47,7 @@ public class AuthorizationDataServiceIml implements AuthorizationDataService {
     }
 
     @Override
-    public void deleteDataWasSuccessful(Long userId) {
+    public void deleteDataByUserId(Long userId) {
         log.info("delete the authorization data for userId {}: ", userId);
         dataRepository.deleteByUserId(userId);
         log.info("Delete of authorization data by userId {} was successful", userId);
@@ -65,6 +67,16 @@ public class AuthorizationDataServiceIml implements AuthorizationDataService {
         data.setUser(user);
         dataRepository.save(data);
         log.info("update authorization data was successful");
+    }
+
+    @Override
+    public boolean checkIfUserExists(String emailUser) {
+        try {
+            return Objects.isNull(getData(emailUser));
+        } catch (Exception e) {
+            log.error("Not possible to Verification a user and authorization data: {}", e.getMessage());
+            return false;
+        }
     }
 
 

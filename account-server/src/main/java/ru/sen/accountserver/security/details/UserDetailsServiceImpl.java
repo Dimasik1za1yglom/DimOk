@@ -10,7 +10,7 @@ import ru.sen.accountserver.entity.Role;
 import ru.sen.accountserver.exception.runtime.DataNotFoundException;
 import ru.sen.accountserver.exception.runtime.RoleNotFoundException;
 import ru.sen.accountserver.repository.AuthorizationDataRepository;
-import ru.sen.accountserver.repository.RolesRepository;
+import ru.sen.accountserver.repository.RoleRepository;
 
 @Slf4j
 @Service
@@ -18,7 +18,7 @@ import ru.sen.accountserver.repository.RolesRepository;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final AuthorizationDataRepository dataRepository;
-    private final RolesRepository rolesRepository;
+    private final RoleRepository rolesRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws DataNotFoundException, RoleNotFoundException {

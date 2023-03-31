@@ -2,6 +2,7 @@ package ru.sen.accountserver.services;
 
 import ru.sen.accountserver.dto.UserDto;
 import ru.sen.accountserver.entity.User;
+import ru.sen.accountserver.exception.UserOperationException;
 
 /**
  * the interface is designed to implement business logic for working with user data, saving, changing data.
@@ -15,9 +16,9 @@ public interface UserService {
      *
      * @param userForm the object whose data should be transferred to the object User.class
      * @param email    is the primary key, user id should ,snm is linked to this mail
-     * @throws Exception drops out if the user failed to added
+     * @throws UserOperationException drops out if the user failed to added
      */
-    void addUser(UserDto userForm, String email) throws Exception;
+    void addUser(UserDto userForm, String email) throws UserOperationException;
 
     /**
      * deleting an object User.class from the data table.
@@ -27,9 +28,9 @@ public interface UserService {
      *
      * @param userToDeleteId id of the user to be deleted
      * @param email          the user who is deleting (checking for rights)
-     * @throws Exception drops out if the user failed to delete
+     * @throws UserOperationException drops out if the user failed to delete
      */
-    void deleteUser(Long userToDeleteId, String email) throws Exception;
+    void deleteUser(Long userToDeleteId, String email) throws UserOperationException;
 
     /**
      * getting a user by his id,
@@ -48,17 +49,7 @@ public interface UserService {
      * @param userForm  turns an object into a class object User.class
      * @param emailUser it is needed to find the user that
      *                  will need to be changed according to his authorization data
-     * @throws Exception drops out if the user failed to update
+     * @throws UserOperationException drops out if the user failed to update
      */
-    void updateUser(UserDto userForm, String emailUser) throws Exception;
-
-    /**
-     * checks whether there is such a user in the database (whether his fields are filled in).
-     * Although the authorization data may already be
-     *
-     * @param emailUser checks whether any user id is linked to his authorization data
-     * @return true if the user himself is linked to his authorization data,
-     * and false if not
-     */
-    boolean checkIfUserExists(String emailUser);
+    void updateUser(UserDto userForm, String emailUser) throws UserOperationException;
 }

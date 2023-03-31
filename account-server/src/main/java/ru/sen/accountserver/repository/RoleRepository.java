@@ -6,6 +6,6 @@ import ru.sen.accountserver.entity.Role;
 /**
  * the interface is designed to work with the roles table in the database
  */
-public interface RolesRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
 
 }

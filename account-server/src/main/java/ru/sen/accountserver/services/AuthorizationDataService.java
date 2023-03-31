@@ -21,17 +21,17 @@ public interface AuthorizationDataService {
      * creates an Authorization Data object from the received form,
      * and sends a request through the repositories to the database
      *  When saving for the first time, the userId field is null
-     * @param dataForm contains the email and password of a possible new user
+     * @param dataDto contains the email and password of a possible new user
      * @return true if the user's authorization data was saved, and false if not
      */
-    boolean addDataWasSuccessful(AuthorizationDataDto dataForm);
+    boolean addDataWasSuccessful(AuthorizationDataDto dataDto);
 
     /**
      * deletes the user's authorization data by his Id,
      * after which the user himself and the users tables must be deleted
      * @param userId id of the user who is being deleted
      */
-    void deleteDataWasSuccessful(Long userId);
+    void deleteDataByUserId(Long userId);
 
     /**
      * getting authorization data by email
@@ -47,4 +47,15 @@ public interface AuthorizationDataService {
      * @param user which should be linked to the authorization date
      */
     void updateData(String email, User user);
+
+    /**
+     * checks whether there is such a user in the database (whether his fields are filled in).
+     * Although the authorization data may already be
+     *
+     * @param emailUser checks whether any user id is linked to his authorization data
+     * @return true if the user himself is linked to his authorization data,
+     * and false if not
+     */
+    boolean checkIfUserExists(String emailUser);
+
 }

@@ -15,7 +15,6 @@ import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.security.details.UserDetailsImpl;
 import ru.sen.accountserver.services.AuthorizationDataService;
 import ru.sen.accountserver.services.ErrorInterceptorService;
-import ru.sen.accountserver.services.UserService;
 
 @Slf4j
 @Controller
@@ -23,7 +22,6 @@ import ru.sen.accountserver.services.UserService;
 @RequestMapping("/user")
 public class UserController implements UserApi {
 
-    private final UserService userService;
     private final AuthorizationDataService dataService;
     private final ErrorInterceptorService interceptorService;
 
@@ -31,12 +29,12 @@ public class UserController implements UserApi {
     public String getProfile(Model model,
                              RedirectAttributes redirectAttributes) {
         try {
-            if (!userService.checkIfUserExists(getEmailUser())) {
+            if (dataService.checkIfUserExists(getUserEmail())) {
                 log.info("/myprofile: Checking that the user's page is empty. " +
                         "Redirecting to a page with fields filled in");
                 return "userFields";
             } else {
-                User user = dataService.getData(getEmailUser()).getUser();
+                User user = dataService.getData(getUserEmail()).getUser();
                 model.addAttribute("user", user);
                 log.info("/myprofile: Checking that the user's page is full. Redirection to the user's page.");
                 return "myProfile";
@@ -59,7 +57,7 @@ public class UserController implements UserApi {
             return "userFields";
         }
 
-        if (interceptorService.checkIfAddingUserSuccessful(userForm, getEmailUser())) {
+        if (interceptorService.checkIfAddingUserSuccessful(userForm, getUserEmail())) {
             log.info("/add: Adding fields to the user's page was successful");
             return "redirect:/user/myprofile";
         } else {
@@ -72,7 +70,7 @@ public class UserController implements UserApi {
 
     @Override
     public String deleteUser(Long userId, RedirectAttributes redirectAttributes) {
-        if (!interceptorService.checkIfDeletingUserSuccessful(userId, getEmailUser())) {
+        if (!interceptorService.checkIfDeletingUserSuccessful(userId, getUserEmail())) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить пользователя. Попробуйте позднее");
             log.error("/delete: Error on deleting a user under id: {}", userId);
@@ -91,7 +89,7 @@ public class UserController implements UserApi {
             log.info("/update: Errors were received when filling out the form for change user page fields: {}", error);
             return "redirect:/user/change";
         }
-        if (interceptorService.checkingUpdateUser(userForm, getEmailUser())) {
+        if (interceptorService.checkIfUpdateUserSuccessful(userForm, getUserEmail())) {
             log.info("/update: user data update was successful");
             return "redirect:/user/myprofile";
         } else {
@@ -104,7 +102,7 @@ public class UserController implements UserApi {
     @Override
     public String changeFieldsUser(Model model, RedirectAttributes redirectAttributes) {
         try {
-            User user = dataService.getData(getEmailUser()).getUser();
+            User user = dataService.getData(getUserEmail()).getUser();
             model.addAttribute("user", user);
             log.info("/change: getting a form of fields for changing user data");
             return "changeFields";
@@ -115,7 +113,7 @@ public class UserController implements UserApi {
         }
     }
 
-    public String getEmailUser() {
+    public String getUserEmail() {
         return ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
     }
 }

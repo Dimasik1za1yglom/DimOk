@@ -3,6 +3,7 @@ package ru.sen.accountserver.services.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.sen.accountserver.dto.UserDto;
+import ru.sen.accountserver.exception.UserOperationException;
 import ru.sen.accountserver.services.ErrorInterceptorService;
 import ru.sen.accountserver.services.UserService;
 
@@ -13,11 +14,11 @@ public class ErrorInterceptorServiceImpl implements ErrorInterceptorService {
     private final UserService userService;
 
     @Override
-    public boolean checkIfAddingUserSuccessful(UserDto userForm, String email) {
+    public boolean checkIfAddingUserSuccessful(UserDto userDto, String email) {
         try {
-            userService.addUser(userForm, email);
+            userService.addUser(userDto, email);
             return true;
-        } catch (Exception e) {
+        } catch (UserOperationException e) {
             return false;
         }
     }
@@ -27,17 +28,17 @@ public class ErrorInterceptorServiceImpl implements ErrorInterceptorService {
         try {
             userService.deleteUser(userToDeleteId, email);
             return true;
-        } catch (Exception e) {
+        } catch (UserOperationException e) {
             return false;
         }
     }
 
     @Override
-    public boolean checkingUpdateUser(UserDto userForm, String email) {
+    public boolean checkIfUpdateUserSuccessful(UserDto userDto, String email) {
         try {
-            userService.updateUser(userForm, email);
+            userService.updateUser(userDto, email);
             return true;
-        } catch (Exception e) {
+        } catch (UserOperationException e) {
             return false;
         }
     }

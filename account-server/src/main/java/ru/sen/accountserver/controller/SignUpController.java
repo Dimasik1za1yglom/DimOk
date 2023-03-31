@@ -28,7 +28,7 @@ public class SignUpController implements SignUpApi {
 
     @Override
     public String registration(RedirectAttributes redirectAttributes,
-                               @Valid AuthorizationDataDto dataForm,
+                               @Valid AuthorizationDataDto dataDto,
                                BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
@@ -36,20 +36,20 @@ public class SignUpController implements SignUpApi {
             log.error("/registration: Errors were received when entering data. Do not meet certain requirements: {}", error);
             return "redirect:/registration";
         }
-        if (authorizationDataService.checkIfEmailExists(dataForm.getEmail())) {
+        if (authorizationDataService.checkIfEmailExists(dataDto.getEmail())) {
             String error = "Пользователь с таким e-mail уже существует, попробуйте войти в систему";
             redirectAttributes.addFlashAttribute("error", error);
-            log.error("/registration: Attempt to register a user who is already in the system: {}", dataForm);
+            log.error("/registration: Attempt to register a user who is already in the system: {}", dataDto);
             return "redirect:/registration";
         }
-        if (authorizationDataService.addDataWasSuccessful(dataForm)) {
-            authService.setUpSecurity(dataForm);
-            log.info("/registration: user registration in Spring Security: {}", dataForm);
+        if (authorizationDataService.addDataWasSuccessful(dataDto)) {
+            authService.setUpSecurity(dataDto);
+            log.info("/registration: user registration in Spring Security: {}", dataDto);
             return "redirect:/user/myprofile";
         } else {
             String error = "Не удалось зарегистрировать пользователя, попробуйте позднее";
             redirectAttributes.addFlashAttribute("error", error);
-            log.error("/registration: Failed to register user {}", dataForm);
+            log.error("/registration: Failed to register user {}", dataDto);
             return "redirect:/registration";
         }
     }

@@ -5,15 +5,15 @@ import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.sen.accountserver.dto.UserDto;
 import ru.sen.accountserver.entity.User;
-import ru.sen.accountserver.repository.RolesRepository;
+import ru.sen.accountserver.repository.RoleRepository;
 
 @Mapper(componentModel = "spring")
-public abstract class UserToEntityMapper {
+public abstract class UserMapper {
 
     @Autowired
-    protected RolesRepository rolesRepository;
+    protected RoleRepository rolesRepository;
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", expression = "java(rolesRepository.getReferenceById(1L))")
-    public abstract User userFormToUser(UserDto userForm);
+    public abstract User userDtoToUser(UserDto userForm);
 }

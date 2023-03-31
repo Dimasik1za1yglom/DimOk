@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.sen.accountserver.entity.AuthorizationData;
 
 /**
- * The interface interacts with the user in the database.
+ * The interface interacts with the user authorization data in the database.
  */
 public interface AuthorizationDataRepository extends JpaRepository<AuthorizationData, String> {
 

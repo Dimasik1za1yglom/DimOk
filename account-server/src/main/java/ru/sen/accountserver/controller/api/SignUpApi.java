@@ -14,7 +14,7 @@ public interface SignUpApi {
 
     @PostMapping
     String registration(RedirectAttributes redirectAttributes,
-                               @Valid AuthorizationDataDto dataForm,
+                               @Valid AuthorizationDataDto dataDto,
                                BindingResult bindingResult);
 
 
