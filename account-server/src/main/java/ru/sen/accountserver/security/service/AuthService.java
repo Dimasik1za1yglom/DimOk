@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import ru.sen.accountserver.forms.AuthorizationDataForm;
+import ru.sen.accountserver.dto.AuthorizationDataDto;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +15,7 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
 
-    public void setUpSecurity(AuthorizationDataForm data) {
+    public void setUpSecurity(AuthorizationDataDto data) {
         String emailNotEmpty = data.getEmail().strip();
         String passwordNotEmpty = data.getPassword().strip();
         UsernamePasswordAuthenticationToken authReq =

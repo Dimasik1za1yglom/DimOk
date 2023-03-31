@@ -1,7 +1,8 @@
 package ru.sen.accountserver.services;
 
 import ru.sen.accountserver.entity.AuthorizationData;
-import ru.sen.accountserver.forms.AuthorizationDataForm;
+import ru.sen.accountserver.entity.User;
+import ru.sen.accountserver.dto.AuthorizationDataDto;
 
 /**
  * the interface is designed to implement business logic for working with authorization data and,
@@ -23,15 +24,14 @@ public interface AuthorizationDataService {
      * @param dataForm contains the email and password of a possible new user
      * @return true if the user's authorization data was saved, and false if not
      */
-    boolean addDataWasSuccessful(AuthorizationDataForm dataForm);
+    boolean addDataWasSuccessful(AuthorizationDataDto dataForm);
 
     /**
      * deletes the user's authorization data by his Id,
      * after which the user himself and the users tables must be deleted
      * @param userId id of the user who is being deleted
-     * @return true if the user was deleted, false if not
      */
-    boolean deleteDataWasSuccessful(Long userId);
+    void deleteDataWasSuccessful(Long userId);
 
     /**
      * getting authorization data by email
@@ -40,4 +40,11 @@ public interface AuthorizationDataService {
      * otherwise, throw an exception or process it immediately
      */
     AuthorizationData getData(String email);
+
+    /**
+     * updating authorization data and binding the user object
+     * @param email primary key
+     * @param user which should be linked to the authorization date
+     */
+    void updateData(String email, User user);
 }

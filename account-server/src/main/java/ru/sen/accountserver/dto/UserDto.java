@@ -1,4 +1,4 @@
-package ru.sen.accountserver.forms;
+package ru.sen.accountserver.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +9,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class UserForm {
+public class UserDto {
 
     @NotBlank(message = "Поле Имя не должно быть пустым")
     @Size(min = 4, max = 80, message = "Поле firstName должно содержать от 1 до 80 символов")

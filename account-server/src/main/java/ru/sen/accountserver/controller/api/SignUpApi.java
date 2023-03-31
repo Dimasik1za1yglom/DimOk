@@ -5,7 +5,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.sen.accountserver.forms.AuthorizationDataForm;
+import ru.sen.accountserver.dto.AuthorizationDataDto;
 
 public interface SignUpApi {
 
@@ -14,7 +14,7 @@ public interface SignUpApi {
 
     @PostMapping
     String registration(RedirectAttributes redirectAttributes,
-                               @Valid AuthorizationDataForm dataForm,
+                               @Valid AuthorizationDataDto dataForm,
                                BindingResult bindingResult);
 
 

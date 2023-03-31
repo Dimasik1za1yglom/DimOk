@@ -1,6 +1,6 @@
 package ru.sen.accountserver.services;
 
-import ru.sen.accountserver.forms.UserForm;
+import ru.sen.accountserver.dto.UserDto;
 
 /**
  * the repository was created to intercept errors that may occur in services with errors in transactions
@@ -16,7 +16,7 @@ public interface ErrorInterceptorService {
      *                 will need to be changed according to his authorization data
      * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
      */
-    boolean checkIfAddingUserSuccessful(UserForm userForm, String email);
+    boolean checkIfAddingUserSuccessful(UserDto userForm, String email);
 
     /**
      * checking for a successful transaction to delete the user and his data with exception interception
@@ -36,5 +36,5 @@ public interface ErrorInterceptorService {
      *                 will need to be changed according to his authorization data
      * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
      */
-    boolean checkingUpdateUser(UserForm userForm, String email);
+    boolean checkingUpdateUser(UserDto userForm, String email);
 }

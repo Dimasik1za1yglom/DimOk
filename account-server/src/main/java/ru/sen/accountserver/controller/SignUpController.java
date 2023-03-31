@@ -8,7 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.accountserver.controller.api.SignUpApi;
-import ru.sen.accountserver.forms.AuthorizationDataForm;
+import ru.sen.accountserver.dto.AuthorizationDataDto;
 import ru.sen.accountserver.security.service.AuthService;
 import ru.sen.accountserver.services.AuthorizationDataService;
 
@@ -28,7 +28,7 @@ public class SignUpController implements SignUpApi {
 
     @Override
     public String registration(RedirectAttributes redirectAttributes,
-                               @Valid AuthorizationDataForm dataForm,
+                               @Valid AuthorizationDataDto dataForm,
                                BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();

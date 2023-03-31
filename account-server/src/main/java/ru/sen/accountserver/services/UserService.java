@@ -1,7 +1,7 @@
 package ru.sen.accountserver.services;
 
+import ru.sen.accountserver.dto.UserDto;
 import ru.sen.accountserver.entity.User;
-import ru.sen.accountserver.forms.UserForm;
 
 /**
  * the interface is designed to implement business logic for working with user data, saving, changing data.
@@ -17,7 +17,7 @@ public interface UserService {
      * @param email    is the primary key, user id should ,snm is linked to this mail
      * @throws Exception drops out if the user failed to added
      */
-    void addUser(UserForm userForm, String email) throws Exception;
+    void addUser(UserDto userForm, String email) throws Exception;
 
     /**
      * deleting an object User.class from the data table.
@@ -50,7 +50,7 @@ public interface UserService {
      *                  will need to be changed according to his authorization data
      * @throws Exception drops out if the user failed to update
      */
-    void updateUser(UserForm userForm, String emailUser) throws Exception;
+    void updateUser(UserDto userForm, String emailUser) throws Exception;
 
     /**
      * checks whether there is such a user in the database (whether his fields are filled in).

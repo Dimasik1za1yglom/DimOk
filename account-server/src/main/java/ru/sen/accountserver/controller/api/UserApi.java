@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.sen.accountserver.forms.UserForm;
+import ru.sen.accountserver.dto.UserDto;
 
 public interface UserApi {
 
@@ -16,15 +16,15 @@ public interface UserApi {
                              RedirectAttributes redirectAttributes);
 
     @PostMapping("/add")
-    String addUser(@Valid UserForm userForm, BindingResult bindingResult,
-                          Model model);
+    String addUser(@Valid UserDto userForm, BindingResult bindingResult,
+                   Model model);
 
     @PostMapping("/{user-id}/delete")
     String deleteUser(@PathVariable("user-id") Long userId,
                              RedirectAttributes redirectAttributes);
 
     @PostMapping("/update")
-    String updateUser(@Valid UserForm userForm,
+    String updateUser(@Valid UserDto userForm,
                              BindingResult bindingResult,
                              Model model);
 

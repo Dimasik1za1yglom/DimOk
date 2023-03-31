@@ -1,19 +1,20 @@
 package ru.sen.accountserver.services.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.sen.accountserver.entity.AuthorizationData;
-import ru.sen.accountserver.forms.AuthorizationDataForm;
+import ru.sen.accountserver.entity.User;
+import ru.sen.accountserver.exception.runtime.DataNotFoundException;
+import ru.sen.accountserver.dto.AuthorizationDataDto;
 import ru.sen.accountserver.repository.AuthorizationDataRepository;
 import ru.sen.accountserver.services.AuthorizationDataService;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AuthorisationDataServiceIml implements AuthorizationDataService {
+public class AuthorizationDataServiceIml implements AuthorizationDataService {
 
     private final AuthorizationDataRepository dataRepository;
     private final PasswordEncoder passwordEncoder;
@@ -26,7 +27,7 @@ public class AuthorisationDataServiceIml implements AuthorizationDataService {
     }
 
     @Override
-    public boolean addDataWasSuccessful(AuthorizationDataForm dataForm) {
+    public boolean addDataWasSuccessful(AuthorizationDataDto dataForm) {
         String emailNotEmpty = dataForm.getEmail().strip();
         String passwordNotEmpty = dataForm.getPassword().strip();
         var data = AuthorizationData.builder()
@@ -44,23 +45,26 @@ public class AuthorisationDataServiceIml implements AuthorizationDataService {
     }
 
     @Override
-    public boolean deleteDataWasSuccessful(Long userId) {
+    public void deleteDataWasSuccessful(Long userId) {
         log.info("delete the authorization data for userId {}: ", userId);
-        try {
-            dataRepository.deleteByUserId(userId);
-        } catch (Exception e) {
-            log.error("Delete authorization data by userId {} failed: {}", userId, e.getMessage());
-            return false;
-        }
+        dataRepository.deleteByUserId(userId);
         log.info("Delete of authorization data by userId {} was successful", userId);
-        return true;
     }
 
     @Override
     public AuthorizationData getData(String email) {
         log.info("getting authorization data by email: {}", email);
         return dataRepository.findById(email)
-                .orElseThrow(() -> new EntityNotFoundException("AuthorizationData not found"));
+                .orElseThrow(() -> new DataNotFoundException("AuthorizationData not found"));
+    }
+
+    @Override
+    public void updateData(String email, User user) {
+        log.info("update authorization data by email: {}, adding attachment use {}", email, user);
+        AuthorizationData data = getData(email);
+        data.setUser(user);
+        dataRepository.save(data);
+        log.info("update authorization data was successful");
     }
 
 

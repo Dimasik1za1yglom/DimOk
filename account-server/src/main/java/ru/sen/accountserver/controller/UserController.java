@@ -10,8 +10,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.accountserver.controller.api.UserApi;
+import ru.sen.accountserver.dto.UserDto;
 import ru.sen.accountserver.entity.User;
-import ru.sen.accountserver.forms.UserForm;
 import ru.sen.accountserver.security.details.UserDetailsImpl;
 import ru.sen.accountserver.services.AuthorizationDataService;
 import ru.sen.accountserver.services.ErrorInterceptorService;
@@ -49,7 +49,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public String addUser(UserForm userForm, BindingResult bindingResult, Model model) {
+    public String addUser(UserDto userForm, BindingResult bindingResult, Model model) {
         log.info("receiving a request for /add");
         if (bindingResult.hasErrors()) {
             log.warn("/add: Error entering values into the form");
@@ -84,7 +84,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public String updateUser(UserForm userForm, BindingResult bindingResult, Model model) {
+    public String updateUser(UserDto userForm, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
             model.addAttribute("error", error);
