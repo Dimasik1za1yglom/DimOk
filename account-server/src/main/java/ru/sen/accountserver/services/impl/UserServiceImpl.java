@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserToEntityMapper userToEntityMapper;
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = UserAddProcessException.class)
+    @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = UserAddProcessException.class)
     public void addUser(UserDto userForm, String email) throws UserAddProcessException {
         try {
             User user = userRepository.save(userToEntityMapper.userFormToUser(userForm));
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = UserUpdateProcessException.class)
+    @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = UserUpdateProcessException.class)
     public void updateUser(UserDto userForm, String email) throws UserUpdateProcessException {
         log.info("Update a user: {}", userForm);
         try {
