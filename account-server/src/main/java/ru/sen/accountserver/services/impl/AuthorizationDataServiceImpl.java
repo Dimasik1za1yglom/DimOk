@@ -1,5 +1,6 @@
 package ru.sen.accountserver.services.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -7,7 +8,6 @@ import org.springframework.stereotype.Service;
 import ru.sen.accountserver.dto.AuthorizationDataDto;
 import ru.sen.accountserver.entity.AuthorizationData;
 import ru.sen.accountserver.entity.User;
-import ru.sen.accountserver.exception.runtime.DataNotFoundException;
 import ru.sen.accountserver.repository.AuthorizationDataRepository;
 import ru.sen.accountserver.services.AuthorizationDataService;
 
@@ -57,7 +57,7 @@ public class AuthorizationDataServiceImpl implements AuthorizationDataService {
     public AuthorizationData getData(String email) {
         log.info("getting authorization data by email: {}", email);
         return dataRepository.findById(email)
-                .orElseThrow(() -> new DataNotFoundException("AuthorizationData not found"));
+                .orElseThrow(() -> new EntityNotFoundException("AuthorizationData not found"));
     }
 
     @Override
