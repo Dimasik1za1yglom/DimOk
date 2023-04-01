@@ -15,5 +15,5 @@ public abstract class UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", expression = "java(rolesRepository.getReferenceById(1L))")
-    public abstract User userDtoToUser(UserDto userForm);
+    public abstract User userDtoToUser(UserDto userDto);
 }

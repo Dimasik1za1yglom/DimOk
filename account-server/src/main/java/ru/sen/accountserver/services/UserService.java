@@ -14,11 +14,11 @@ public interface UserService {
      * creates a user object for further storage in the database
      * and binds it to the authorization data by email
      *
-     * @param userForm the object whose data should be transferred to the object User.class
+     * @param userDto the object whose data should be transferred to the object User.class
      * @param email    is the primary key, user id should ,snm is linked to this mail
      * @throws UserOperationException drops out if the user failed to added
      */
-    void addUser(UserDto userForm, String email) throws UserOperationException;
+    void addUser(UserDto userDto, String email) throws UserOperationException;
 
     /**
      * deleting an object User.class from the data table.
@@ -46,10 +46,10 @@ public interface UserService {
     /**
      * updates the user in the database
      *
-     * @param userForm  turns an object into a class object User.class
+     * @param userDto  turns an object into a class object User.class
      * @param emailUser it is needed to find the user that
      *                  will need to be changed according to his authorization data
      * @throws UserOperationException drops out if the user failed to update
      */
-    void updateUser(UserDto userForm, String emailUser) throws UserOperationException;
+    void updateUser(UserDto userDto, String emailUser) throws UserOperationException;
 }

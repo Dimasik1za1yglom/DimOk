@@ -13,7 +13,7 @@
     <h2 style="color:red"><#if error??>${error}<#else></#if></h2>
     <form method="post" action="/input">
         <label class="whitetext">
-            Login: <input  type="email" name="email" placeholder="Email">
+            Login: <input  type="text" name="email" placeholder="Email">
         </label>
         <br>
         <label class="whitetext">
@@ -24,7 +24,7 @@
     </form>
 </div>
 <form method="get" action="/registration">
-    <input type="submit" value="Страница регистарции.">
+    <input type="submit" value="Страница регистрации.">
 </form>
 </body>
 </html>

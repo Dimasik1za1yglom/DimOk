@@ -16,7 +16,7 @@ public interface UserApi {
                              RedirectAttributes redirectAttributes);
 
     @PostMapping("/add")
-    String addUser(@Valid UserDto userForm, BindingResult bindingResult,
+    String addUser(@Valid UserDto userDto, BindingResult bindingResult,
                    Model model);
 
     @PostMapping("/{user-id}/delete")
@@ -24,11 +24,11 @@ public interface UserApi {
                              RedirectAttributes redirectAttributes);
 
     @PostMapping("/update")
-    String updateUser(@Valid UserDto userForm,
+    String updateUser(@Valid UserDto userDto,
                              BindingResult bindingResult,
                              Model model);
 
     @GetMapping("/change")
-    String changeFieldsUser(Model model, RedirectAttributes redirectAttributes);
+    String changeUserFields(Model model, RedirectAttributes redirectAttributes);
 
 }

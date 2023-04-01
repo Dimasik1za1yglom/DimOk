@@ -8,12 +8,12 @@ import lombok.Data;
 @Data
 public class AuthorizationDataDto {
 
-    @Email
-    @Size(min = 8, max = 100, message = "Неверно введено поле email.")
+    @Email(message = "Неверный формат Email-а")
+    @Size(min = 8, max = 50, message = "Поле Email должно содержать от 8 до 50 символов.")
     private String email;
 
-    @NotBlank
-    @Size(min = 8, max = 100, message = "Неверно введено поле password.")
+    @NotBlank(message = "Поле password не должно быть пустым или состоять из пробелов")
+    @Size(min = 4, max = 35, message = "Поле Password должно содержать от 8 до 35 символов.")
     private String password;
 
 }

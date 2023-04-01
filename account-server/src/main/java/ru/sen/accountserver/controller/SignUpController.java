@@ -42,7 +42,7 @@ public class SignUpController implements SignUpApi {
         }
         if (authorizationDataService.addDataWasSuccessful(dataDto)) {
             log.info("/registration: user registration in Spring Security: {}", dataDto);
-            return "redirect:/user/myprofile";
+            return "redirect:/input";
         } else {
             String error = "Не удалось зарегистрировать пользователя, попробуйте позднее";
             redirectAttributes.addFlashAttribute("error", error);

@@ -11,7 +11,7 @@
 <h2 style="color:red"><#if error??>${error}<#else></#if></h2>
 <form method="post" action="/registration">
     <label class="whitetext">
-        Email: <input type="email" name="email" placeholder="Введите ваш E-mail">
+        Email: <input type="text" name="email" placeholder="Введите ваш E-mail">
     </label>
     <br>
     <label class="whitetext">
