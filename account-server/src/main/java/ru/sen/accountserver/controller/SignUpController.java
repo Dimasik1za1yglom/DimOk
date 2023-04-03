@@ -3,6 +3,7 @@ package ru.sen.accountserver.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.accountserver.controller.api.SignUpApi;
 import ru.sen.accountserver.dto.AuthorizationDataDto;
 import ru.sen.accountserver.services.AuthorizationDataService;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -29,9 +32,12 @@ public class SignUpController implements SignUpApi {
                                @Valid AuthorizationDataDto dataDto,
                                BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
-            redirectAttributes.addFlashAttribute("error", error);
-            log.error("/registration: Errors were received when entering data. Do not meet certain requirements: {}", error);
+            List<String> errors = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .toList();
+            redirectAttributes.addFlashAttribute("errors", errors);
+            log.error("/registration: Errors were received when entering data. Do not meet certain requirements: {}", errors);
             return "redirect:/registration";
         }
         if (authorizationDataService.checkIfEmailExists(dataDto.getEmail())) {

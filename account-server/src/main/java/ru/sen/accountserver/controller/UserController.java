@@ -3,6 +3,7 @@ package ru.sen.accountserver.controller;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,8 @@ import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.security.details.UserDetailsImpl;
 import ru.sen.accountserver.services.AuthorizationDataService;
 import ru.sen.accountserver.services.ErrorInterceptorService;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -51,12 +54,14 @@ public class UserController implements UserApi {
         log.info("receiving a request for /add");
         if (bindingResult.hasErrors()) {
             log.warn("/add: Error entering values into the form");
-            String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
-            model.addAttribute("error", error);
-            log.info("/add: Errors were received when filling out the form for creating user page fields: {}", error);
+            List<String> errors = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .toList();
+            model.addAttribute("errors", errors);
+            log.info("/add: Errors were received when filling out the form for creating user page fields: {}", errors);
             return "userFields";
         }
-
         if (interceptorService.checkIfAddingUserSuccessful(userDto, getUserEmail())) {
             log.info("/add: Adding fields to the user's page was successful");
             return "redirect:/user/myprofile";
@@ -84,9 +89,12 @@ public class UserController implements UserApi {
     @Override
     public String updateUser(UserDto userDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
-            String error = bindingResult.getAllErrors().get(0).getDefaultMessage();
-            model.addAttribute("error", error);
-            log.info("/update: Errors were received when filling out the form for change user page fields: {}", error);
+            List<String> errors = bindingResult.getAllErrors()
+                    .stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .toList();
+            model.addAttribute("errors", errors);
+            log.info("/update: Errors were received when filling out the form for change user page fields: {}", errors);
             return "redirect:/user/change";
         }
         if (interceptorService.checkIfUpdateUserSuccessful(userDto, getUserEmail())) {

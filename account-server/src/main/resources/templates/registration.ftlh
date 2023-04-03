@@ -8,7 +8,12 @@
     <title>Регистрация</title>
 </head>
 <body>
-<h2 style="color:red"><#if error??>${error}<#else></#if></h2>
+<#if errors??>
+    <#list errors as error>
+        <h2 style="color:red">${error}</h2>
+    </#list>
+<#else>
+</#if>
 <form method="post" action="/registration">
     <label class="whitetext">
         Email: <input type="text" name="email" placeholder="Введите ваш E-mail">

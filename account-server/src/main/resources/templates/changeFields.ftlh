@@ -9,7 +9,12 @@
 </head>
 <body>
 <br>
-<h2 style="color:red"><#if error??>${error}<#else></#if></h2>
+<#if errors??>
+    <#list errors as error>
+        <h2 style="color:red">${error}</h2>
+    </#list>
+<#else>
+</#if>
 <br>
 <form method="post" action="/user/update">
     <input type="text" name="firstName" value="<#if user??>${user.firstName}<#else></#if>" placeholder="Имя">
