@@ -58,6 +58,7 @@ public class UserController implements UserApi {
                     .stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .toList();
+            model.addAttribute("user", userDto);
             model.addAttribute("errors", errors);
             log.info("/add: Errors were received when filling out the form for creating user page fields: {}", errors);
             return "userFields";
@@ -93,9 +94,10 @@ public class UserController implements UserApi {
                     .stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .toList();
+            model.addAttribute("user", userDto);
             model.addAttribute("errors", errors);
             log.info("/update: Errors were received when filling out the form for change user page fields: {}", errors);
-            return "redirect:/user/change";
+            return "changeFields";
         }
         if (interceptorService.checkIfUpdateUserSuccessful(userDto, getUserEmail())) {
             log.info("/update: user data update was successful");

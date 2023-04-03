@@ -19,12 +19,11 @@
 <form method="post" action="/user/update">
     <input type="text" name="firstName" value="<#if user??>${user.firstName}<#else></#if>" placeholder="Имя">
     <input type="text" name="lastName" value="<#if user??>${user.lastName}<#else></#if>" placeholder="Фамилия">
-    <input type="date" name="birthday" value="<#if user??>${user.birthday}<#else></#if>" placeholder="Дата рождения">
+    <input type="date" name="birthday" value="<#if (user.birthday)??>${user.birthday}<#else></#if>" placeholder="Дата рождения">
     <input type="text" name="bio" value="<#if user??>${user.bio}<#else></#if>" placeholder="О себе">
     <input type="text" name="country" value="<#if user??>${user.country}<#else></#if>" placeholder="Страна">
     <input type="text" name="city" value="<#if user??>${user.city}<#else></#if>" placeholder="Город">
-    <input type="tel" name="phone" value="<#if user??>${user.phone}<#else></#if>" placeholder="Телефон"
-           pattern="\+7\s?[\(]{0,1}9[0-9]{2}[\)]{0,1}\s?\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}">
+    <input type="text" name="phone" value="<#if user??>${user.phone}<#else></#if>" placeholder="Телефон">
     <input type="submit" value="Добавить">
 </form>
 </body>

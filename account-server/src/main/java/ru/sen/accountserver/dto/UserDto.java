@@ -13,11 +13,11 @@ import java.time.LocalDate;
 public class UserDto {
 
     @NotBlank(message = "Поле Имя не должно быть пустым или состоять из пробелов")
-    @Size(min = 4, max = 80, message = "Поле Имя должно содержать от 4 до 80 символов")
+    @Size(min = 4, max = 30, message = "Поле Имя должно содержать от 4 до 30 символов")
     private String firstName;
 
     @NotBlank(message = "Поле Фамилия не должно быть пустым или состоять из пробелов")
-    @Size(min = 4, max = 80, message = "Поле Фамилия должно содержать от 4 до 80 символов")
+    @Size(min = 4, max = 30, message = "Поле Фамилия должно содержать от 4 до 30 символов")
     private String lastName;
 
     @NotNull(message = "Поле Дата рождения не должно быть пустым")

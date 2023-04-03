@@ -22,7 +22,7 @@ create table users
     bio        varchar(1000),
     country    varchar(30),
     city       varchar(40),
-    phone      varchar(20) not null unique check ( phone != ''
+    phone      varchar(13) not null unique check ( phone != ''
 ) ,
     role_id    bigint not null ,
     foreign key (role_id) references roles (id)
