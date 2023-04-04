@@ -1,4 +1,4 @@
-package ru.sen.accountserver.annotation.realization;
+package ru.sen.accountserver.annotation.validators;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

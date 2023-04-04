@@ -2,7 +2,7 @@ package ru.sen.accountserver.annotation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import ru.sen.accountserver.annotation.realization.PhoneConstraintValidator;
+import ru.sen.accountserver.annotation.validators.PhoneConstraintValidator;
 
 import java.lang.annotation.*;
 
