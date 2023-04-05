@@ -18,13 +18,13 @@ create table users
     id         bigserial primary key,
     first_name varchar(30) not null,
     last_name  varchar(30) not null,
-    birthday   date,
+    birthday   date not null,
     bio        varchar(1000),
     country    varchar(30),
     city       varchar(40),
-    phone      varchar(20) unique check ( phone != ''
-        ),
-    role_id    bigint,
+    phone      varchar(13) not null unique check ( phone != ''
+) ,
+    role_id    bigint not null ,
     foreign key (role_id) references roles (id)
 );
 
@@ -32,7 +32,7 @@ create table users
 create table dialogs
 (
     id      bigserial primary key,
-    name    varchar(100),
+    name    varchar(100) not null ,
     user_id bigint,
     foreign key (user_id) references users (id)
 );
@@ -40,24 +40,24 @@ create table dialogs
 --changeset dim_ok:5
 create table messages
 (
-    id            bigserial primary key,
-    dialog_id   bigint,
+    id           bigserial primary key,
+    dialog_id    bigint,
     foreign key (dialog_id) references dialogs (id),
-    user_id       bigint,
+    user_id      bigint,
     foreign key (user_id) references users (id),
-    text_message  varchar(50000) not null check ( text_message != ''
-        ),
+    text_message varchar(50000) not null check ( text_message != ''
+) ,
     time_creation timestamp      not null
 );
 
 --changeset dim_ok:6
 create table posts
 (
-    id            bigserial primary key,
-    user_id       bigint,
+    id      bigserial primary key,
+    user_id bigint not null ,
     foreign key (user_id) references users (id),
-    text          varchar(50000) not null check ( text != ''
-        ),
+    text    varchar(50000) not null check ( text != ''
+) ,
     time_creation timestamp      not null
 );
 
@@ -65,17 +65,17 @@ create table posts
 create table search_requests
 (
     id            bigserial primary key,
-    user_id       bigint,
+    user_id       bigint not null ,
     foreign key (user_id) references users (id),
     text_request  varchar(70) not null,
-    time_creation timestamp
+    time_creation timestamp not null
 );
 
 --changeset dim_ok:8
 create table authorization_data
 (
-    email    varchar(100) primary key,
-    password varchar(500),
+    email    varchar(100) primary key not null ,
+    password varchar(500) not null ,
     user_id  bigint,
     foreign key (user_id) references users (id)
 );
@@ -84,7 +84,7 @@ create table authorization_data
 create table permissions
 (
     id      bigserial primary key,
-    name    varchar(180),
-    role_id bigint,
+    name    varchar(180) not null,
+    role_id bigint not null ,
     foreign key (role_id) references roles (id)
 );
