@@ -2,6 +2,7 @@ package ru.sen.postserver.services;
 
 import ru.sen.postserver.dto.PostDto;
 import ru.sen.postserver.entity.Post;
+import ru.sen.postserver.exception.PostOperationException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,19 +14,22 @@ public interface PostService {
 
     /**
      * creating a post and saving it to a database
+     *
      * @param postDto contains data for saving a new post
-     * @param userId id of the user who creates the post
+     * @param userId  id of the user who creates the post
      */
-    void addPost(PostDto postDto, LocalDateTime dateTime, Long userId);
+    void addPost(PostDto postDto, LocalDateTime dateTime, Long userId) throws PostOperationException;
 
     /**
      * deleting a post from the database by its id
+     *
      * @param postId id of the post to delete
      */
-    void deletePost(Long postId);
+    void deletePost(Long postId) throws PostOperationException;
 
     /**
      * returns all user posts
+     *
      * @param userId id of the user whose posts
      * @return list of user posts
      */
@@ -33,6 +37,7 @@ public interface PostService {
 
     /**
      * we get the post by its id
+     *
      * @param postId post id primary key
      * @return the user's post that needs to be returned
      */
@@ -40,8 +45,9 @@ public interface PostService {
 
     /**
      * updating the post with its changes in the database
+     *
      * @param postDto contains data for update a post
-     * @param userId id of the user who update the post
+     * @param postId  id post who update
      */
-    void updatePost(PostDto postDto, Long userId);
+    void updatePost(PostDto postDto, Long postId) throws PostOperationException;
 }
