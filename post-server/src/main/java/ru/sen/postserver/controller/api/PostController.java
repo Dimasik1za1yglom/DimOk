@@ -27,8 +27,24 @@ public class PostController implements PostApi {
     private final ErrorInterceptorService interceptorService;
 
     @Override
-    public String getAllPostsUser() {
-        List<Post> posts = postService.getAllPostByUserId();
+    public String getAllPostsUser(Model model, RedirectAttributes redirectAttributes) {
+        log.info("receiving a request for /post");
+        try {
+            List<Post> posts = postService.getAllPostByUserId();
+            posts.forEach(post -> {
+                if (post.getText().length() > 33) {
+                    post.setText(post.getText().substring(0, 33));
+                }
+            });
+            log.info("/post: receiving a request post was successful: {}", posts);
+            model.addAttribute("posts", posts);
+            return "myPosts";
+        } catch (EntityNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error",
+                    "Не удалось получить информацию об существующих постах, попробуйте позднее");
+            log.error("/post: An error occurred with the posts page: {}", e.getMessage());
+            return "redirect:/user/myprofile";
+        }
     }
 
     @Override
@@ -41,19 +57,18 @@ public class PostController implements PostApi {
             model.addAttribute("post", post);
             log.info("/post/{}: receiving the user's post was successful. The output of the page with this post.",
                     postId);
-            return;
+            return "myPost";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось получить информацию об данном посте, попробуйте позднее");
             log.error("/post/{}: An error occurred with the post page: {}", postId, e.getMessage());
-            return;
+            return "myPosts";
         }
     }
 
     @Override
     public String addPost(PostDto postDto,
                           BindingResult bindingResult,
-                          Long userId,
                           Model model) {
         log.info("receiving a request for /add");
         if (bindingResult.hasErrors()) {
@@ -65,13 +80,16 @@ public class PostController implements PostApi {
             model.addAttribute("post", postDto);
             model.addAttribute("errors", errors);
             log.info("/add: Errors were received when filling out the form for creating post page fields: {}", errors);
+            return "fieldsPost";
         }
         if (interceptorService.checkIfAddingPostSuccessful(postDto, LocalDateTime.now(), userId)) {
             log.info("/add: Adding fields to the post's page was successful");
+            return "redirect:/post";
         } else {
             String error = "Добавление полей поста не удалось. Попробуйте позднее";
             model.addAttribute("error", error);
             log.error("/add: Errors occurred when adding post data: {}", error);
+            return "fieldsPost";
         }
     }
 
@@ -83,8 +101,10 @@ public class PostController implements PostApi {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить пост. Попробуйте позднее");
             log.error("/delete: Error on deleting a post under id: {}", postId);
+            return String.format("redirect:/post/%d", postId);
         } else {
             log.info("/delete: Deleting the post was successful, exiting the session");
+            return "redirect:/post";
         }
     }
 
@@ -101,12 +121,15 @@ public class PostController implements PostApi {
             model.addAttribute("post", postDto);
             model.addAttribute("errors", errors);
             log.info("/update: Errors were received when filling out the form for change post page fields: {}", errors);
+            return "changePost";
         }
         if (interceptorService.checkIfUpdatePostSuccessful(postDto, postId)) {
             log.info("/update: post update was successful");
+            return "redirect:/post";
         } else {
             model.addAttribute("error", "Не удалось изменить данные");
             log.error("/update: Sending a message that the post could not be updated");
+            return String.format("redirect:/post/%d/change", postId);
         }
     }
 
@@ -118,10 +141,12 @@ public class PostController implements PostApi {
             Post post = postService.getPostById(postId);
             model.addAttribute("post", post);
             log.info("/change: getting a form of fields for changing post");
+            return "changePost";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось найти пост, попробуйте позднее");
             log.error("/change: Errors occurred when change post data: {}", e.getMessage());
+            return "redirect:/post";
         }
     }
 }
