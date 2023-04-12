@@ -16,21 +16,51 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResponseUsersDto getAllUsers() {
-        return null;
+        return webClient
+                .get()
+                .uri("http://accountServer/users/all")
+                .retrieve()
+                .bodyToMono(ResponseUsersDto.class)
+                .block();
     }
 
     @Override
     public ResponseUsersDto getUsersByLastName(String lastName) {
-        return null;
+        return webClient
+                .get()
+                .uri("http://accountServer/users/lastName",
+                        uriBuilder -> uriBuilder
+                                .queryParam("lastName", lastName)
+                                .build())
+                .retrieve()
+                .bodyToMono(ResponseUsersDto.class)
+                .block();
     }
 
     @Override
     public ResponseUsersDto getUsersByFirstName(String firstName) {
-        return null;
+        return webClient
+                .get()
+                .uri("http://accountServer/users/firstName",
+                        uriBuilder -> uriBuilder
+                                .queryParam("firstName", firstName)
+                                .build())
+                .retrieve()
+                .bodyToMono(ResponseUsersDto.class)
+                .block();
     }
 
     @Override
     public ResponseUsersDto getUsersByFirstNameAndLastName(String lastName, String firstName) {
-        return null;
+        return webClient
+                .get()
+                .uri("http://accountServer/users/fullName",
+                        uriBuilder -> uriBuilder
+                                .queryParam("lastName", lastName)
+                                .queryParam("firstName", firstName)
+                                .build())
+                .retrieve()
+                .bodyToMono(ResponseUsersDto.class)
+                .block();
     }
 }

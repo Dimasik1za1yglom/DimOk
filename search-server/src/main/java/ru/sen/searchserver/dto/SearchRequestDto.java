@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Max;
 import lombok.Data;
 
 @Data
+//TODO: Анотация на проверку, чтобы два поля сразу не null
 public class SearchRequestDto {
 
     @Max(value = 30, message = "Поле Имя не должно содержать больше 30 символов")

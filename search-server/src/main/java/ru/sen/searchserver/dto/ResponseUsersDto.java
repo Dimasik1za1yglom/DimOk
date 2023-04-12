@@ -12,9 +12,16 @@ import java.util.List;
 @NoArgsConstructor
 public class ResponseUsersDto {
 
-    List<User> user;
+    List<User> users;
 
+    /**
+     * contains true if there are no errors,
+     * false if there are errors
+     */
     boolean success;
 
+    /**
+     * contains an error message if there is one
+     */
     String message;
 }

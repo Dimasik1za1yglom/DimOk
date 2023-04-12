@@ -52,7 +52,7 @@ public class SearchRequestServiceImpl implements SearchRequestService {
     }
 
     @Override
-    public List<SearchRequest> getAllSearchRequestUsers(Long userId) {
+    public List<SearchRequest> getAllSearchRequestByUserId(Long userId) {
         log.info("get all search request by userId {}", userId);
         return requestRepository.findAllByUserId(userId);
     }
