@@ -16,6 +16,7 @@ import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.security.details.UserDetailsImpl;
 import ru.sen.accountserver.services.AuthorizationDataService;
 import ru.sen.accountserver.services.ErrorInterceptorService;
+import ru.sen.accountserver.services.UserService;
 
 import java.util.List;
 
@@ -27,10 +28,26 @@ public class UserController implements UserApi {
 
     private final AuthorizationDataService dataService;
     private final ErrorInterceptorService interceptorService;
+    private final UserService userService;
 
     @Override
-    public String getProfile(Model model,
-                             RedirectAttributes redirectAttributes) {
+    public String getUserProfile(Long userId, Model model, RedirectAttributes redirectAttributes) {
+        log.info("/profile/{user-id}: request to receive the user's page by id {}", userId);
+        try {
+            User user = userService.getUserById(userId);
+            model.addAttribute("user", user);
+            log.info("/profile/{user-id}: getting a user page was successful: {}", user);
+            return "userProfile";
+        } catch (EntityNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", "Пользователь отсутсвует");
+            log.error("/profile/{user-id}: Getting a user page is failed: {}", e.getMessage());
+            return "redirect:searchUsers";
+        }
+    }
+
+    @Override
+    public String getMyProfile(Model model,
+                               RedirectAttributes redirectAttributes) {
         try {
             if (dataService.checkIfUserExists(getUserEmail())) {
                 log.info("/myprofile: Checking that the user's page is empty. " +

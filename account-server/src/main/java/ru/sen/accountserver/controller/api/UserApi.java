@@ -11,9 +11,14 @@ import ru.sen.accountserver.dto.UserDto;
 
 public interface UserApi {
 
+    @GetMapping("/profile/{user-id}")
+    String getUserProfile(@PathVariable("user-id") Long userId,
+                          Model model,
+                          RedirectAttributes redirectAttributes);
+
     @GetMapping("/myprofile")
-    String getProfile(Model model,
-                             RedirectAttributes redirectAttributes);
+    String getMyProfile(Model model,
+                        RedirectAttributes redirectAttributes);
 
     @PostMapping("/add")
     String addUser(@Valid UserDto userDto, BindingResult bindingResult,

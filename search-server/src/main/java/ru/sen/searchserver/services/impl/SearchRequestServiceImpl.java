@@ -25,6 +25,12 @@ public class SearchRequestServiceImpl implements SearchRequestService {
     private final SearchRequestMapper requestMapper;
 
     @Override
+    public boolean checkIfSearchRequestExists(Long userId) {
+        log.info("Checking existing searchRequest by userId: {}", userId);
+        return requestRepository.existsSearchRequestByUserId(userId);
+    }
+
+    @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = SearchRequestException.class)
     public void addSearchRequest(SearchRequestDto searchRequestDto, LocalDateTime dateTime, Long userId)
             throws SearchRequestException {

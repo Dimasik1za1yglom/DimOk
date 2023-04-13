@@ -9,6 +9,11 @@
 </head>
 <body>
 <h2 style="color:red"><#if error??>${error}<#else></#if></h2>
+<hr>
+<form method="get" action="/users/search">
+    <input type="submit" value="Поиск пользователей">
+</form>
+<hr>
 Имя: ${user.firstName} <br>
 Фамилия: ${user.lastName} <br>
 Дата рождения: ${user.birthday} <br>

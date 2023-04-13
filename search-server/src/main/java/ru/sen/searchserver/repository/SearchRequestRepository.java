@@ -10,6 +10,8 @@ import java.util.List;
  */
 public interface SearchRequestRepository extends JpaRepository<SearchRequest, Long> {
 
+    boolean existsSearchRequestByUserId(Long userId);
+
     void deleteByUserId(Long userId);
 
     List<SearchRequest> findAllByUserId(Long userId);

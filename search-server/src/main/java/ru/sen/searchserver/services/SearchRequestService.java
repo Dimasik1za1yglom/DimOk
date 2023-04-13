@@ -12,6 +12,9 @@ import java.util.List;
  */
 public interface SearchRequestService {
 
+
+    boolean checkIfSearchRequestExists(Long userId);
+
     /**
      * adds a search query
      * @param searchRequestDto what data was transmitted by the user

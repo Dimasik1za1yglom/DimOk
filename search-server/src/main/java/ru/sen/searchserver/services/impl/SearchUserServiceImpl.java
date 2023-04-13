@@ -37,7 +37,8 @@ public class SearchUserServiceImpl implements SearchUserService {
         }
         if (!response.isSuccess()) {
             log.error("Failed to get a response from account service. There is a error: {}", response.getMessage());
-            throw new SearchUsersException(response.getMessage());
+            throw new SearchUsersException("Не удалось получить пользователей по данному запросу," +
+                    " повторите поиск позднее");
         }
         log.info("Successful to get a response from account service");
         return response.getUsers();
