@@ -37,13 +37,13 @@ public class AdminSearchRequestController implements AdminSearchRequestApi {
                 String error = "История запросов пуста";
                 redirectAttributes.addFlashAttribute("error", error);
                 log.warn("/admin/requests/{user-id}: Null Search request by users id {}: {}", userId, error);
-                return ;
+                return "redirect:adminSearchUsers";
             }
         } catch (EntityNotFoundException e) {
             String error = "Не удалось получить истории запросов";
             redirectAttributes.addFlashAttribute("error", error);
             log.error("/delete: Error on checking a search request by userId {}: {}", userId, e.getMessage());
-            return;
+            return "redirect:adminSearchUsers";
         }
     }
 
@@ -56,7 +56,7 @@ public class AdminSearchRequestController implements AdminSearchRequestApi {
             return String.format("redirect:/admin/requests/%d", userId);
         } else {
             log.info("/delete: Deleting the search request was successful");
-            return;
+            return "redirect:/admin/users/all";
         }
     }
 }

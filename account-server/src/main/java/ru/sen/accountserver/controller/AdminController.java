@@ -14,6 +14,7 @@ import ru.sen.accountserver.controller.api.AdminApi;
 import ru.sen.accountserver.dto.UserDto;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.security.details.UserDetailsImpl;
+import ru.sen.accountserver.services.AuthorizationDataService;
 import ru.sen.accountserver.services.ErrorInterceptorService;
 import ru.sen.accountserver.services.UserService;
 
@@ -26,7 +27,23 @@ import java.util.List;
 public class AdminController implements AdminApi {
 
     private final UserService userService;
+    private final AuthorizationDataService dataService;
     private final ErrorInterceptorService interceptorService;
+
+    @Override
+    public String getUser(Long userId, Model model, RedirectAttributes redirectAttributes) {
+        log.info("admin/profile/{user-id}: request to receive the user's page by id {}", userId);
+        try {
+            User user = userService.getUserById(userId);
+            model.addAttribute("user", user);
+            log.info("/profile/{user-id}: getting a user page was successful: {}", user);
+            return "adminUserProfile";
+        } catch (EntityNotFoundException e) {
+            redirectAttributes.addFlashAttribute("error", "Пользователь отсутсвует");
+            log.error("/profile/{user-id}: Getting a user page is failed: {}", e.getMessage());
+            return "redirect:/admin/users/all";
+        }
+    }
 
     @Override
     public String deleteUser(Long userId, RedirectAttributes redirectAttributes) {
@@ -34,15 +51,15 @@ public class AdminController implements AdminApi {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить пользователя. Попробуйте позднее");
             log.error("/delete: Error on deleting a user under id: {}", userId);
-            return "redirect: ";
+            return String.format("redirect:/admin/profile/%d", userId);
         } else {
             log.info("/delete: Deleting the user was successful, exiting the session");
-            return;
+            return "redirect:/admin/users/all";
         }
     }
 
     @Override
-    public String updateUser(UserDto userDto, BindingResult bindingResult, Model model) {
+    public String updateUser(UserDto userDto, BindingResult bindingResult, Long userId, Model model) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors()
                     .stream()
@@ -51,15 +68,15 @@ public class AdminController implements AdminApi {
             model.addAttribute("user", userDto);
             model.addAttribute("errors", errors);
             log.info("/update: Errors were received when filling out the form for change user page fields: {}", errors);
-            return "changeFields";
+            return "adminChangeFields";
         }
-        if (interceptorService.checkIfUpdateUserSuccessful(userDto, getUserEmail())) {
+        if (interceptorService.checkIfUpdateUserSuccessful(userDto, dataService.)) {
             log.info("/update: user data update was successful");
-            return "redirect:/user/myprofile";
+            return "redirect:/admin/users/all";
         } else {
             model.addAttribute("error", "Не удалось изменить данные");
             log.error("/update: Sending a message that the user's data could not be updated");
-            return "redirect:/user/change";
+            return String.format("redirect:/admin/%d/change", userId);
         }
     }
 
@@ -73,7 +90,7 @@ public class AdminController implements AdminApi {
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", "Заполните пожалуйста поля");
             log.error("/change: Errors occurred when change user data: {}", e.getMessage());
-            return "redirect:changeFields";
+            return "redirect:adminChangeFields";
         }
     }
 

@@ -27,7 +27,7 @@ public class AdminSearchUserController implements AdminSearchUsersApi, SearchUse
 
     @Override
     public String getAllUsers(Model model, RedirectAttributes redirectAttributes) {
-        log.info("receiving a request for /users/all");
+        log.info("receiving a request for /admin/users/all");
         try {
             List<User> users = searchUserService.getAllUsers();
             model.addAttribute("users", users);

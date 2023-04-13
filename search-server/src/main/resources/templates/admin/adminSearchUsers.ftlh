@@ -30,8 +30,11 @@
                 <td>${user.lastName}</td>
                 <td>${user.birthday}</td>
                 <td>
-                    <form method="post" action="/admin/${user.id}/delete">
-                        <input type="submit" value="Удалить профиль">
+                    <form method="get" action="/admin/profile/${user.id}">
+                        <input type="submit" value="Посмотреть профиль">
+                    </form>
+                    <form method="get" action="/requests/${user.id}">
+                        <input type="submit" value="Посмотреть историю поиска">
                     </form>
                 </td>
             </tr>
@@ -39,10 +42,5 @@
     </table>
 <#else>
 </#if>
-<hr>
-<form method="post" action="/admin/${user.id}/delete">
-    <input type="submit" value="Удалить профиль">
-</form>
-<hr>
 </body>
 </html>

@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
             if (userToDeleteId.equals(user.getId())
                     || (getUserById(user.getId()).getRole().getId()).equals(2L)) {
                 log.info("Satisfaction of the conditions for deleting the user");
+                //Todo: удалить историю запросов
                 dataService.deleteDataByUserId(userToDeleteId);
                 userRepository.deleteById(userToDeleteId);
                 log.info("Delete user of authorization data by userId {} was successful", userToDeleteId);

@@ -11,14 +11,20 @@ import ru.sen.accountserver.dto.UserDto;
 
 public interface AdminApi {
 
+    @GetMapping("/profile/{user-id}")
+    String getUser(@PathVariable("user-id") Long userId,
+                   Model model,
+                   RedirectAttributes redirectAttributes);
+
 
     @PostMapping("/{user-id}/delete")
     String deleteUser(@PathVariable("user-id") Long userId,
                       RedirectAttributes redirectAttributes);
 
-    @PostMapping("/update")
+    @PostMapping("/{user-id}/update")
     String updateUser(@Valid UserDto userDto,
                       BindingResult bindingResult,
+                      @PathVariable("user-id") Long userId,
                       Model model);
 
     @GetMapping("/{user-id}/change")
