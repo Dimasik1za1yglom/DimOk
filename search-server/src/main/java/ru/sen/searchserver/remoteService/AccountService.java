@@ -1,6 +1,6 @@
 package ru.sen.searchserver.remoteService;
 
-import ru.sen.searchserver.dto.ResponseUsersDto;
+import ru.sen.searchserver.dto.remote.ResponseUsersDto;
 
 /**
  * the service is designed for working with users,

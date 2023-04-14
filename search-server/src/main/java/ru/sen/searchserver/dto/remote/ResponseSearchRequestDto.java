@@ -1,18 +1,13 @@
-package ru.sen.accountserver.dto;
+package ru.sen.searchserver.dto.remote;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.sen.accountserver.entity.User;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseUsersDto {
-
-    List<User> users;
+public class ResponseSearchRequestDto {
 
     /**
      * contains true if there are no errors,

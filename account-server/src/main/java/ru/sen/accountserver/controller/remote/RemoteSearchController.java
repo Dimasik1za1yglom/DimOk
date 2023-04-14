@@ -1,12 +1,12 @@
-package ru.sen.accountserver.controller;
+package ru.sen.accountserver.controller.remote;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.sen.accountserver.controller.api.RemoteApi;
-import ru.sen.accountserver.dto.ResponseUsersDto;
+import ru.sen.accountserver.controller.remote.api.RemoteSearchApi;
+import ru.sen.accountserver.dto.remote.ResponseUsersDto;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.services.UsersSearchService;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-public class RemoteSearchController implements RemoteApi {
+public class RemoteSearchController implements RemoteSearchApi {
 
     private final UsersSearchService usersSearchService;
 

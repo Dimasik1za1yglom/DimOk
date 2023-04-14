@@ -1,4 +1,4 @@
-package ru.sen.searchserver.dto;
+package ru.sen.searchserver.dto.remote;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

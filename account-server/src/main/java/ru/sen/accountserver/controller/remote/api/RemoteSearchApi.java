@@ -1,10 +1,10 @@
-package ru.sen.accountserver.controller.api;
+package ru.sen.accountserver.controller.remote.api;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.sen.accountserver.dto.ResponseUsersDto;
+import ru.sen.accountserver.dto.remote.ResponseUsersDto;
 
-public interface RemoteApi {
+public interface RemoteSearchApi {
 
     @GetMapping("/all")
     ResponseUsersDto getAllUsers();

@@ -3,7 +3,7 @@ package ru.sen.searchserver.services.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.sen.searchserver.dto.ResponseUsersDto;
+import ru.sen.searchserver.dto.remote.ResponseUsersDto;
 import ru.sen.searchserver.dto.SearchRequestDto;
 import ru.sen.searchserver.entity.User;
 import ru.sen.searchserver.exception.SearchUsersException;
