@@ -6,11 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sen.accountserver.dto.UserDto;
-import ru.sen.accountserver.dto.remote.ResponseSearchRequestDto;
+import ru.sen.accountserver.dto.remote.ResponseDto;
 import ru.sen.accountserver.entity.AuthorizationData;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.exception.UserOperationException;
 import ru.sen.accountserver.mappers.UserMapper;
+import ru.sen.accountserver.remoteService.PostService;
 import ru.sen.accountserver.remoteService.SearchRequestService;
 import ru.sen.accountserver.repository.UserRepository;
 import ru.sen.accountserver.services.AuthorizationDataService;
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final AuthorizationDataService dataService;
     private final UserMapper userToEntityMapper;
     private final SearchRequestService searchRequestService;
+    private final PostService postService;
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = UserOperationException.class)
@@ -54,13 +56,18 @@ public class UserServiceImpl implements UserService {
                 dataService.deleteDataByUserId(userToDeleteId);
                 userRepository.deleteById(userToDeleteId);
                 log.info("Delete user of authorization data by userId {} was successful", userToDeleteId);
-                ResponseSearchRequestDto response = searchRequestService.deleteSearchRequest(userToDeleteId);
+                ResponseDto response = searchRequestService.deleteSearchRequest(userToDeleteId);
                 if (response.isSuccess()) {
-                    log.info("Delete search request by id {} is failed: {}", userToDeleteId, response.getMessage());
+                    log.info("Delete search requests by user id {} is failed: {}", userToDeleteId, response.getMessage());
                 } else {
-                    log.error("Delete search request by id {} was successful", userToDeleteId);
+                    log.error("Delete search requests by user id {} was successful", userToDeleteId);
                 }
-                //Todo: удалить посты
+                response = postService.deletePosts(userToDeleteId);
+                if (response.isSuccess()) {
+                    log.info("Delete posts  by user id {} is failed: {}", userToDeleteId, response.getMessage());
+                } else {
+                    log.error("Delete posts by id {} was successful", userToDeleteId);
+                }
             } else {
                 log.error("verification of the conditions for deleting the user failed");
                 throw new UserOperationException("Insufficient rights to delete a user");

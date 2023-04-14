@@ -1,11 +1,11 @@
-package ru.sen.searchserver.controller.remote;
+package ru.sen.postserver.controller.remote.api;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.sen.searchserver.dto.remote.ResponseSearchRequestDto;
+import ru.sen.postserver.dto.remote.ResponseDto;
 
 public interface RemoteAccountApi {
 
     @PostMapping("/delete")
-    ResponseSearchRequestDto deleteSearchRequests(@RequestParam Long userId);
+    ResponseDto deletePosts(@RequestParam Long userId);
 }

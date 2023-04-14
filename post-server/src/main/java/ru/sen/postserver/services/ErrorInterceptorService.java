@@ -36,4 +36,6 @@ public interface ErrorInterceptorService {
      * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
      */
     boolean checkIfUpdatePostSuccessful(PostDto postDto, Long postId);
+
+    boolean checkIfDeletePostsByUsersIdSuccessful(Long userId);
 }

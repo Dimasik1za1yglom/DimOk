@@ -78,4 +78,17 @@ public class PostServiceImpl implements PostService {
         }
 
     }
+
+    @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = PostOperationException.class)
+    public void deleteAllPostByUserId(Long userId) throws PostOperationException {
+        log.info("delete all post by user id {}", userId);
+        try {
+            postRepository.deleteByUserId(userId);
+            log.info("Deleting all post by user id {} was successful", userId);
+        } catch (Exception e) {
+            log.error("Delete all post by user id {} is failed: {}", userId, e.getMessage());
+            throw new PostOperationException("Throwing exception for demoing rollback");
+        }
+    }
 }

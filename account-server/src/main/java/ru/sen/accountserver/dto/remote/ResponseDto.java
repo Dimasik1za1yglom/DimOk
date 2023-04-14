@@ -1,4 +1,4 @@
-package ru.sen.searchserver.dto.remote;
+package ru.sen.accountserver.dto.remote;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseSearchRequestDto {
+public class ResponseDto {
 
     /**
      * contains true if there are no errors,

@@ -4,19 +4,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.sen.accountserver.dto.remote.ResponseDto;
-import ru.sen.accountserver.remoteService.SearchRequestService;
+import ru.sen.accountserver.remoteService.PostService;
 
 @Service
 @RequiredArgsConstructor
-public class SearchRequestServiceImpl implements SearchRequestService {
+public class PostServiceImpl implements PostService {
 
     private final WebClient webClient;
 
     @Override
-    public ResponseDto deleteSearchRequest(Long userId) {
+    public ResponseDto deletePosts(Long userId) {
         return webClient
                 .post()
-                .uri("http://searchServer/searchRequests/delete",
+                .uri("http://postServer/posts/delete",
                         uriBuilder -> uriBuilder
                                 .queryParam("userId", userId)
                                 .build())

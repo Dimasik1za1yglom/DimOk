@@ -55,7 +55,6 @@ create table posts
 (
     id      bigserial primary key,
     user_id bigint not null ,
-    foreign key (user_id) references users (id),
     text    varchar(50000) not null check ( text != ''
 ) ,
     time_creation timestamp      not null
@@ -66,7 +65,6 @@ create table search_requests
 (
     id            bigserial primary key,
     user_id       bigint not null ,
-    foreign key (user_id) references users (id),
     text_request  varchar(70) not null,
     time_creation timestamp not null
 );

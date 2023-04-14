@@ -50,4 +50,10 @@ public interface PostService {
      * @param postId  id post who update
      */
     void updatePost(PostDto postDto, Long postId) throws PostOperationException;
+
+    /**
+     * Deleting all user posts
+     * @param userId id of the user whose posts should be deleted
+     */
+    void deleteAllPostByUserId(Long userId) throws PostOperationException;
 }

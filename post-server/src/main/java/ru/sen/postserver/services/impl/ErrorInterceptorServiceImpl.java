@@ -44,4 +44,14 @@ public class ErrorInterceptorServiceImpl implements ErrorInterceptorService {
             return false;
         }
     }
+
+    @Override
+    public boolean checkIfDeletePostsByUsersIdSuccessful(Long userId) {
+        try {
+            postService.deleteAllPostByUserId(userId);
+            return true;
+        } catch (PostOperationException e) {
+            return false;
+        }
+    }
 }

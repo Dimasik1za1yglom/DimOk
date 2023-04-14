@@ -2,7 +2,7 @@ package ru.sen.accountserver.remoteService;
 
 import ru.sen.accountserver.dto.remote.ResponseDto;
 
-public interface SearchRequestService {
+public interface PostService {
 
-    ResponseDto deleteSearchRequest(Long userId);
+    ResponseDto deletePosts(Long userId);
 }

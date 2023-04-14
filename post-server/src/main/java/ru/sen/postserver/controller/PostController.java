@@ -1,4 +1,4 @@
-package ru.sen.postserver.controller.api;
+package ru.sen.postserver.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.sen.postserver.controller.api.PostApi;
 import ru.sen.postserver.dto.PostDto;
 import ru.sen.postserver.entity.Post;
 import ru.sen.postserver.services.ErrorInterceptorService;
