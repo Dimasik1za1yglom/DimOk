@@ -13,6 +13,11 @@ import java.util.List;
 public interface SearchRequestService {
 
 
+    /**
+     * checking that search request by users exist
+     * @param userId id of the user who  the request
+     * @return true if the requests exist, fasle if there are no such requests
+     */
     boolean checkIfSearchRequestExists(Long userId);
 
     /**

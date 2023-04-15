@@ -13,9 +13,9 @@ public interface ErrorInterceptorService {
     /**
      * checking that the post addition transaction was successful
      *
-     * @param postDto the object to be added
+     * @param postDto  the object to be added
      * @param dateTime time to create a post
-     * @param userId id of the user who has posts
+     * @param userId   id of the user who has posts
      * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
      */
     boolean checkIfAddingPostSuccessful(PostDto postDto, LocalDateTime dateTime, Long userId);
@@ -32,10 +32,16 @@ public interface ErrorInterceptorService {
      * checking for a successful transaction to update the post with exception interception
      *
      * @param postDto the object to be update
-     * @param postId id post primary key
+     * @param postId  id post primary key
      * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
      */
     boolean checkIfUpdatePostSuccessful(PostDto postDto, Long postId);
 
+    /**
+     * checking that the all post user to delete transaction was successful
+     *
+     * @param userId id of the user whose posts need to be deleted
+     * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
+     */
     boolean checkIfDeletePostsByUsersIdSuccessful(Long userId);
 }

@@ -12,6 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 public class ResponseUsersDto {
 
+    /**
+     * Contains a list of user if success is true, and null if success is false
+     */
     List<User> users;
 
     /**

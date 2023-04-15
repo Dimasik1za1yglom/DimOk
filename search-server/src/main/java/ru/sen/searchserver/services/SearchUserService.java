@@ -14,6 +14,7 @@ public interface SearchUserService {
 
     /**
      * getting all users who match by first name or last name through another service
+     *
      * @param searchRequestDto contains a first or last name
      * @return list of users that match the query string
      * @throws SearchUsersException the error occurs when an unsuccessful response from another service
@@ -22,6 +23,7 @@ public interface SearchUserService {
 
     /**
      * getting all users through another service
+     *
      * @return list of all users
      * @throws SearchUsersException the error occurs when an unsuccessful response from another servic
      */

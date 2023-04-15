@@ -10,9 +10,28 @@ import java.util.List;
  */
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    /**
+     * sends a request to the database to get a list of users by first name
+     *
+     * @param firstName firstName
+     * @return list of user
+     */
     List<User> findAllByFirstName(String firstName);
 
+    /**
+     * sends a request to the database to get a list of users by last name
+     *
+     * @param lastName lastName
+     * @return list of user
+     */
     List<User> findAllByLastName(String lastName);
 
+    /**
+     * sends a request to the database to get a list of users by first name and last name
+     *
+     * @param firstName firstName
+     * @param lastName lastName
+     * @return list of user
+     */
     List<User> findAllByFirstNameAndLastName(String firstName, String lastName);
 }
