@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.sen.accountserver.dto.AuthorizationDataDto;
 import ru.sen.accountserver.entity.AuthorizationData;
@@ -21,24 +22,39 @@ public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthorizationDataRepository dataRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private final Map<String, String> refreshStorage = new HashMap<>();
 
     public JwtResponse login(@NonNull AuthorizationDataDto authorizationDataDto) {
         final AuthorizationData data = dataRepository.findById(authorizationDataDto.getEmail()).
                 orElseThrow(() -> new AuthException("AuthorizationData not found"));
-        //TODO: КОДИРОВКА ПАРОЛЯ
-        if (data.getPassword().equals(authorizationDataDto.getPassword())) {
-            final String accessToken = jwtTokenProvider.generateAccessToken(data);
+        if (data.getPassword().equals(passwordEncoder.encode(authorizationDataDto.getPassword()))) {
+//            final String accessToken = jwtTokenProvider.generateAccessToken(data);
             final String refreshToken = jwtTokenProvider.generateRefreshToken(data);
             refreshStorage.put(data.getEmail(), refreshToken);
-            return new JwtResponse(accessToken, refreshToken);
+            return new JwtResponse(refreshToken);
         } else {
             throw new AuthException("Неправильный пароль");
         }
     }
+//
+//    public JwtResponse getAccessToken(@NonNull String refreshToken) {
+//        if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
+//            final Claims claims = jwtTokenProvider.getRefreshClaims(refreshToken);
+//            final String email = claims.getSubject();
+//            final String saveRefreshToken = refreshStorage.get(email);
+//            if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
+//                final AuthorizationData data = dataRepository.findById(email)
+//                        .orElseThrow(() -> new AuthException("Пользователь не найден"));
+//                final String accessToken = jwtTokenProvider.generateAccessToken(data);
+//                return new JwtResponse(accessToken, null);
+//            }
+//        }
+//        return new JwtResponse(null, null);
+//    }
 
-    public JwtResponse getAccessToken(@NonNull String refreshToken) {
+    public JwtResponse getRefresh(@NonNull String refreshToken) {
         if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtTokenProvider.getRefreshClaims(refreshToken);
             final String email = claims.getSubject();
@@ -46,25 +62,10 @@ public class AuthService {
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
                 final AuthorizationData data = dataRepository.findById(email)
                         .orElseThrow(() -> new AuthException("Пользователь не найден"));
-                final String accessToken = jwtTokenProvider.generateAccessToken(data);
-                return new JwtResponse(accessToken, null);
-            }
-        }
-        return new JwtResponse(null, null);
-    }
-
-    public JwtResponse refresh(@NonNull String refreshToken) {
-        if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
-            final Claims claims = jwtTokenProvider.getRefreshClaims(refreshToken);
-            final String email = claims.getSubject();
-            final String saveRefreshToken = refreshStorage.get(email);
-            if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
-                final AuthorizationData data = dataRepository.findById(email)
-                        .orElseThrow(() -> new AuthException("Пользователь не найден"));
-                final String accessToken = jwtTokenProvider.generateAccessToken(data);
+//                final String accessToken = jwtTokenProvider.generateAccessToken(data);
                 final String newRefreshToken = jwtTokenProvider.generateRefreshToken(data);
                 refreshStorage.put(data.getEmail(), newRefreshToken);
-                return new JwtResponse(accessToken, newRefreshToken);
+                return new JwtResponse(newRefreshToken);
             }
         }
         throw new AuthException("Невалидный JWT токен");

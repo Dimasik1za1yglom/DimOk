@@ -7,6 +7,10 @@ import io.jsonwebtoken.security.SignatureException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import ru.sen.accountserver.entity.AuthorizationData;
 
@@ -21,29 +25,36 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private final SecretKey jwtAccessSecret;
+    //    private final SecretKey jwtAccessSecret;
     private final SecretKey jwtRefreshSecret;
+    private final UserDetailsService userDetailsService;
 
     public JwtTokenProvider(
-            @Value("${jwt.secret.access}") String jwtAccessSecret,
-            @Value("${jwt.secret.refresh}") String jwtRefreshSecret
-    ) {
-        this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
+//            @Value("${jwt.secret.access}") String jwtAccessSecret,
+            @Value("${jwt.secret.refresh}") String jwtRefreshSecret,
+            UserDetailsService userDetailsService) {
+//        this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
+        this.userDetailsService = userDetailsService;
     }
 
-    public String generateAccessToken(@NonNull AuthorizationData data) {
-        log.info("Generate access token by authorization data {}", data);
-        final LocalDateTime now = LocalDateTime.now();
-        final Instant accessExpirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant();
-        final Date accessExpiration = Date.from(accessExpirationInstant);
-        return Jwts.builder()
-                .setSubject(data.getEmail())
-                .setExpiration(accessExpiration)
-                .signWith(jwtAccessSecret)
-                .claim("id", data.getUser().getId())
-                .compact();
+    public Authentication getAuthentication(String token) {
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getRefreshClaims(token).getSubject());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
+//
+//    public String generateAccessToken(@NonNull AuthorizationData data) {
+//        log.info("Generate access token by authorization data {}", data);
+//        final LocalDateTime now = LocalDateTime.now();
+//        final Instant accessExpirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant();
+//        final Date accessExpiration = Date.from(accessExpirationInstant);
+//        return Jwts.builder()
+//                .setSubject(data.getEmail())
+//                .setExpiration(accessExpiration)
+//                .signWith(jwtAccessSecret)
+//                .claim("id", data.getUser().getId())
+//                .compact();
+//    }
 
     public String generateRefreshToken(@NonNull AuthorizationData data) {
         log.info("Generate refresh token by authorization data {}", data);
@@ -54,13 +65,14 @@ public class JwtTokenProvider {
                 .setSubject(data.getEmail())
                 .setExpiration(refreshExpiration)
                 .signWith(jwtRefreshSecret)
+                .claim("id", data.getUser().getId())
                 .compact();
     }
-
-    public boolean validateAccessToken(@NonNull String accessToken) {
-        log.info("Check validate access token");
-        return validateToken(accessToken, jwtAccessSecret);
-    }
+//
+//    public boolean validateAccessToken(@NonNull String accessToken) {
+//        log.info("Check validate access token");
+//        return validateToken(accessToken, jwtAccessSecret);
+//    }
 
     public boolean validateRefreshToken(@NonNull String refreshToken) {
         log.info("Check validate refresh token");
@@ -89,9 +101,9 @@ public class JwtTokenProvider {
         return false;
     }
 
-    public Claims getAccessClaims(@NonNull String token) {
-        return getClaims(token, jwtAccessSecret);
-    }
+//    public Claims getAccessClaims(@NonNull String token) {
+//        return getClaims(token, jwtAccessSecret);
+//    }
 
     public Claims getRefreshClaims(@NonNull String token) {
         return getClaims(token, jwtRefreshSecret);

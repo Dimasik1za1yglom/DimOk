@@ -7,15 +7,20 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import ru.sen.accountserver.jwt.service.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final JwtFilter jwtFilter;
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http,
@@ -31,10 +36,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.authorizeHttpRequests()
-                .requestMatchers("/user/**").authenticated()
-                .requestMatchers("/registration").permitAll()
+        http
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/registration", "/input").permitAll()
+                        .requestMatchers("/admin").hasRole("Admin")
+                        .requestMatchers("/user/**").authenticated()
+                        .and()
+                        .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                )
                 .formLogin()
                 .loginPage("/input")
                 .usernameParameter("email")
