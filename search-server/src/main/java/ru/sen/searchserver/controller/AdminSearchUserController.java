@@ -1,5 +1,6 @@
 package ru.sen.searchserver.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -47,7 +48,7 @@ public class AdminSearchUserController implements AdminSearchUsersApi, SearchUse
     }
 
     @Override
-    public String getUsersBySearchRequest(SearchRequestDto requestDto, BindingResult bindingResult, Model model) {
+    public String getUsersBySearchRequest(HttpServletRequest request, SearchRequestDto requestDto, BindingResult bindingResult, Model model) {
         log.info("receiving a request for /admin/users by search request");
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors()

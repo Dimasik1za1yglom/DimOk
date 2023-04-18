@@ -1,5 +1,6 @@
 package ru.sen.postserver.controller.api;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,15 +12,18 @@ import ru.sen.postserver.dto.PostDto;
 
 public interface PostApi {
 
-    @GetMapping()
-    String getAllPostsUser(Model model, RedirectAttributes redirectAttributes);
+    @GetMapping("/{user-id}")
+    String getAllPostsUser(@PathVariable("user-id") Long userId,
+                           Model model,
+                           RedirectAttributes redirectAttributes);
 
     @GetMapping("/{post-id}")
     String getPost(Model model, @PathVariable("post-id") Long postId,
                    RedirectAttributes redirectAttributes);
 
     @PostMapping("/add")
-    String addPost(@Valid PostDto postDto,
+    String addPost(HttpServletRequest request,
+                   @Valid PostDto postDto,
                    BindingResult bindingResult,
                    Model model);
 

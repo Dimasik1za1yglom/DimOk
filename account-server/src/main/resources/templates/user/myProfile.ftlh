@@ -22,6 +22,10 @@
 Город: ${user.city} <br>
 Мой телефон: ${user.phone} <br>
 <hr>
+<form method="get" action="/post/${user.id}">
+    <input type="submit" value="Изменить аккаунт">
+</form>
+<hr>
 <form method="get" action="/user/change">
     <input type="submit" value="Изменить аккаунт">
 </form>

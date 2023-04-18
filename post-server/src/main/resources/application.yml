@@ -44,3 +44,7 @@ logging:
     org:
     hibernate:
       sql: info
+
+jwt:
+  secret:
+    refresh:

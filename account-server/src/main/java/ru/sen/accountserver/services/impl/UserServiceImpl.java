@@ -86,11 +86,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = UserOperationException.class)
-    public void updateUser(UserDto userDto, String email) throws UserOperationException {
+    public void updateUser(UserDto userDto, Long userId) throws UserOperationException {
         log.info("Update a user: {}", userDto);
         try {
             User user = userToEntityMapper.userDtoToUser(userDto);
-            user.setId(dataService.getData(email).getUser().getId());
+            user.setId(userId);
             userRepository.save(user);
             log.info("User update was successful");
         } catch (Exception e) {

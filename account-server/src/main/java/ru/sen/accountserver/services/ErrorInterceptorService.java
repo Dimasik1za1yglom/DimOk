@@ -12,8 +12,8 @@ public interface ErrorInterceptorService {
      * checking that the user's addition transaction was successful
      *
      * @param userDto turns an object into a class object User.class
-     * @param email    it is needed to find the user that
-     *                 will need to be changed according to his authorization data
+     * @param email   it is needed to find the user that
+     *                will need to be changed according to his authorization data
      * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
      */
     boolean checkIfAddingUserSuccessful(UserDto userDto, String email);
@@ -32,9 +32,8 @@ public interface ErrorInterceptorService {
      * checking for a successful transaction to update the user and his data with exception interception
      *
      * @param userDto turns an object into a class object User.class
-     * @param email    it is needed to find the user that
-     *                 will need to be changed according to his authorization data
+     * @param userId  userId
      * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
      */
-    boolean checkIfUpdateUserSuccessful(UserDto userDto, String email);
+    boolean checkIfUpdateUserSuccessful(UserDto userDto, Long userId);
 }

@@ -1,4 +1,4 @@
-package ru.sen.accountserver.jwt.service;
+package ru.sen.postserver.jwt.service;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -8,20 +8,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import ru.sen.accountserver.entity.AuthorizationData;
-import ru.sen.accountserver.jwt.util.cookie.CookieUtil;
+import ru.sen.postserver.jwt.util.cookie.CookieUtil;
 
 import javax.crypto.SecretKey;
 import java.security.Key;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 
 @Slf4j
 @Component
@@ -30,32 +23,11 @@ public class JwtTokenProvider {
     private static final String jwtTokenCookieName = "JWT-TOKEN";
 
     private final SecretKey jwtRefreshSecret;
-    private final UserDetailsService userDetailsService;
 
     public JwtTokenProvider(
-            @Value("${jwt.secret.refresh}") String jwtRefreshSecret,
-            UserDetailsService userDetailsService) {
+            @Value("${jwt.secret.refresh}") String jwtRefreshSecret) {
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
-        this.userDetailsService = userDetailsService;
-    }
 
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(getRefreshClaims(token).getSubject());
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
-
-    public String generateRefreshToken(@NonNull AuthorizationData data) {
-        log.info("Generate refresh token by authorization data {}", data);
-        final LocalDateTime now = LocalDateTime.now();
-        final Instant refreshExpirationInstant = now.plusDays(30).atZone(ZoneId.systemDefault()).toInstant();
-        final Date refreshExpiration = Date.from(refreshExpirationInstant);
-        return Jwts.builder()
-                .setSubject(data.getEmail())
-                .setExpiration(refreshExpiration)
-                .signWith(jwtRefreshSecret)
-                .claim("id", data.getUser().getId())
-                .claim("role", data.getUser().getRole().getName())
-                .compact();
     }
 
     public boolean validateRefreshToken(@NonNull String refreshToken) {

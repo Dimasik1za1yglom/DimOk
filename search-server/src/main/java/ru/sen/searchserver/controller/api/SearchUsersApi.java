@@ -1,5 +1,6 @@
 package ru.sen.searchserver.controller.api;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,7 +16,9 @@ public interface SearchUsersApi {
                          RedirectAttributes redirectAttributes);
 
     @PostMapping("/users")
-    String getUsersBySearchRequest(@Valid SearchRequestDto requestDto, BindingResult bindingResult,
+    String getUsersBySearchRequest(HttpServletRequest request,
+                                   @Valid SearchRequestDto requestDto,
+                                   BindingResult bindingResult,
                                    Model model);
 
 

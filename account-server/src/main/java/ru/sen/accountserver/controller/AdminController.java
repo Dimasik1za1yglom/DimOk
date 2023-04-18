@@ -47,7 +47,7 @@ public class AdminController implements AdminApi {
 
     @Override
     public String deleteUser(Long userId, RedirectAttributes redirectAttributes) {
-        if (!interceptorService.checkIfDeletingUserSuccessful(userId, getUserEmail())) {
+        if (interceptorService.checkIfDeletingUserSuccessful(userId, getUserEmail())) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить пользователя. Попробуйте позднее");
             log.error("/delete: Error on deleting a user under id: {}", userId);
@@ -70,7 +70,7 @@ public class AdminController implements AdminApi {
             log.info("/update: Errors were received when filling out the form for change user page fields: {}", errors);
             return "adminChangeFields";
         }
-        if (interceptorService.checkIfUpdateUserSuccessful(userDto, dataService.)) {
+        if (interceptorService.checkIfUpdateUserSuccessful(userDto, userId)) {
             log.info("/update: user data update was successful");
             return "redirect:/admin/users/all";
         } else {

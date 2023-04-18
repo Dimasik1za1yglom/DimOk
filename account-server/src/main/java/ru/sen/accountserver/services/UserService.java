@@ -47,9 +47,8 @@ public interface UserService {
      * updates the user in the database
      *
      * @param userDto  turns an object into a class object User.class
-     * @param emailUser it is needed to find the user that
-     *                  will need to be changed according to his authorization data
+     * @param userId user id
      * @throws UserOperationException drops out if the user failed to update
      */
-    void updateUser(UserDto userDto, String emailUser) throws UserOperationException;
+    void updateUser(UserDto userDto, Long userId) throws UserOperationException;
 }

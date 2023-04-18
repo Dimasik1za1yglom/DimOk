@@ -45,5 +45,4 @@ logging:
 
 jwt:
   secret:
-    access:
     refresh:

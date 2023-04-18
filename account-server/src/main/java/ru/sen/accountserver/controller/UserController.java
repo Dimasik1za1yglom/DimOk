@@ -1,6 +1,8 @@
 package ru.sen.accountserver.controller;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -13,6 +15,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.accountserver.controller.api.UserApi;
 import ru.sen.accountserver.dto.UserDto;
 import ru.sen.accountserver.entity.User;
+import ru.sen.accountserver.jwt.entity.JwtResponse;
+import ru.sen.accountserver.jwt.exception.AuthException;
+import ru.sen.accountserver.jwt.service.AuthService;
+import ru.sen.accountserver.jwt.util.cookie.CookieUtil;
 import ru.sen.accountserver.security.details.UserDetailsImpl;
 import ru.sen.accountserver.services.AuthorizationDataService;
 import ru.sen.accountserver.services.ErrorInterceptorService;
@@ -26,9 +32,12 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController implements UserApi {
 
+    private static final String jwtTokenCookieName = "JWT-TOKEN";
+
     private final AuthorizationDataService dataService;
     private final ErrorInterceptorService interceptorService;
     private final UserService userService;
+    private final AuthService authService;
 
     @Override
     public String getUserProfile(Long userId, Model model, RedirectAttributes redirectAttributes) {
@@ -67,7 +76,12 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public String addUser(UserDto userDto, BindingResult bindingResult, Model model) {
+    public String addUser(HttpServletRequest request,
+                          HttpServletResponse httpServletResponse,
+                          UserDto userDto,
+                          BindingResult bindingResult,
+                          Model model,
+                          RedirectAttributes redirectAttributes) {
         log.info("receiving a request for /add");
         if (bindingResult.hasErrors()) {
             log.warn("/add: Error entering values into the form");
@@ -81,8 +95,18 @@ public class UserController implements UserApi {
             return "userFields";
         }
         if (interceptorService.checkIfAddingUserSuccessful(userDto, getUserEmail())) {
-            log.info("/add: Adding fields to the user's page was successful");
-            return "redirect:/user/myprofile";
+            try {
+                log.info("/add: Adding fields to the user's page was successful");
+                JwtResponse response = authService.getRefresh(request);
+                CookieUtil.create(httpServletResponse, jwtTokenCookieName, response, -1, "localhost");
+                log.info("/add:Changing the user's token to a new one was successful");
+                return "redirect:/user/myprofile";
+            } catch (AuthException e) {
+                String error = "Пользователь добавлен, но возникли ошибки. Попробуйте зайти заного";
+                log.error("\"/add: Adding fields to the user's page was successful\"");
+                redirectAttributes.addFlashAttribute("errors", error);
+                return "redirect:/user/logout";
+            }
         } else {
             String error = "Добавление полей пользователя не удалось. Попробуйте позднее";
             model.addAttribute("error", error);
@@ -93,7 +117,7 @@ public class UserController implements UserApi {
 
     @Override
     public String deleteUser(Long userId, RedirectAttributes redirectAttributes) {
-        if (!interceptorService.checkIfDeletingUserSuccessful(userId, getUserEmail())) {
+        if (interceptorService.checkIfDeletingUserSuccessful(userId, getUserEmail())) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить пользователя. Попробуйте позднее");
             log.error("/delete: Error on deleting a user under id: {}", userId);
@@ -105,7 +129,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public String updateUser(UserDto userDto, BindingResult bindingResult, Model model) {
+    public String updateUser(HttpServletRequest request, UserDto userDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors()
                     .stream()
@@ -116,13 +140,20 @@ public class UserController implements UserApi {
             log.info("/update: Errors were received when filling out the form for change user page fields: {}", errors);
             return "changeFields";
         }
-        if (interceptorService.checkIfUpdateUserSuccessful(userDto, getUserEmail())) {
-            log.info("/update: user data update was successful");
-            return "redirect:/user/myprofile";
-        } else {
-            model.addAttribute("error", "Не удалось изменить данные");
-            log.error("/update: Sending a message that the user's data could not be updated");
-            return "redirect:/user/change";
+        try {
+            Long userId = authService.getIdUserByRefreshToken(request);
+            log.info("getting the token from the request was successful:user id {}", userId);
+            if (interceptorService.checkIfUpdateUserSuccessful(userDto, userId)) {
+                log.info("/update: user data update was successful");
+                return "redirect:/user/myprofile";
+            } else {
+                model.addAttribute("error", "Не удалось изменить данные");
+                log.error("/update: Sending a message that the user's data could not be updated");
+                return "redirect:/user/change";
+            }
+        } catch (AuthException e) {
+            log.error("getting the token from the request was failed: {}", e.getMessage());
+            return "redirect:/user/logout";
         }
     }
 

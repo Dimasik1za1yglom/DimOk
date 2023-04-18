@@ -1,4 +1,4 @@
-package ru.sen.accountserver.jwt.exception;
+package ru.sen.postserver.jwt.exception;
 
 public class AuthException extends Exception {
     public AuthException(String message) {

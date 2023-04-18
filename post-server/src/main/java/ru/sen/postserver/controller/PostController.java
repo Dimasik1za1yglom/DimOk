@@ -1,6 +1,7 @@
 package ru.sen.postserver.controller;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -12,6 +13,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.postserver.controller.api.PostApi;
 import ru.sen.postserver.dto.PostDto;
 import ru.sen.postserver.entity.Post;
+import ru.sen.postserver.jwt.exception.AuthException;
+import ru.sen.postserver.jwt.service.AuthService;
 import ru.sen.postserver.services.ErrorInterceptorService;
 import ru.sen.postserver.services.PostService;
 
@@ -26,12 +29,13 @@ public class PostController implements PostApi {
 
     private final PostService postService;
     private final ErrorInterceptorService interceptorService;
+    private final AuthService authService;
 
     @Override
-    public String getAllPostsUser(Model model, RedirectAttributes redirectAttributes) {
+    public String getAllPostsUser(Long userId, Model model, RedirectAttributes redirectAttributes) {
         log.info("receiving a request for /post");
         try {
-            List<Post> posts = postService.getAllPostByUserId();
+            List<Post> posts = postService.getAllPostByUserId(userId);
             posts.forEach(post -> {
                 if (post.getText().length() > 33) {
                     post.setText(post.getText().substring(0, 33));
@@ -68,7 +72,8 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public String addPost(PostDto postDto,
+    public String addPost(HttpServletRequest request,
+                          PostDto postDto,
                           BindingResult bindingResult,
                           Model model) {
         log.info("receiving a request for /add");
@@ -83,14 +88,21 @@ public class PostController implements PostApi {
             log.info("/add: Errors were received when filling out the form for creating post page fields: {}", errors);
             return "fieldsPost";
         }
-        if (interceptorService.checkIfAddingPostSuccessful(postDto, LocalDateTime.now(), userId)) {
-            log.info("/add: Adding fields to the post's page was successful");
-            return "redirect:/post";
-        } else {
-            String error = "Добавление полей поста не удалось. Попробуйте позднее";
-            model.addAttribute("error", error);
-            log.error("/add: Errors occurred when adding post data: {}", error);
-            return "fieldsPost";
+        try {
+            Long userId = authService.getIdUserByRefreshToken(request);
+            log.info("getting the token from the request was successful: user id {}", userId);
+            if (interceptorService.checkIfAddingPostSuccessful(postDto, LocalDateTime.now(), userId)) {
+                log.info("/add: Adding fields to the post's page was successful");
+                return "redirect:/post";
+            } else {
+                String error = "Добавление полей поста не удалось. Попробуйте позднее";
+                model.addAttribute("error", error);
+                log.error("/add: Errors occurred when adding post data: {}", error);
+                return "fieldsPost";
+            }
+        } catch (AuthException e) {
+            log.error("getting the token from the request was failed: {}", e.getMessage());
+            return "redirect:/user/logout";
         }
     }
 

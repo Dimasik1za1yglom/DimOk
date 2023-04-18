@@ -16,7 +16,7 @@
 <#else>
 </#if>
 <br>
-<form method="post" action="/admin/update">
+<form method="post" action="/admin/${user.id}/update">
     <input type="text" name="firstName" value="<#if user??>${user.firstName}<#else></#if>" placeholder="Имя">
     <input type="text" name="lastName" value="<#if user??>${user.lastName}<#else></#if>" placeholder="Фамилия">
     <input type="date" name="birthday" value="<#if (user.birthday)??>${user.birthday}<#else></#if>" placeholder="Дата рождения">

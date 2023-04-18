@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 @Mapper(componentModel = "spring")
 public interface PostMapper {
 
-    @Mapping(target = "timeCreation", source = "dateTime")
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", source = "userId")
+    @Mapping(target = "timeCreation", source = "dateTime")
     Post postDtoToPost(PostDto postDto, LocalDateTime dateTime, Long userId);
 }
