@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/search/admin")
 public class AdminSearchUserController implements AdminSearchUsersApi, SearchUsersApi {
 
     private final SearchUserService searchUserService;

@@ -45,4 +45,4 @@ logging:
 
 jwt:
   secret:
-    refresh:
+    refresh: oqPXs3V5eMDrJw8/rrryMqiqMjuKrVe5HJY7CXu5GK5f3DEKRXpFEl8S6SGLd44N3jtAC8xDPGbu49eyp8w9xA==

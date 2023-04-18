@@ -1,7 +1,6 @@
 server:
   port: 0
 
-#-id
 spring:
   application:
     name: postServer
@@ -11,16 +10,16 @@ spring:
     username: postgres
     password: "112348Diman"
   liquibase:
-      change-log: classpath:db/changelog/db.changelog-root.xml
-      enabled: true
-    jpa:
-      hibernate:
-        ddl-auto: update
-      properties:
-        jakarta:
-          persistence:
-            sharedCache:
-              mode: UNSPECIFIED
+    change-log: classpath:db/changelog/db.changelog-root.xml
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: UNSPECIFIED
 
 
 eureka:
@@ -47,4 +46,4 @@ logging:
 
 jwt:
   secret:
-    refresh:
+    refresh: oqPXs3V5eMDrJw8/rrryMqiqMjuKrVe5HJY7CXu5GK5f3DEKRXpFEl8S6SGLd44N3jtAC8xDPGbu49eyp8w9xA==

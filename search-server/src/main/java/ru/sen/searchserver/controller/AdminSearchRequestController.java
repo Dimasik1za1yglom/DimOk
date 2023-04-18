@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/search/admin")
 public class AdminSearchRequestController implements AdminSearchRequestApi {
 
     private final ErrorInterceptorService interceptorService;

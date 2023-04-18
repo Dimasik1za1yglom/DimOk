@@ -23,7 +23,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/user/admin")
 public class AdminController implements AdminApi {
 
     private final UserService userService;

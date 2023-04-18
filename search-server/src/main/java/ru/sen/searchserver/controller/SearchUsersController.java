@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/search")
 public class SearchUsersController implements SearchUsersApi {
 
     private final SearchUserService searchUserService;
