@@ -14,7 +14,6 @@ import ru.sen.accountserver.controller.api.AdminApi;
 import ru.sen.accountserver.dto.UserDto;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.security.details.UserDetailsImpl;
-import ru.sen.accountserver.services.AuthorizationDataService;
 import ru.sen.accountserver.services.ErrorInterceptorService;
 import ru.sen.accountserver.services.UserService;
 
@@ -27,7 +26,6 @@ import java.util.List;
 public class AdminController implements AdminApi {
 
     private final UserService userService;
-    private final AuthorizationDataService dataService;
     private final ErrorInterceptorService interceptorService;
 
     @Override
@@ -37,7 +35,7 @@ public class AdminController implements AdminApi {
             User user = userService.getUserById(userId);
             model.addAttribute("user", user);
             log.info("/profile/{user-id}: getting a user page was successful: {}", user);
-            return "adminUserProfile";
+            return "admin/adminUserProfile";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", "Пользователь отсутсвует");
             log.error("/profile/{user-id}: Getting a user page is failed: {}", e.getMessage());
@@ -68,7 +66,7 @@ public class AdminController implements AdminApi {
             model.addAttribute("user", userDto);
             model.addAttribute("errors", errors);
             log.info("/update: Errors were received when filling out the form for change user page fields: {}", errors);
-            return "adminChangeFields";
+            return "admin/adminChangeFields";
         }
         if (interceptorService.checkIfUpdateUserSuccessful(userDto, userId)) {
             log.info("/update: user data update was successful");
@@ -86,11 +84,12 @@ public class AdminController implements AdminApi {
             User user = userService.getUserById(userId);
             model.addAttribute("user", user);
             log.info("/change: getting a form of fields for changing user data");
-            return "changeFields";
+            return "admin/adminChangeFields";
         } catch (EntityNotFoundException e) {
-            redirectAttributes.addFlashAttribute("error", "Заполните пожалуйста поля");
+            redirectAttributes.addFlashAttribute("error",
+                    "Не удалось получить данные пользователя");
             log.error("/change: Errors occurred when change user data: {}", e.getMessage());
-            return "redirect:adminChangeFields";
+            return "redirect:admin/adminUserProfile";
         }
     }
 

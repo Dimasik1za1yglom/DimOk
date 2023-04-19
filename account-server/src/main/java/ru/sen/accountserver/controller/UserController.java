@@ -50,7 +50,7 @@ public class UserController implements UserApi {
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", "Пользователь отсутсвует");
             log.error("/profile/{user-id}: Getting a user page is failed: {}", e.getMessage());
-            return "redirect:searchUsers";
+            return "redirect:user/searchUsers";
         }
     }
 
@@ -61,12 +61,12 @@ public class UserController implements UserApi {
             if (dataService.checkIfUserExists(getUserEmail())) {
                 log.info("/myprofile: Checking that the user's page is empty. " +
                         "Redirecting to a page with fields filled in");
-                return "userFields";
+                return "user/userFields";
             } else {
                 User user = dataService.getData(getUserEmail()).getUser();
                 model.addAttribute("user", user);
                 log.info("/myprofile: Checking that the user's page is full. Redirection to the user's page.");
-                return "myProfile";
+                return "user/myProfile";
             }
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -92,7 +92,7 @@ public class UserController implements UserApi {
             model.addAttribute("user", userDto);
             model.addAttribute("errors", errors);
             log.info("/add: Errors were received when filling out the form for creating user page fields: {}", errors);
-            return "userFields";
+            return "user/userFields";
         }
         if (interceptorService.checkIfAddingUserSuccessful(userDto, getUserEmail())) {
             try {
@@ -111,7 +111,7 @@ public class UserController implements UserApi {
             String error = "Добавление полей пользователя не удалось. Попробуйте позднее";
             model.addAttribute("error", error);
             log.error("/add: Errors occurred when adding user data: {}", error);
-            return "userFields";
+            return "user/userFields";
         }
     }
 
@@ -138,7 +138,7 @@ public class UserController implements UserApi {
             model.addAttribute("user", userDto);
             model.addAttribute("errors", errors);
             log.info("/update: Errors were received when filling out the form for change user page fields: {}", errors);
-            return "changeFields";
+            return "user/changeFields";
         }
         try {
             Long userId = authService.getIdUserByRefreshToken(request);
@@ -163,11 +163,11 @@ public class UserController implements UserApi {
             User user = dataService.getData(getUserEmail()).getUser();
             model.addAttribute("user", user);
             log.info("/change: getting a form of fields for changing user data");
-            return "changeFields";
+            return "user/changeFields";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", "Заполните пожалуйста поля");
             log.error("/change: Errors occurred when change user data: {}", e.getMessage());
-            return "redirect:changeFields";
+            return "redirect:user/changeFields";
         }
     }
 

@@ -33,18 +33,18 @@ public class AdminSearchUserController implements AdminSearchUsersApi, SearchUse
             List<User> users = searchUserService.getAllUsers();
             model.addAttribute("users", users);
             log.info("Was successful get all users: {}", users);
-            return "adminSearchUsers";
+            return "admin/adminSearchUsers";
         } catch (SearchUsersException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             log.error("Failed get all users: {}", e.getMessage());
-            return "redirect:adminSearchUsers";
+            return "redirect:admin/adminSearchUsers";
         }
     }
 
     @Override
     public String getSearchPage(Model model, RedirectAttributes redirectAttributes) {
         log.info("receiving a request for /admin/users/search");
-        return "adminSearchUsers";
+        return "admin/adminSearchUsers";
     }
 
     @Override
@@ -58,18 +58,18 @@ public class AdminSearchUserController implements AdminSearchUsersApi, SearchUse
             model.addAttribute("request", requestDto);
             model.addAttribute("errors", errors);
             log.info("/users: Errors were received when filling out the form for change search page fields: {}", errors);
-            return "adminSearchUsers";
+            return "admin/adminSearchUsers";
         }
         try {
             List<User> users = searchUserService.getAllUsersByTextRequest(requestDto);
             model.addAttribute("request", requestDto);
             model.addAttribute("users", users);
             log.info("Was successful get users by search request {}, list : {}", requestDto, users);
-            return "adminSearchUsers";
+            return "admin/adminSearchUsers";
         } catch (SearchUsersException e) {
             model.addAttribute("error", e.getMessage());
             log.error("Failed get users by search request {}, error : {}", requestDto, e.getMessage());
-            return "adminSearchUsers";
+            return "admin/adminSearchUsers";
         }
     }
 }

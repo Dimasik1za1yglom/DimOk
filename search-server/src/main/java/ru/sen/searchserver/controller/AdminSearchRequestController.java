@@ -32,18 +32,18 @@ public class AdminSearchRequestController implements AdminSearchRequestApi {
                 model.addAttribute("searchRequests", searchRequests);
                 log.info("/admin/requests/{user-id}: Checking search requests was successful. List search request: {}",
                         searchRequests);
-                return "adminSearchRequest";
+                return "admin/adminSearchRequest";
             } else {
                 String error = "История запросов пуста";
                 redirectAttributes.addFlashAttribute("error", error);
                 log.warn("/admin/requests/{user-id}: Null Search request by users id {}: {}", userId, error);
-                return "redirect:adminSearchUsers";
+                return "redirect:admin/adminSearchUsers";
             }
         } catch (EntityNotFoundException e) {
             String error = "Не удалось получить истории запросов";
             redirectAttributes.addFlashAttribute("error", error);
             log.error("/delete: Error on checking a search request by userId {}: {}", userId, e.getMessage());
-            return "redirect:adminSearchUsers";
+            return "redirect:admin/adminSearchUsers";
         }
     }
 

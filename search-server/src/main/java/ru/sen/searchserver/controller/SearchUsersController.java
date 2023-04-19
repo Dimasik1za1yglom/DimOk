@@ -35,7 +35,7 @@ public class SearchUsersController implements SearchUsersApi {
     @Override
     public String getSearchPage(Model model, RedirectAttributes redirectAttributes) {
         log.info("receiving a request for /users/search");
-        return "searchUsers";
+        return "user/searchUsers";
     }
 
     @Override
@@ -52,7 +52,7 @@ public class SearchUsersController implements SearchUsersApi {
             model.addAttribute("request", requestDto);
             model.addAttribute("errors", errors);
             log.info("/users: Errors were received when filling out the form for change search page fields: {}", errors);
-            return "searchUsers";
+            return "user/searchUsers";
         }
         try {
             Long userId = authService.getIdUserByRefreshToken(request);
@@ -62,11 +62,11 @@ public class SearchUsersController implements SearchUsersApi {
             model.addAttribute("request", requestDto);
             model.addAttribute("users", users);
             log.info("Was successful get users by search request {}, list : {}", requestDto, users);
-            return "searchUsers";
+            return "user/searchUsers";
         } catch (SearchUsersException | SearchRequestException e) {
             model.addAttribute("error", e.getMessage());
             log.error("Failed get users by search request {}, error : {}", requestDto, e.getMessage());
-            return "searchUsers";
+            return "user/searchUsers";
         } catch (AuthException e) {
             log.error("getting the token from the request was failed: {}", e.getMessage());
             return "redirect:/user/logout";
