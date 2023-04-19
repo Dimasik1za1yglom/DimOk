@@ -21,8 +21,8 @@ spring:
           uri: lb://accountServer
           predicates:
             - Path=/user/**
-            - Path=/registration/**
-            - Path=/input/**
+            - Path=/registration
+            - Path=/input
         - id: post
           uri: lb://postServer
           predicates:

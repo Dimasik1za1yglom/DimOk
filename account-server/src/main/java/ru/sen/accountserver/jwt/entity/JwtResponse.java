@@ -1,12 +1,11 @@
 package ru.sen.accountserver.jwt.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 @AllArgsConstructor
 public class JwtResponse {
 
-//    private String accessToken;
     private String refreshToken;
 }

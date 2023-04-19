@@ -49,13 +49,21 @@ public class JwtTokenProvider {
         final LocalDateTime now = LocalDateTime.now();
         final Instant refreshExpirationInstant = now.plusDays(30).atZone(ZoneId.systemDefault()).toInstant();
         final Date refreshExpiration = Date.from(refreshExpirationInstant);
-        return Jwts.builder()
-                .setSubject(data.getEmail())
-                .setExpiration(refreshExpiration)
-                .signWith(jwtRefreshSecret)
-                .claim("id", data.getUser().getId())
-                .claim("role", data.getUser().getRole().getName())
-                .compact();
+        if (data.getUser() != null) {
+            return Jwts.builder()
+                    .setSubject(data.getEmail())
+                    .setExpiration(refreshExpiration)
+                    .signWith(jwtRefreshSecret)
+                    .claim("id", data.getUser().getId())
+                    .claim("role", data.getUser().getRole().getName())
+                    .compact();
+        } else {
+            return Jwts.builder()
+                    .setSubject(data.getEmail())
+                    .setExpiration(refreshExpiration)
+                    .signWith(jwtRefreshSecret)
+                    .compact();
+        }
     }
 
     public boolean validateRefreshToken(@NonNull String refreshToken) {
@@ -70,6 +78,7 @@ public class JwtTokenProvider {
                     .setSigningKey(secret)
                     .build()
                     .parseClaimsJws(token);
+            log.info("Token validate");
             return true;
         } catch (ExpiredJwtException expEx) {
             log.error("Token expired", expEx);

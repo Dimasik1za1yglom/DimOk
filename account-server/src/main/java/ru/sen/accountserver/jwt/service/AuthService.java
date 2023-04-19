@@ -28,9 +28,11 @@ public class AuthService {
     private final Map<String, String> refreshStorage = new HashMap<>();
 
     public JwtResponse login(@NonNull AuthorizationDataDto authorizationDataDto) throws AuthException {
+        log.info("verifying the correctness of the login data: {}", authorizationDataDto);
         final AuthorizationData data = dataRepository.findById(authorizationDataDto.getEmail()).
                 orElseThrow(() -> new AuthException("Почты такой не существует, попробуйте зарегестрироваться"));
-        if (data.getPassword().equals(passwordEncoder.encode(authorizationDataDto.getPassword()))) {
+        log.info("checking the existence of mail {} was successful", data.getEmail());
+        if (passwordEncoder.matches(authorizationDataDto.getPassword(), data.getPassword())) {
             final String refreshToken = jwtTokenProvider.generateRefreshToken(data);
             refreshStorage.put(data.getEmail(), refreshToken);
             return new JwtResponse(refreshToken);
