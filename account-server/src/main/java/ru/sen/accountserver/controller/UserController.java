@@ -46,7 +46,7 @@ public class UserController implements UserApi {
             User user = userService.getUserById(userId);
             model.addAttribute("user", user);
             log.info("/profile/{user-id}: getting a user page was successful: {}", user);
-            return "userProfile";
+            return "user/userProfile";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", "Пользователь отсутсвует");
             log.error("/profile/{user-id}: Getting a user page is failed: {}", e.getMessage());

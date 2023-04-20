@@ -14,7 +14,7 @@
     </#list>
 <#else>
 </#if>
-<form method="post" action="/users">
+<form method="post" action="/search/users">
     Заполните одно или все поля. <br>
     <input type="text" name="firstName" value="<#if user??>${user.firstName}<#else></#if>" placeholder="Имя">
     <input type="text" name="lastName" value="<#if user??>${user.lastName}<#else></#if>" placeholder="Фамилия">
@@ -35,9 +35,8 @@
                 <td>${user.lastName}</td>
                 <td>${user.birthday}</td>
                 <td>
-                    <form method="get" action="/user/profile/${user.id}">
-                        <input type="submit" value="Посмотреть профиль">
-                    </form>
+                    <a href="http://localhost:8082/user/profile/${user.id}">
+                        <b style="background:#FFCCCC">Посмотреть профиль.</b></a>
                 </td>
             </tr>
         </#list>
@@ -45,8 +44,7 @@
 <#else>
 </#if>
 <br>
-<form method="get" action="/user/myprofile">
-    <input type="submit" value="Вернуться на свою страницу.">
-</form>
+<a href="http://localhost:8082/user/myprofile">
+    <b style="background:#FFCCCC">Вернуться на свою страницу.</b></a>
 </body>
 </html>

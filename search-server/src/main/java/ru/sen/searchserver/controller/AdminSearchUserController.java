@@ -42,7 +42,7 @@ public class AdminSearchUserController implements AdminSearchUsersApi, SearchUse
     }
 
     @Override
-    public String getSearchPage(Model model, RedirectAttributes redirectAttributes) {
+    public String getSearchPage() {
         log.info("receiving a request for /admin/users/search");
         return "admin/adminSearchUsers";
     }

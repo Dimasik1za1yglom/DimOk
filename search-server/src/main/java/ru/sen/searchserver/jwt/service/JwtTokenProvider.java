@@ -40,6 +40,7 @@ public class JwtTokenProvider {
                     .setSigningKey(secret)
                     .build()
                     .parseClaimsJws(token);
+            log.info("Token validate");
             return true;
         } catch (ExpiredJwtException expEx) {
             log.error("Token expired", expEx);

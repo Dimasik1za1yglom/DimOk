@@ -48,7 +48,7 @@ public class PostController implements PostApi {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось получить информацию об существующих постах, попробуйте позднее");
             log.error("/post: An error occurred with the posts page: {}", e.getMessage());
-            return "redirect:/user/myprofile";
+            return "redirect:http://localhost:8082/user/myprofile";
         }
     }
 
@@ -101,8 +101,10 @@ public class PostController implements PostApi {
                 return "fieldsPost";
             }
         } catch (AuthException e) {
+            String error = "Добавление полей невозможно. Попробуйте позднее";
+            model.addAttribute("error", error);
             log.error("getting the token from the request was failed: {}", e.getMessage());
-            return "redirect:/user/logout";
+            return "fieldsPost";
         }
     }
 

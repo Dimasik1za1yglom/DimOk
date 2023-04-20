@@ -33,8 +33,8 @@ public class SearchUsersController implements SearchUsersApi {
     private final AuthService authService;
 
     @Override
-    public String getSearchPage(Model model, RedirectAttributes redirectAttributes) {
-        log.info("receiving a request for /users/search");
+    public String getSearchPage() {
+        log.info("receiving a request for /search");
         return "user/searchUsers";
     }
 
@@ -59,7 +59,7 @@ public class SearchUsersController implements SearchUsersApi {
             log.info("getting the token from the request was successful: user id {}", userId);
             searchRequestService.addSearchRequest(requestDto, LocalDateTime.now(), userId);
             List<User> users = searchUserService.getAllUsersByTextRequest(requestDto);
-            model.addAttribute("request", requestDto);
+            model.addAttribute("user", requestDto);
             model.addAttribute("users", users);
             log.info("Was successful get users by search request {}, list : {}", requestDto, users);
             return "user/searchUsers";
@@ -68,8 +68,9 @@ public class SearchUsersController implements SearchUsersApi {
             log.error("Failed get users by search request {}, error : {}", requestDto, e.getMessage());
             return "user/searchUsers";
         } catch (AuthException e) {
+            model.addAttribute("error", "Невозможно совершить поиск, попробуйте позднее");
             log.error("getting the token from the request was failed: {}", e.getMessage());
-            return "redirect:/user/logout";
+            return "redirect:user/searchUsers";
         }
     }
 }

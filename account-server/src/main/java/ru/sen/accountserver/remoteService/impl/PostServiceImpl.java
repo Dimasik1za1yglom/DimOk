@@ -16,7 +16,7 @@ public class PostServiceImpl implements PostService {
     public ResponseDto deletePosts(Long userId) {
         return webClient
                 .post()
-                .uri("http://postServer/posts/delete",
+                .uri("http://postServer/app/posts/delete",
                         uriBuilder -> uriBuilder
                                 .queryParam("userId", userId)
                                 .build())

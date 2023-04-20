@@ -27,12 +27,15 @@ public class JwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
+        log.info("checking access to the request via filter");
         final String token = jwtProvider.getTokenFromRequest((HttpServletRequest) request);
         if (token != null && jwtProvider.validateRefreshToken(token)) {
+            log.info("the token received from the request {}", token);
             final Claims claims = jwtProvider.getRefreshClaims(token);
             final JwtAuthentication authentication = JwtUtils.generate(claims);
             authentication.setAuthenticated(true);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            log.info("Add authentication in SecurityContextHolder");
 
         }
         filterChain.doFilter(request, response);

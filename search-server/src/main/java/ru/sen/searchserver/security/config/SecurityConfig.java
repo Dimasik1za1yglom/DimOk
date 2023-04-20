@@ -1,4 +1,4 @@
-package ru.sen.searchserver.config;
+package ru.sen.searchserver.security.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +24,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/app/**").permitAll()
                         .anyRequest().authenticated()
                         .and()
                         .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)

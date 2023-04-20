@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/app/users")
 public class RemoteSearchController implements RemoteSearchApi {
 
     private final UsersSearchService usersSearchService;

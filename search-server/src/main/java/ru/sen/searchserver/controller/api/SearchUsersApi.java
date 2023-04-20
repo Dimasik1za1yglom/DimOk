@@ -11,9 +11,8 @@ import ru.sen.searchserver.dto.SearchRequestDto;
 
 public interface SearchUsersApi {
 
-    @GetMapping("/users/search")
-    String getSearchPage(Model model,
-                         RedirectAttributes redirectAttributes);
+    @GetMapping()
+    String getSearchPage();
 
     @PostMapping("/users")
     String getUsersBySearchRequest(HttpServletRequest request,

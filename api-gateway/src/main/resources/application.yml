@@ -20,9 +20,7 @@ spring:
         - id: account
           uri: lb://accountServer
           predicates:
-            - Path=/user/**
-            - Path=/registration
-            - Path=/input
+            - Path=/user/**,/registration,/input
         - id: post
           uri: lb://postServer
           predicates:
@@ -30,9 +28,7 @@ spring:
         - id: search
           uri: lb://searchServer
           predicates:
-            - Path=/search/**
-
-
+            - Path=/search, /search/**
 
 
 eureka:

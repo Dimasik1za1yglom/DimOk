@@ -11,7 +11,7 @@ import ru.sen.postserver.services.ErrorInterceptorService;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/posts")
+@RequestMapping("/app/posts")
 public class RemoteAccountController implements RemoteAccountApi {
 
     private final ErrorInterceptorService interceptorService;

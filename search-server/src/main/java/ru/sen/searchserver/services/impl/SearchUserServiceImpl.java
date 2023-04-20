@@ -23,11 +23,11 @@ public class SearchUserServiceImpl implements SearchUserService {
     public List<User> getAllUsersByTextRequest(SearchRequestDto searchRequestDto) throws SearchUsersException {
         log.info("Getting users Search Request by sending a request to the account service");
         ResponseUsersDto response;
-        if (searchRequestDto.getFirstName() == null) {
+        if (searchRequestDto.getFirstName().isBlank()) {
             log.info("User search bar has only the last name: {}", searchRequestDto.getLastName());
             response = accountService.getUsersByLastName(searchRequestDto.getLastName());
-        } else if (searchRequestDto.getLastName() == null) {
-            log.info("User search bar has only the last name: {}", searchRequestDto.getFirstName());
+        } else if (searchRequestDto.getLastName().isBlank()) {
+            log.info("User search bar has only the first name: {}", searchRequestDto.getFirstName());
             response = accountService.getUsersByFirstName(searchRequestDto.getFirstName());
         } else {
             log.info("In the search bar user has a last name with a first name: {}", searchRequestDto);

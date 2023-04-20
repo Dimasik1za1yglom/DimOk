@@ -13,14 +13,12 @@
 Имя: ${user.firstName} <br>
 Фамилия: ${user.lastName} <br>
 Дата рождения: ${user.birthday} <br>
-О себе: ${user.bio} <br>
-Страна: ${user.country} <br>
-Город: ${user.city} <br>
+О себе: <#if (user.bio)??>${user.bio}<#else></#if> <br>
+Страна: <#if (user.country)??>${user.country}<#else></#if> <br>
+Город: <#if (user.city)??>${user.city}<#else></#if> <br>
 Мой телефон: ${user.phone} <br>
 <hr>
-<form method="get" action="/users/search">
-    <input type="submit" value="Поиск пользователей">
-</form>
+<a href="http://localhost:8082/search"><b style="background:#FFCCCC">Поиск пользователей.</b></a>
 <hr>
 <form method="get" action="/user/myprofile">
     <input type="submit" value="Вернуться на свою страницу.">

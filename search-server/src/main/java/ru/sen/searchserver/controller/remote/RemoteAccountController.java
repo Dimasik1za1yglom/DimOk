@@ -11,7 +11,7 @@ import ru.sen.searchserver.services.ErrorInterceptorService;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/searchRequest")
+@RequestMapping("/app/searchRequest")
 public class RemoteAccountController implements RemoteAccountApi {
 
     private final ErrorInterceptorService interceptorService;

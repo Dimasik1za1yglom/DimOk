@@ -16,7 +16,7 @@ public class SearchRequestServiceImpl implements SearchRequestService {
     public ResponseDto deleteSearchRequest(Long userId) {
         return webClient
                 .post()
-                .uri("http://searchServer/searchRequests/delete",
+                .uri("http://searchServer/app/searchRequests/delete",
                         uriBuilder -> uriBuilder
                                 .queryParam("userId", userId)
                                 .build())
