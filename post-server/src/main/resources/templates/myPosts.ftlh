@@ -8,8 +8,19 @@
     <title>Мои посты</title>
 </head>
 <body>
-<h2 style="color:red"><#if error??>${error}<#else></#if></h2>
+<#if errors??>
+    <#list errors as error>
+        <h2 style="color:red">${error}</h2>
+    </#list>
+<#else>
+</#if>
 <hr>
+<form method="post" action="/post/add">
+    <textarea name="text" cols="60" rows="10" placeholder="Текст Поста"></textarea>
+    <input type="submit" value="Добавить новый постик">
+</form>
+<hr>
+<#if posts??>
 <table>
     <tr>
         <th>Содержание</th>
@@ -21,14 +32,17 @@
             <td>${post.text}</td>
             <td>${post.timeCreation}</td>
             <td>
-                <form method="get" action="/post/${post.id}">
+                <form method="get" action="/post/${post.id}/${post.userId}">
                     <input type="submit" value="Посмотреть">
                 </form>
             </td>
         </tr>
     </#list>
 </table>
+<#else>
+</#if>
 <hr>
-<a href="/user/myprofile"> Вернуться на страницу</a>
+<a href="http://localhost:8082/user/myprofile">
+    <b style="background:#FFCCCC">Вернуться на свою страницу.</b></a>
 </body>
 </html>

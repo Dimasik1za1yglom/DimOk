@@ -12,33 +12,40 @@ import ru.sen.postserver.dto.PostDto;
 
 public interface PostApi {
 
-    @GetMapping("/{user-id}")
+    @GetMapping("/all/my/{user-id}")
     String getAllPostsUser(@PathVariable("user-id") Long userId,
                            Model model,
                            RedirectAttributes redirectAttributes);
 
-    @GetMapping("/{post-id}")
-    String getPost(Model model, @PathVariable("post-id") Long postId,
+    @GetMapping("/{post-id}/{user-id}")
+    String getPost(@PathVariable("user-id") Long userId,
+                   Model model,
+                   @PathVariable("post-id") Long postId,
                    RedirectAttributes redirectAttributes);
 
     @PostMapping("/add")
     String addPost(HttpServletRequest request,
                    @Valid PostDto postDto,
                    BindingResult bindingResult,
-                   Model model);
+                   RedirectAttributes redirectAttributes);
 
-    @PostMapping("/{post-id}/delete")
-    String deletePost(@PathVariable("post-id") Long postId,
+    @PostMapping("/{post-id}/delete/{user-id}")
+    String deletePost(@PathVariable("user-id") Long userId,
+                      @PathVariable("post-id") Long postId,
                       RedirectAttributes redirectAttributes);
 
-    @PostMapping("/{post-id}/update")
-    String updatePost(@Valid PostDto postDto,
+    @PostMapping("/{post-id}/update/{user-id}")
+    String updatePost(@PathVariable("user-id") Long userId,
+                      @Valid PostDto postDto,
                       BindingResult bindingResult,
                       @PathVariable("post-id") Long postId,
-                      Model model);
+                      Model model,
+                      RedirectAttributes redirectAttributes);
 
-    @GetMapping("/{post-id}/change")
-    String changePost(Model model, @PathVariable("post-id") Long postId,
+    @GetMapping("/{post-id}/change/{user-id}")
+    String changePost(@PathVariable("user-id") Long userId,
+                      Model model,
+                      @PathVariable("post-id") Long postId,
                       RedirectAttributes redirectAttributes);
 
 }

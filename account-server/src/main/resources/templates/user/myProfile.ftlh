@@ -20,7 +20,7 @@
 Город: ${user.city} <br>
 Мой телефон: ${user.phone} <br>
 <hr>
-<a href="http://localhost:8082/post/${user.id}"><b style="background:#FFCCCC">Мои посты.</b></a>
+<a href="http://localhost:8082/post/all/my/${user.id}"><b style="background:#FFCCCC">Мои посты.</b></a>
 <hr>
 <form method="get" action="/user/change">
     <input type="submit" value="Изменить аккаунт">

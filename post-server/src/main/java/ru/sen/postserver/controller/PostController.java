@@ -36,13 +36,18 @@ public class PostController implements PostApi {
         log.info("receiving a request for /post");
         try {
             List<Post> posts = postService.getAllPostByUserId(userId);
-            posts.forEach(post -> {
-                if (post.getText().length() > 33) {
-                    post.setText(post.getText().substring(0, 33));
-                }
-            });
-            log.info("/post: receiving a request post was successful: {}", posts);
-            model.addAttribute("posts", posts);
+            if (posts.isEmpty()) {
+                log.info("The user by id {} has no posts", userId);
+                model.addAttribute("error", "У  вас нету пока постов");
+            } else {
+                posts.forEach(post -> {
+                    if (post.getText().length() > 33) {
+                        post.setText(post.getText().substring(0, 33));
+                    }
+                });
+                log.info("/post: receiving a request post was successful: {}", posts);
+                model.addAttribute("posts", posts);
+            }
             return "myPosts";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error",
@@ -53,7 +58,8 @@ public class PostController implements PostApi {
     }
 
     @Override
-    public String getPost(Model model,
+    public String getPost(Long userId,
+                          Model model,
                           Long postId,
                           RedirectAttributes redirectAttributes) {
         log.info("receiving a request for /post/{}", postId);
@@ -66,8 +72,7 @@ public class PostController implements PostApi {
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось получить информацию об данном посте, попробуйте позднее");
-            log.error("/post/{}: An error occurred with the post page: {}", postId, e.getMessage());
-            return "myPosts";
+            return String.format("redirect:/post/all/my/%d", userId);
         }
     }
 
@@ -75,93 +80,97 @@ public class PostController implements PostApi {
     public String addPost(HttpServletRequest request,
                           PostDto postDto,
                           BindingResult bindingResult,
-                          Model model) {
+    RedirectAttributes redirectAttributes) {
         log.info("receiving a request for /add");
-        if (bindingResult.hasErrors()) {
-            log.warn("/add: Error entering values into the form");
-            List<String> errors = bindingResult.getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .toList();
-            model.addAttribute("post", postDto);
-            model.addAttribute("errors", errors);
-            log.info("/add: Errors were received when filling out the form for creating post page fields: {}", errors);
-            return "fieldsPost";
-        }
         try {
             Long userId = authService.getIdUserByRefreshToken(request);
             log.info("getting the token from the request was successful: user id {}", userId);
+            if (bindingResult.hasErrors()) {
+                log.warn("/add: Error entering values into the form");
+                List<String> errors = bindingResult.getAllErrors()
+                        .stream()
+                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                        .toList();
+                redirectAttributes.addFlashAttribute("post", postDto);
+                redirectAttributes.addFlashAttribute("errors", errors);
+                log.info("/add: Errors were received when filling out the form for creating post page fields: {}", errors);
+                return String.format("redirect:/post/all/my/%d", userId);
+            }
             if (interceptorService.checkIfAddingPostSuccessful(postDto, LocalDateTime.now(), userId)) {
                 log.info("/add: Adding fields to the post's page was successful");
-                return "redirect:/post";
             } else {
                 String error = "Добавление полей поста не удалось. Попробуйте позднее";
-                model.addAttribute("error", error);
+                redirectAttributes.addFlashAttribute("error", error);
                 log.error("/add: Errors occurred when adding post data: {}", error);
-                return "fieldsPost";
             }
+            return String.format("redirect:/post/all/my/%d", userId);
         } catch (AuthException e) {
             String error = "Добавление полей невозможно. Попробуйте позднее";
-            model.addAttribute("error", error);
+            redirectAttributes.addFlashAttribute("error", error);
             log.error("getting the token from the request was failed: {}", e.getMessage());
-            return "fieldsPost";
+            return "redirect:http://localhost:8082/user/myprofile";
         }
     }
 
     @Override
-    public String deletePost(Long postId,
+    public String deletePost(Long userId,
+                             Long postId,
                              RedirectAttributes redirectAttributes) {
         log.info("receiving a request for /delete");
         if (!interceptorService.checkIfDeletingPostSuccessful(postId)) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить пост. Попробуйте позднее");
             log.error("/delete: Error on deleting a post under id: {}", postId);
-            return String.format("redirect:/post/%d", postId);
+            return String.format("/post/%d/%d", postId, userId);
         } else {
             log.info("/delete: Deleting the post was successful, exiting the session");
-            return "redirect:/post";
+            return String.format("redirect:/post/all/my/%d", userId);
         }
     }
 
     @Override
-    public String updatePost(PostDto postDto,
+    public String updatePost(Long userId,
+                             PostDto postDto,
                              BindingResult bindingResult,
                              Long postId,
-                             Model model) {
+                             Model model,
+                             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors()
                     .stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .toList();
-            model.addAttribute("post", postDto);
-            model.addAttribute("errors", errors);
+            redirectAttributes.addFlashAttribute("post", postDto);
+            redirectAttributes.addFlashAttribute("errors", errors);
             log.info("/update: Errors were received when filling out the form for change post page fields: {}", errors);
-            return "changePost";
+            return String.format("redirect:/post/%d/change/%d", postId, userId);
         }
         if (interceptorService.checkIfUpdatePostSuccessful(postDto, postId)) {
             log.info("/update: post update was successful");
-            return "redirect:/post";
+            return String.format("redirect:/post/%d/%d", postId, userId);
         } else {
-            model.addAttribute("error", "Не удалось изменить данные");
+            redirectAttributes.addFlashAttribute("error", "Не удалось изменить данные");
             log.error("/update: Sending a message that the post could not be updated");
-            return String.format("redirect:/post/%d/change", postId);
+            return String.format("redirect:/post/%d/change/%d", postId, userId);
         }
     }
 
     @Override
-    public String changePost(Model model,
+    public String changePost(Long userId,
+                             Model model,
                              Long postId,
                              RedirectAttributes redirectAttributes) {
         try {
             Post post = postService.getPostById(postId);
             model.addAttribute("post", post);
-            log.info("/change: getting a form of fields for changing post");
-            return "changePost";
+            log.info("/change: getting a form of fields for by userId {}, postId {} changing post: {}",
+                    userId, postId, post);
+            return "fieldsChangePost";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось найти пост, попробуйте позднее");
             log.error("/change: Errors occurred when change post data: {}", e.getMessage());
-            return "redirect:/post";
+            return String.format("redirect:/post/all/my/%d", userId);
         }
     }
 }

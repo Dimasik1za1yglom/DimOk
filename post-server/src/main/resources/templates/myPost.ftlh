@@ -10,16 +10,19 @@
 <body>
 <h2 style="color:red"><#if error??>${error}<#else></#if></h2>
 <hr>
-Полное содержание: ${post.text} <br>
+Полное содержание:<br>
+<textarea name="text" cols="60" rows="10" readonly="readonly" placeholder="Текст Поста">${post.text}</textarea> <br>
 Дата создания: ${post.timeCreation}<br>
-<form method="post" action="/post/${post.id}/delete">
+<form method="post" action="/post/${post.id}/delete/${post.userId}">
     <input type="submit" value="Удалить">
 </form>
 <hr>
-<form method="get" action="/post/${post.id}/change">
+<form method="get" action="/post/${post.id}/change/${post.userId}">
     <input type="submit" value="Изменить">
 </form>
 <hr>
-<a href="/post">Вернуться к списку постов</a>
+<form method="get" action="/post/all/my/${post.userId}">
+    <input type="submit" value="Вернуться к списку мои постов">
+</form>
 </body>
 </html>
