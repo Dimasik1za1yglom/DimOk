@@ -16,8 +16,8 @@
 </#if>
 <form method="post" action="/search/users">
     Заполните одно или все поля. <br>
-    <input type="text" name="firstName" value="<#if user??>${user.firstName}<#else></#if>" placeholder="Имя">
-    <input type="text" name="lastName" value="<#if user??>${user.lastName}<#else></#if>" placeholder="Фамилия">
+    <input type="text" name="firstName" value="<#if request??>${request.firstName}<#else></#if>" placeholder="Имя">
+    <input type="text" name="lastName" value="<#if request??>${request.lastName}<#else></#if>" placeholder="Фамилия">
     <input type="submit" value="Поиск">
 </form>
 <hr>

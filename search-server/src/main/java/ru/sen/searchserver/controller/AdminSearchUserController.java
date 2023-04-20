@@ -14,6 +14,8 @@ import ru.sen.searchserver.controller.api.SearchUsersApi;
 import ru.sen.searchserver.dto.SearchRequestDto;
 import ru.sen.searchserver.entity.User;
 import ru.sen.searchserver.exception.SearchUsersException;
+import ru.sen.searchserver.jwt.exception.AuthException;
+import ru.sen.searchserver.jwt.service.AuthService;
 import ru.sen.searchserver.services.SearchUserService;
 
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.List;
 public class AdminSearchUserController implements AdminSearchUsersApi, SearchUsersApi {
 
     private final SearchUserService searchUserService;
+    private final AuthService authService;
 
     @Override
     public String getAllUsers(Model model, RedirectAttributes redirectAttributes) {
@@ -48,7 +51,10 @@ public class AdminSearchUserController implements AdminSearchUsersApi, SearchUse
     }
 
     @Override
-    public String getUsersBySearchRequest(HttpServletRequest request, SearchRequestDto requestDto, BindingResult bindingResult, Model model) {
+    public String getUsersBySearchRequest(HttpServletRequest request,
+                                          SearchRequestDto requestDto,
+                                          BindingResult bindingResult,
+                                          Model model) {
         log.info("receiving a request for /admin/users by search request");
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors()
@@ -61,7 +67,9 @@ public class AdminSearchUserController implements AdminSearchUsersApi, SearchUse
             return "admin/adminSearchUsers";
         }
         try {
-            List<User> users = searchUserService.getAllUsersByTextRequest(requestDto);
+            Long userId = authService.getIdUserByRefreshToken(request);
+            List<User> users = searchUserService.getAllUsersByTextRequest(requestDto).stream()
+                    .filter(user -> !user.getId().equals(userId)).toList();
             model.addAttribute("request", requestDto);
             model.addAttribute("users", users);
             log.info("Was successful get users by search request {}, list : {}", requestDto, users);
@@ -70,6 +78,11 @@ public class AdminSearchUserController implements AdminSearchUsersApi, SearchUse
             model.addAttribute("error", e.getMessage());
             log.error("Failed get users by search request {}, error : {}", requestDto, e.getMessage());
             return "admin/adminSearchUsers";
+        } catch (AuthException e) {
+            model.addAttribute("error", "Невозможно совершить поиск, попробуйте позднее");
+            log.error("getting the token from the request was failed: {}", e.getMessage());
+            return "admin/adminSearchUsers";
+
         }
     }
 }

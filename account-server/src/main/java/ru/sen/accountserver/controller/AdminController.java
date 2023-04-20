@@ -57,7 +57,11 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public String updateUser(UserDto userDto, BindingResult bindingResult, Long userId, Model model) {
+    public String updateUser(UserDto userDto,
+                             BindingResult bindingResult,
+                             Long userId,
+                             Model model,
+                             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors()
                     .stream()
@@ -72,7 +76,7 @@ public class AdminController implements AdminApi {
             log.info("/update: user data update was successful");
             return "redirect:/admin/users/all";
         } else {
-            model.addAttribute("error", "Не удалось изменить данные");
+            redirectAttributes.addFlashAttribute("error", "Не удалось изменить данные");
             log.error("/update: Sending a message that the user's data could not be updated");
             return String.format("redirect:/admin/%d/change", userId);
         }

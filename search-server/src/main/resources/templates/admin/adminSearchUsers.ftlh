@@ -8,12 +8,22 @@
     <title>Пользователи</title>
 </head>
 <body>
-<h2 style="color:red"><#if error??>${error}<#else></#if></h2>
-<form method="post" action="/admin/users">
+<#if errors??>
+    <#list errors as error>
+        <h2 style="color:red">${error}</h2>
+    </#list>
+<#else>
+</#if>
+<hr>
+<form method="post" action="/search/admin/users">
     Заполните одно или все поля. <br>
-    <input type="text" name="firstName" value="<#if user??>${user.firstName}<#else></#if>" placeholder="Имя">
-    <input type="text" name="lastName" value="<#if user??>${user.lastName}<#else></#if>" placeholder="Фамилия">
+    <input type="text" name="firstName" value="<#if request??>${request.firstName}<#else></#if>" placeholder="Имя">
+    <input type="text" name="lastName" value="<#if request??>${request.lastName}<#else></#if>" placeholder="Фамилия">
     <input type="submit" value="Поиск">
+</form>
+<hr>
+<form method="get" action="/search/admin/users/all">
+    <input type="submit" value="Получить всех пользователей">
 </form>
 <hr>
 <#if users??>
@@ -22,6 +32,7 @@
             <th>Имя</th>
             <th>Фамилия</th>
             <th>Дата рождения</th>
+            <th>Роль</th>
             <th>Действие</th>
         </tr>
         <#list users as user>
@@ -29,11 +40,12 @@
                 <td>${user.firstName}</td>
                 <td>${user.lastName}</td>
                 <td>${user.birthday}</td>
+                <td>${user.role.name}</td>
                 <td>
                     <form method="get" action="/admin/profile/${user.id}">
                         <input type="submit" value="Посмотреть профиль">
                     </form>
-                    <form method="get" action="/requests/${user.id}">
+                    <form method="get" action="/search/admin/requests/${user.id}">
                         <input type="submit" value="Посмотреть историю поиска">
                     </form>
                 </td>

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.searchserver.controller.api.SearchUsersApi;
 import ru.sen.searchserver.dto.SearchRequestDto;
 import ru.sen.searchserver.entity.User;
@@ -58,9 +57,15 @@ public class SearchUsersController implements SearchUsersApi {
             Long userId = authService.getIdUserByRefreshToken(request);
             log.info("getting the token from the request was successful: user id {}", userId);
             searchRequestService.addSearchRequest(requestDto, LocalDateTime.now(), userId);
-            List<User> users = searchUserService.getAllUsersByTextRequest(requestDto);
+            List<User> users = searchUserService.getAllUsersByTextRequest(requestDto).stream()
+                    .filter(user -> !user.getId().equals(userId)).toList();
             model.addAttribute("user", requestDto);
-            model.addAttribute("users", users);
+            if (users.isEmpty()) {
+                List<String> errors = List.of("Пользоватлей по данному запросу не существует.");
+                model.addAttribute("errors", errors);
+            } else {
+                model.addAttribute("users", users);
+            }
             log.info("Was successful get users by search request {}, list : {}", requestDto, users);
             return "user/searchUsers";
         } catch (SearchUsersException | SearchRequestException e) {
@@ -70,7 +75,7 @@ public class SearchUsersController implements SearchUsersApi {
         } catch (AuthException e) {
             model.addAttribute("error", "Невозможно совершить поиск, попробуйте позднее");
             log.error("getting the token from the request was failed: {}", e.getMessage());
-            return "redirect:user/searchUsers";
+            return "user/searchUsers";
         }
     }
 }

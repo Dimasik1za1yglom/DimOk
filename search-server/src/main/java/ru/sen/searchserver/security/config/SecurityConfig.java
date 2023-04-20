@@ -25,6 +25,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/app/**").permitAll()
+                        .requestMatchers("**/admin/**").hasRole("Admin")
                         .anyRequest().authenticated()
                         .and()
                         .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)

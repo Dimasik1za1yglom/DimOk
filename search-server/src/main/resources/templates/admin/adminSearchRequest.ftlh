@@ -8,7 +8,12 @@
     <title>История запросов</title>
 </head>
 <body>
-<h2 style="color:red"><#if error??>${error}<#else></#if></h2>
+<#if errors??>
+    <#list errors as error>
+        <h2 style="color:red">${error}</h2>
+    </#list>
+<#else>
+</#if>
 <hr>
 <table>
     <tr>
@@ -23,9 +28,12 @@
     </#list>
 </table>
 <hr>
-<form method="post" action="/admin/requests/${searchRequest.userId}/delete">
+<form method="post" action="/search/admin/requests/${userId}/delete">
     <input type="submit" value="Удалить историю поиска данного пользователя">
 </form>
 <hr>
+<form method="get" action="/search/admin/users/all">
+    <input type="submit" value="Вернуться к списку пользователекй">
+</form>
 </body>
 </html>

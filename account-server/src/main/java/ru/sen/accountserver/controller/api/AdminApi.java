@@ -25,7 +25,8 @@ public interface AdminApi {
     String updateUser(@Valid UserDto userDto,
                       BindingResult bindingResult,
                       @PathVariable("user-id") Long userId,
-                      Model model);
+                      Model model,
+                      RedirectAttributes redirectAttributes);
 
     @GetMapping("/{user-id}/change")
     String changeUserFields(@PathVariable("user-id") Long userId, Model model, RedirectAttributes redirectAttributes);

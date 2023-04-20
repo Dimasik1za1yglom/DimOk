@@ -30,18 +30,19 @@ public class AdminSearchRequestController implements AdminSearchRequestApi {
                 log.info("/admin/requests/{user-id}: Checking that the search request exist was successful");
                 List<SearchRequest> searchRequests = searchRequestService.getAllSearchRequestByUserId(userId);
                 model.addAttribute("searchRequests", searchRequests);
+                model.addAttribute("userId", userId);
                 log.info("/admin/requests/{user-id}: Checking search requests was successful. List search request: {}",
                         searchRequests);
                 return "admin/adminSearchRequest";
             } else {
-                String error = "История запросов пуста";
-                redirectAttributes.addFlashAttribute("error", error);
-                log.warn("/admin/requests/{user-id}: Null Search request by users id {}: {}", userId, error);
-                return "redirect:admin/adminSearchUsers";
+                List<String> errors = List.of("История запросов пользователя пуста");
+                redirectAttributes.addFlashAttribute("errors", errors);
+                log.warn("/admin/requests/{user-id}: Null Search request by users id {}: {}", userId, errors);
+                return "redirect:/search/admin/users/all";
             }
         } catch (EntityNotFoundException e) {
-            String error = "Не удалось получить истории запросов";
-            redirectAttributes.addFlashAttribute("error", error);
+            List<String> errors = List.of("Не удалось получить истории запросов");
+            redirectAttributes.addFlashAttribute("errors", errors);
             log.error("/delete: Error on checking a search request by userId {}: {}", userId, e.getMessage());
             return "redirect:admin/adminSearchUsers";
         }
@@ -53,10 +54,10 @@ public class AdminSearchRequestController implements AdminSearchRequestApi {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить историю запросов. Попробуйте позднее");
             log.error("/delete: Error on deleting a search request under id: {}", userId);
-            return String.format("redirect:/admin/requests/%d", userId);
+            return String.format("redirect:/search/admin/requests/%d", userId);
         } else {
             log.info("/delete: Deleting the search request was successful");
-            return "redirect:/admin/users/all";
+            return "redirect:/search/admin/users/all";
         }
     }
 }
