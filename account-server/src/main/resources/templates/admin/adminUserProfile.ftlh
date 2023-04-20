@@ -18,16 +18,15 @@
 Город: ${user.city} <br>
 Мой телефон: ${user.phone} <br>
 <hr>
-<form method="post" action="/admin/${user.id}/delete">
+<form method="post" action="/account/admin/${user.id}/delete">
     <input type="submit" value="Удалить профиль">
 </form>
 <hr>
-<form method="get" action="/admin/${user.id}/change">
+<form method="get" action="/account/admin/${user.id}/change">
     <input type="submit" value="Изменить профиль">
 </form>
 <hr>
-<form method="get" action="/admin/users/all">
-    <input type="submit" value="Вернуться ко всем пользователям.">
-</form>
+<a href="http://localhost:8082/search/admin/users/all">
+    <b style="background:#FFCCCC">Вернуться ко всем пользователям.</b></a></form>
 </body>
 </html>

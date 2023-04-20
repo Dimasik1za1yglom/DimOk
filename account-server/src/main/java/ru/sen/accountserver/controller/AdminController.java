@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/user/admin")
+@RequestMapping("/account/admin")
 public class AdminController implements AdminApi {
 
     private final UserService userService;
@@ -30,7 +30,7 @@ public class AdminController implements AdminApi {
 
     @Override
     public String getUser(Long userId, Model model, RedirectAttributes redirectAttributes) {
-        log.info("admin/profile/{user-id}: request to receive the user's page by id {}", userId);
+        log.info("/account/admin/profile/{user-id}: request to receive the user's page by id {}", userId);
         try {
             User user = userService.getUserById(userId);
             model.addAttribute("user", user);
@@ -39,7 +39,7 @@ public class AdminController implements AdminApi {
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", "Пользователь отсутсвует");
             log.error("/profile/{user-id}: Getting a user page is failed: {}", e.getMessage());
-            return "redirect:/admin/users/all";
+            return "redirect:http://localhost:8082/search/admin/users/all";
         }
     }
 
@@ -49,10 +49,10 @@ public class AdminController implements AdminApi {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить пользователя. Попробуйте позднее");
             log.error("/delete: Error on deleting a user under id: {}", userId);
-            return String.format("redirect:/admin/profile/%d", userId);
+            return String.format("redirect:/account/admin/profile/%d", userId);
         } else {
             log.info("/delete: Deleting the user was successful, exiting the session");
-            return "redirect:/admin/users/all";
+            return "redirect:http://localhost:8082/search/admin/users/all";
         }
     }
 
@@ -74,11 +74,11 @@ public class AdminController implements AdminApi {
         }
         if (interceptorService.checkIfUpdateUserSuccessful(userDto, userId)) {
             log.info("/update: user data update was successful");
-            return "redirect:/admin/users/all";
+            return String.format("redirect:/account/admin/profile/%d", userId);
         } else {
             redirectAttributes.addFlashAttribute("error", "Не удалось изменить данные");
             log.error("/update: Sending a message that the user's data could not be updated");
-            return String.format("redirect:/admin/%d/change", userId);
+            return String.format("redirect:/account/admin/%d/change", userId);
         }
     }
 
@@ -91,9 +91,9 @@ public class AdminController implements AdminApi {
             return "admin/adminChangeFields";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error",
-                    "Не удалось получить данные пользователя");
+                    "Не удалось получить данные пользователя для изменений");
             log.error("/change: Errors occurred when change user data: {}", e.getMessage());
-            return "redirect:admin/adminUserProfile";
+            return String.format("redirect:/account/admin/profile/%d", userId);
         }
     }
 

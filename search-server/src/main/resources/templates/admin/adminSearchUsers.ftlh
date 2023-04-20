@@ -42,9 +42,8 @@
                 <td>${user.birthday}</td>
                 <td>${user.role.name}</td>
                 <td>
-                    <form method="get" action="/admin/profile/${user.id}">
-                        <input type="submit" value="Посмотреть профиль">
-                    </form>
+                    <a href="http://localhost:8082/account/admin/profile/${user.id}">
+                        <b style="background:#FFCCCC">Посмотреть страницу пользователя.</b></a>
                     <form method="get" action="/search/admin/requests/${user.id}">
                         <input type="submit" value="Посмотреть историю поиска">
                     </form>
