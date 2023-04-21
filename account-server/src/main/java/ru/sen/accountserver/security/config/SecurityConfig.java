@@ -3,6 +3,7 @@ package ru.sen.accountserver.security.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,6 +15,7 @@ import ru.sen.accountserver.jwt.service.JwtFilter;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
@@ -26,8 +28,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/registration", "/input", "/app/**").permitAll()
-                        .requestMatchers("**/admin/**").hasRole("Admin")
-                        .requestMatchers("/user/**").authenticated()
+                        .anyRequest().authenticated()
                         .and()
                         .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 )

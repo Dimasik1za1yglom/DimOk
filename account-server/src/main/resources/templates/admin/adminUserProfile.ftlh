@@ -13,9 +13,9 @@
 Имя: ${user.firstName} <br>
 Фамилия: ${user.lastName} <br>
 Дата рождения: ${user.birthday} <br>
-О себе: ${user.bio} <br>
-Страна: ${user.country} <br>
-Город: ${user.city} <br>
+О себе: <#if (user.bio)??>${user.bio}<#else></#if> <br>
+Страна: <#if (user.country)??>${user.country}<#else></#if> <br>
+Город: <#if (user.city)??>${user.city}<#else></#if> <br>
 Мой телефон: ${user.phone} <br>
 <hr>
 <form method="post" action="/account/admin/${user.id}/delete">

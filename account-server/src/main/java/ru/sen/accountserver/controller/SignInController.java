@@ -53,7 +53,8 @@ public class SignInController implements SignInApi {
             log.info("/input: the user's login was successful. Data {}. Token issued {}", dataDto, response);
             return "redirect:/user/myprofile";
         } catch (AuthException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            List<String> errors = List.of(e.getMessage());
+            redirectAttributes.addFlashAttribute("errors", errors);
             log.error("/input: Login error under such data {}: {}", dataDto, e.getMessage());
             return "redirect:/input";
         }

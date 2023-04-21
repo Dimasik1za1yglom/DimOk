@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/account/admin")
+@PreAuthorize("hasAuthority('Admin')")
 public class AdminController implements AdminApi {
 
     private final UserService userService;

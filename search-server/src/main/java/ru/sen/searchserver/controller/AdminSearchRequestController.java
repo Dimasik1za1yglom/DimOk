@@ -3,6 +3,7 @@ package ru.sen.searchserver.controller;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/search/admin")
+@PreAuthorize("hasAuthority('Admin')")
 public class AdminSearchRequestController implements AdminSearchRequestApi {
 
     private final ErrorInterceptorService interceptorService;

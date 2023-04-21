@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +25,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/search/admin")
+@PreAuthorize("hasAuthority('Admin')")
 public class AdminSearchUserController implements AdminSearchUsersApi, SearchUsersApi {
 
     private final SearchUserService searchUserService;
