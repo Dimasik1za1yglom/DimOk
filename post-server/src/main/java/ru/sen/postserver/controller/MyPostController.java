@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.postserver.controller.api.PostApi;
+import ru.sen.postserver.controller.api.ViewingPostApi;
 import ru.sen.postserver.dto.PostDto;
 import ru.sen.postserver.entity.Post;
 import ru.sen.postserver.jwt.exception.AuthException;
@@ -24,8 +25,8 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/post")
-public class PostController implements PostApi {
+@RequestMapping("/post/my")
+public class MyPostController implements PostApi, ViewingPostApi {
 
     private final PostService postService;
     private final ErrorInterceptorService interceptorService;
@@ -33,7 +34,7 @@ public class PostController implements PostApi {
 
     @Override
     public String getAllPostsUser(Long userId, Model model, RedirectAttributes redirectAttributes) {
-        log.info("receiving a request for /post");
+        log.info("receiving a request for /post/my");
         try {
             List<Post> posts = postService.getAllPostByUserId(userId);
             if (posts.isEmpty()) {
@@ -45,14 +46,14 @@ public class PostController implements PostApi {
                         post.setText(post.getText().substring(0, 33));
                     }
                 });
-                log.info("/post: receiving a request post was successful: {}", posts);
+                log.info("/post/my: receiving a request post was successful: {}", posts);
                 model.addAttribute("posts", posts);
             }
-            return "myPosts";
+            return "user/myPosts";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось получить информацию об существующих постах, попробуйте позднее");
-            log.error("/post: An error occurred with the posts page: {}", e.getMessage());
+            log.error("/post/my: An error occurred with the posts page: {}", e.getMessage());
             return "redirect:http://localhost:8082/user/myprofile";
         }
     }
@@ -62,17 +63,17 @@ public class PostController implements PostApi {
                           Model model,
                           Long postId,
                           RedirectAttributes redirectAttributes) {
-        log.info("receiving a request for /post/{}", postId);
+        log.info("receiving a request for /post/my/{}", postId);
         try {
             Post post = postService.getPostById(postId);
             model.addAttribute("post", post);
-            log.info("/post/{}: receiving the user's post was successful. The output of the page with this post.",
+            log.info("/post/my/{}: receiving the user's post was successful. The output of the page with this post.",
                     postId);
-            return "myPost";
+            return "user/myPost";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось получить информацию об данном посте, попробуйте позднее");
-            return String.format("redirect:/post/all/my/%d", userId);
+            return String.format("redirect:/post/my/all/%d", userId);
         }
     }
 
@@ -80,7 +81,7 @@ public class PostController implements PostApi {
     public String addPost(HttpServletRequest request,
                           PostDto postDto,
                           BindingResult bindingResult,
-    RedirectAttributes redirectAttributes) {
+                          RedirectAttributes redirectAttributes) {
         log.info("receiving a request for /add");
         try {
             Long userId = authService.getIdUserByRefreshToken(request);
@@ -94,7 +95,7 @@ public class PostController implements PostApi {
                 redirectAttributes.addFlashAttribute("post", postDto);
                 redirectAttributes.addFlashAttribute("errors", errors);
                 log.info("/add: Errors were received when filling out the form for creating post page fields: {}", errors);
-                return String.format("redirect:/post/all/my/%d", userId);
+                return String.format("redirect:/post/my/all/%d", userId);
             }
             if (interceptorService.checkIfAddingPostSuccessful(postDto, LocalDateTime.now(), userId)) {
                 log.info("/add: Adding fields to the post's page was successful");
@@ -103,7 +104,7 @@ public class PostController implements PostApi {
                 redirectAttributes.addFlashAttribute("error", error);
                 log.error("/add: Errors occurred when adding post data: {}", error);
             }
-            return String.format("redirect:/post/all/my/%d", userId);
+            return String.format("redirect:/post/my/all/%d", userId);
         } catch (AuthException e) {
             String error = "Добавление полей невозможно. Попробуйте позднее";
             redirectAttributes.addFlashAttribute("error", error);
@@ -121,10 +122,10 @@ public class PostController implements PostApi {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить пост. Попробуйте позднее");
             log.error("/delete: Error on deleting a post under id: {}", postId);
-            return String.format("/post/%d/%d", postId, userId);
+            return String.format("/post/my/%d/%d", postId, userId);
         } else {
             log.info("/delete: Deleting the post was successful, exiting the session");
-            return String.format("redirect:/post/all/my/%d", userId);
+            return String.format("redirect:/post/my/all/%d", userId);
         }
     }
 
@@ -143,15 +144,15 @@ public class PostController implements PostApi {
             redirectAttributes.addFlashAttribute("post", postDto);
             redirectAttributes.addFlashAttribute("errors", errors);
             log.info("/update: Errors were received when filling out the form for change post page fields: {}", errors);
-            return String.format("redirect:/post/%d/change/%d", postId, userId);
+            return String.format("redirect:/post/my/%d/change/%d", postId, userId);
         }
         if (interceptorService.checkIfUpdatePostSuccessful(postDto, postId)) {
             log.info("/update: post update was successful");
-            return String.format("redirect:/post/%d/%d", postId, userId);
+            return String.format("redirect:/post/my/%d/%d", postId, userId);
         } else {
             redirectAttributes.addFlashAttribute("error", "Не удалось изменить данные");
             log.error("/update: Sending a message that the post could not be updated");
-            return String.format("redirect:/post/%d/change/%d", postId, userId);
+            return String.format("redirect:/post/my/%d/change/%d", postId, userId);
         }
     }
 
@@ -165,12 +166,12 @@ public class PostController implements PostApi {
             model.addAttribute("post", post);
             log.info("/change: getting a form of fields for by userId {}, postId {} changing post: {}",
                     userId, postId, post);
-            return "fieldsChangePost";
+            return "user/fieldsChangePost";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось найти пост, попробуйте позднее");
             log.error("/change: Errors occurred when change post data: {}", e.getMessage());
-            return String.format("redirect:/post/all/my/%d", userId);
+            return String.format("redirect:/post/my/all/%d", userId);
         }
     }
 }

@@ -54,20 +54,20 @@ public class UserServiceImpl implements UserService {
                     || (getUserById(user.getId()).getRole().getId()).equals(2L)) {
                 log.info("Satisfaction of the conditions for deleting the user");
                 dataService.deleteDataByUserId(userToDeleteId);
-                userRepository.deleteById(userToDeleteId);
-                log.info("Delete user of authorization data by userId {} was successful", userToDeleteId);
                 ResponseDto response = searchRequestService.deleteSearchRequest(userToDeleteId);
                 if (response.isSuccess()) {
-                    log.info("Delete search requests by user id {} is failed: {}", userToDeleteId, response.getMessage());
+                    log.info("Delete search requests by user id {} was successful", userToDeleteId);
                 } else {
-                    log.error("Delete search requests by user id {} was successful", userToDeleteId);
+                    log.error("Delete search requests by user id {} is failed: {}", userToDeleteId, response.getMessage());
                 }
                 response = postService.deletePosts(userToDeleteId);
                 if (response.isSuccess()) {
-                    log.info("Delete posts  by user id {} is failed: {}", userToDeleteId, response.getMessage());
+                    log.info("Delete posts by id {} was successful", userToDeleteId);
                 } else {
-                    log.error("Delete posts by id {} was successful", userToDeleteId);
+                    log.error("Delete posts  by user id {} is failed: {}", userToDeleteId, response.getMessage());
                 }
+                userRepository.deleteById(userToDeleteId);
+                log.info("Delete user of authorization data by userId {} was successful", userToDeleteId);
             } else {
                 log.error("verification of the conditions for deleting the user failed");
                 throw new UserOperationException("Insufficient rights to delete a user");

@@ -21,7 +21,7 @@ public class SearchRequestServiceImpl implements SearchRequestService {
         return webClient
                 .build()
                 .post()
-                .uri("http://searchServer/app/searchRequests/delete",
+                .uri("http://searchServer/app/searchRequest/delete",
                         uriBuilder -> uriBuilder
                                 .queryParam("userId", userId)
                                 .build())

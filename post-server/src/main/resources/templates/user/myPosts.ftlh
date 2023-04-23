@@ -15,7 +15,7 @@
 <#else>
 </#if>
 <hr>
-<form method="post" action="/post/add">
+<form method="post" action="/post/my/add">
     <textarea name="text" cols="60" rows="10" placeholder="Текст Поста"></textarea>
     <input type="submit" value="Добавить новый постик">
 </form>
@@ -32,7 +32,7 @@
             <td>${post.text}</td>
             <td>${post.timeCreation}</td>
             <td>
-                <form method="get" action="/post/${post.id}/${post.userId}">
+                <form method="get" action="/post/my/${post.id}/${post.userId}">
                     <input type="submit" value="Посмотреть">
                 </form>
             </td>

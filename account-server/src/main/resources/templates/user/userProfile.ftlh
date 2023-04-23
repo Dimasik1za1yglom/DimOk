@@ -20,6 +20,8 @@
 <hr>
 <a href="http://localhost:8082/search"><b style="background:#FFCCCC">Поиск пользователей.</b></a>
 <hr>
+<a href="http://localhost:8082/post/user/all/${user.id}"><b style="background:#FFCCCC">Его посты.</b></a>
+
 <form method="get" action="/user/myprofile">
     <input type="submit" value="Вернуться на свою страницу.">
 </form>

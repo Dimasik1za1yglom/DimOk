@@ -47,6 +47,7 @@ public class AdminController implements AdminApi {
 
     @Override
     public String deleteUser(Long userId, RedirectAttributes redirectAttributes) {
+        log.info("/account/admin/{user-id}/delete: request to delete the user's account by id {}", userId);
         if (interceptorService.checkIfDeletingUserSuccessful(userId, getUserEmail())) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось удалить пользователя. Попробуйте позднее");

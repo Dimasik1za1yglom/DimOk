@@ -15,12 +15,12 @@
 <#else>
 </#if>
 <hr>
-<form method="post" action="/post/${post.id}/update/${post.userId}">
+<form method="post" action="/post/my/${post.id}/update/${post.userId}">
     <textarea name="text" cols="60" rows="10" placeholder="Текст Поста">${post.text}</textarea>
     <input type="submit" value="Изменить постик">
 </form>
 <hr>
-<form method="get" action="/post/${post.id}/${post.userId}">
+<form method="get" action="/post/my/${post.id}/${post.userId}">
     <input type="submit" value="Вернуться к посту">
 </form>
 </body>

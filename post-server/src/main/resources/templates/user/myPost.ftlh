@@ -13,11 +13,11 @@
 Полное содержание:<br>
 <textarea name="text" cols="60" rows="10" readonly="readonly" placeholder="Текст Поста">${post.text}</textarea> <br>
 Дата создания: ${post.timeCreation}<br>
-<form method="post" action="/post/${post.id}/delete/${post.userId}">
+<form method="post" action="/post/my/${post.id}/delete/${post.userId}">
     <input type="submit" value="Удалить">
 </form>
 <hr>
-<form method="get" action="/post/${post.id}/change/${post.userId}">
+<form method="get" action="/post/my/${post.id}/change/${post.userId}">
     <input type="submit" value="Изменить">
 </form>
 <hr>

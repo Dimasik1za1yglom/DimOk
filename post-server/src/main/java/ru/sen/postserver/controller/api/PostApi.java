@@ -12,17 +12,6 @@ import ru.sen.postserver.dto.PostDto;
 
 public interface PostApi {
 
-    @GetMapping("/all/my/{user-id}")
-    String getAllPostsUser(@PathVariable("user-id") Long userId,
-                           Model model,
-                           RedirectAttributes redirectAttributes);
-
-    @GetMapping("/{post-id}/{user-id}")
-    String getPost(@PathVariable("user-id") Long userId,
-                   Model model,
-                   @PathVariable("post-id") Long postId,
-                   RedirectAttributes redirectAttributes);
-
     @PostMapping("/add")
     String addPost(HttpServletRequest request,
                    @Valid PostDto postDto,
