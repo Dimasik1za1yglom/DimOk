@@ -5,6 +5,22 @@ server:
 spring:
   application:
     name: messagesServer
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    jdbc-url: jdbc:postgresql://localhost:5432/social_network
+    username: postgres
+    password: "112348Diman"
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-root.xml
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: UNSPECIFIED
 
 
 eureka:
@@ -14,3 +30,21 @@ eureka:
   client:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:8081/eureka/
+
+
+logging:
+  logback:
+    rollingpolicy:
+      clean-history-on-start: false
+      file-name-pattern: logs/${spring.application.name}/${spring.application.name}-%d{yyyy-MM-dd}.%i.log
+      max-file-size: 5MB
+  file:
+    name: logs/${spring.application.name}-today.log
+  level:
+    org:
+    hibernate:
+      sql: info
+
+jwt:
+  secret:
+    refresh: oqPXs3V5eMDrJw8/rrryMqiqMjuKrVe5HJY7CXu5GK5f3DEKRXpFEl8S6SGLd44N3jtAC8xDPGbu49eyp8w9xA==
