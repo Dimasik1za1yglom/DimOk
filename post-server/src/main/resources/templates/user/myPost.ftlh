@@ -21,7 +21,7 @@
     <input type="submit" value="Изменить">
 </form>
 <hr>
-<form method="get" action="/post/all/my/${post.userId}">
+<form method="get" action="/post/my/all/${post.userId}">
     <input type="submit" value="Вернуться к списку мои постов">
 </form>
 </body>

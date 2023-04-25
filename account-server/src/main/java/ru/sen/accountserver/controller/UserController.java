@@ -25,6 +25,7 @@ import ru.sen.accountserver.services.ErrorInterceptorService;
 import ru.sen.accountserver.services.UserService;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Slf4j
 @Controller
@@ -83,17 +84,24 @@ public class UserController implements UserApi {
                           Model model,
                           RedirectAttributes redirectAttributes) {
         log.info("receiving a request for /add");
+        var errors = Stream.<String>builder();
         if (bindingResult.hasErrors()) {
             log.warn("/add: Error entering values into the form");
-            List<String> errors = bindingResult.getAllErrors()
-                    .stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .toList();
+            bindingResult.getAllErrors()
+                    .forEach(objectError -> errors.add(objectError.getDefaultMessage()));
             model.addAttribute("user", userDto);
-            model.addAttribute("errors", errors);
+            model.addAttribute("errors", errors.build().toList());
             log.info("/add: Errors were received when filling out the form for creating user page fields: {}", errors);
             return "user/userFields";
         }
+        if (userService.checkIfPhoneExists(userDto.getPhone())) {
+            errors.add("Пользователь с таким номером уже существует. Проверте правильность");
+            log.error("The received phone number is already in the database: {}", userDto.getPhone());
+            model.addAttribute("user", userDto);
+            model.addAttribute("errors", errors.build().toList());
+            return "user/userFields";
+        }
+        log.info("the received phone number is unique");
         if (interceptorService.checkIfAddingUserSuccessful(userDto, getUserEmail())) {
             try {
                 log.info("/add: Adding fields to the user's page was successful");
@@ -102,15 +110,16 @@ public class UserController implements UserApi {
                 log.info("/add:Changing the user's token to a new one was successful");
                 return "redirect:/user/myprofile";
             } catch (AuthException e) {
-                String error = "Пользователь добавлен, но возникли ошибки. Попробуйте зайти заного";
-                log.error("\"/add: Adding fields to the user's page was successful\"");
-                redirectAttributes.addFlashAttribute("errors", error);
+                errors.add("Пользователь добавлен, но возникли ошибки. Попробуйте зайти заного");
+                log.error("/add: Adding fields to the user's page was successful");
+                redirectAttributes.addFlashAttribute("errors", errors.build().toList());
                 return "redirect:/user/logout";
             }
         } else {
-            String error = "Добавление полей пользователя не удалось. Попробуйте позднее";
-            model.addAttribute("error", error);
-            log.error("/add: Errors occurred when adding user data: {}", error);
+            errors.add("Добавление полей пользователя не удалось. Попробуйте позднее");
+            model.addAttribute("user", userDto);
+            model.addAttribute("errors", errors.build().toList());
+            log.error("/add: Errors occurred when adding user data: {}", errors.build().toList());
             return "user/userFields";
         }
     }

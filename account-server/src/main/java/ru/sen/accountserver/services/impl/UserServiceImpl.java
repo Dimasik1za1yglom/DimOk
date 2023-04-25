@@ -98,4 +98,11 @@ public class UserServiceImpl implements UserService {
             throw new UserOperationException(e.getMessage());
         }
     }
+
+    @Override
+    public boolean checkIfPhoneExists(String phone) {
+        String phoneNotEmpty = phone.strip();
+        log.info("Checking existing user fields phone : {}", phoneNotEmpty);
+        return userRepository.existsByPhone(phone);
+    }
 }
