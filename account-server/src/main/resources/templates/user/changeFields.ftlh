@@ -24,7 +24,7 @@
     <input type="text" name="country" value="<#if user??>${user.country}<#else></#if>" placeholder="Страна">
     <input type="text" name="city" value="<#if user??>${user.city}<#else></#if>" placeholder="Город">
     <input type="text" name="phone" value="<#if user??>${user.phone}<#else></#if>" placeholder="Телефон">
-    <input type="submit" value="Добавить">
+    <input type="submit" value="Сохранить">
 </form>
 </body>
 </html>

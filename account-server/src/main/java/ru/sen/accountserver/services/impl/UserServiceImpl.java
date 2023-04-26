@@ -10,9 +10,9 @@ import ru.sen.accountserver.dto.remote.ResponseDto;
 import ru.sen.accountserver.entity.AuthorizationData;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.exception.UserOperationException;
+import ru.sen.accountserver.gateway.PostGateway;
+import ru.sen.accountserver.gateway.SearchRequestGateway;
 import ru.sen.accountserver.mappers.UserMapper;
-import ru.sen.accountserver.remoteService.PostService;
-import ru.sen.accountserver.remoteService.SearchRequestService;
 import ru.sen.accountserver.repository.UserRepository;
 import ru.sen.accountserver.services.AuthorizationDataService;
 import ru.sen.accountserver.services.UserService;
@@ -26,8 +26,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final AuthorizationDataService dataService;
     private final UserMapper userToEntityMapper;
-    private final SearchRequestService searchRequestService;
-    private final PostService postService;
+    private final SearchRequestGateway searchRequestGateway;
+    private final PostGateway postGateway;
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = UserOperationException.class)
@@ -54,13 +54,13 @@ public class UserServiceImpl implements UserService {
                     || (getUserById(user.getId()).getRole().getId()).equals(2L)) {
                 log.info("Satisfaction of the conditions for deleting the user");
                 dataService.deleteDataByUserId(userToDeleteId);
-                ResponseDto response = searchRequestService.deleteSearchRequest(userToDeleteId);
+                ResponseDto response = searchRequestGateway.deleteSearchRequest(userToDeleteId);
                 if (response.isSuccess()) {
                     log.info("Delete search requests by user id {} was successful", userToDeleteId);
                 } else {
                     log.error("Delete search requests by user id {} is failed: {}", userToDeleteId, response.getMessage());
                 }
-                response = postService.deletePosts(userToDeleteId);
+                response = postGateway.deletePosts(userToDeleteId);
                 if (response.isSuccess()) {
                     log.info("Delete posts by id {} was successful", userToDeleteId);
                 } else {

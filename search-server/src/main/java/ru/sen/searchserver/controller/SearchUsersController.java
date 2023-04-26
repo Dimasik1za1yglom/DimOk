@@ -62,7 +62,7 @@ public class SearchUsersController implements SearchUsersApi {
                     .filter(user -> !user.getId().equals(userId)).toList();
             model.addAttribute("user", requestDto);
             if (users.isEmpty()) {
-                List<String> errors = List.of("Пользоватлей по данному запросу не существует.");
+                List<String> errors = List.of("Пользователей по данному запросу не существует.");
                 model.addAttribute("errors", errors);
             } else {
                 model.addAttribute("users", users);

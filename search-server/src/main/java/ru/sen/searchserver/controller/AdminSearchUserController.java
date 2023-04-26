@@ -73,7 +73,12 @@ public class AdminSearchUserController implements AdminSearchUsersApi, SearchUse
             List<User> users = searchUserService.getAllUsersByTextRequest(requestDto).stream()
                     .filter(user -> !user.getId().equals(userId)).toList();
             model.addAttribute("request", requestDto);
-            model.addAttribute("users", users);
+            if (users.isEmpty()) {
+                List<String> errors = List.of("Пользователей по данному запросу не существует.");
+                model.addAttribute("errors", errors);
+            } else {
+                model.addAttribute("users", users);
+            }
             log.info("Was successful get users by search request {}, list : {}", requestDto, users);
             return "admin/adminSearchUsers";
         } catch (SearchUsersException e) {

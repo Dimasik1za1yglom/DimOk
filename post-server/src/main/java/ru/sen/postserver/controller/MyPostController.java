@@ -10,8 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.sen.postserver.controller.api.GetPostApi;
 import ru.sen.postserver.controller.api.PostApi;
-import ru.sen.postserver.controller.api.ViewingPostApi;
 import ru.sen.postserver.dto.PostDto;
 import ru.sen.postserver.entity.Post;
 import ru.sen.postserver.jwt.exception.AuthException;
@@ -26,14 +26,14 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/post/my")
-public class MyPostController implements PostApi, ViewingPostApi {
+public class MyPostController implements PostApi, GetPostApi {
 
     private final PostService postService;
     private final ErrorInterceptorService interceptorService;
     private final AuthService authService;
 
     @Override
-    public String getAllPostsUser(Long userId, Model model, RedirectAttributes redirectAttributes) {
+    public String getPosts(Long userId, Model model, RedirectAttributes redirectAttributes) {
         log.info("receiving a request for /post/my");
         try {
             List<Post> posts = postService.getAllPostByUserId(userId);

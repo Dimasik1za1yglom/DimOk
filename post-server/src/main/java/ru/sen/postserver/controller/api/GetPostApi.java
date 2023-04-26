@@ -5,12 +5,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-public interface ViewingPostApi {
+public interface GetPostApi {
 
     @GetMapping("/all/{user-id}")
-    String getAllPostsUser(@PathVariable("user-id") Long userId,
-                           Model model,
-                           RedirectAttributes redirectAttributes);
+    String getPosts(@PathVariable("user-id") Long userId,
+                    Model model,
+                    RedirectAttributes redirectAttributes);
 
     @GetMapping("/{post-id}/{user-id}")
     String getPost(@PathVariable("user-id") Long userId,

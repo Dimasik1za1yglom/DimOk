@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.sen.postserver.controller.api.ViewingPostApi;
+import ru.sen.postserver.controller.api.GetPostApi;
 import ru.sen.postserver.entity.Post;
 import ru.sen.postserver.services.PostService;
 
@@ -18,12 +18,12 @@ import java.util.stream.Stream;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/post/user")
-public class UserPostController implements ViewingPostApi {
+public class UserPostController implements GetPostApi {
 
     private final PostService postService;
 
     @Override
-    public String getAllPostsUser(Long userId, Model model, RedirectAttributes redirectAttributes) {
+    public String getPosts(Long userId, Model model, RedirectAttributes redirectAttributes) {
         log.info("receiving a request for /post/user");
         var errors = Stream.<String>builder();
         try {
