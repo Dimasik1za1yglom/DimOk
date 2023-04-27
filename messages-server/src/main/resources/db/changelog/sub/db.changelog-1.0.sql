@@ -31,9 +31,9 @@ create table users
 --changeset dim_ok:4
 create table dialogs
 (
-    id      bigserial primary key,
-    name    varchar(100) not null,
-    user_id bigint,
+    id        bigserial primary key,
+    name      varchar(100) not null,
+    user_id   bigint,
     foreign key (user_id) references users (id),
     dialog_id bigint
 );
