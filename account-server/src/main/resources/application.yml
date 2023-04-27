@@ -34,7 +34,7 @@ logging:
   logback:
     rollingpolicy:
       clean-history-on-start: false
-      file-name-pattern: logs/${spring.application.name}-%d{yyyy-MM-dd}.%i.log
+      file-name-pattern: logs/${spring.application.name}/${spring.application.name}-%d{yyyy-MM-dd}.%i.log
       max-file-size: 5MB
   file:
     name: logs/${spring.application.name}-today.log
@@ -42,3 +42,7 @@ logging:
     org:
     hibernate:
       sql: info
+
+jwt:
+  secret:
+    refresh: oqPXs3V5eMDrJw8/rrryMqiqMjuKrVe5HJY7CXu5GK5f3DEKRXpFEl8S6SGLd44N3jtAC8xDPGbu49eyp8w9xA==

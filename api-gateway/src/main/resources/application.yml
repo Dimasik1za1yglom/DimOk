@@ -12,27 +12,23 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        - id: messages_get
+        - id: messages
           uri: lb://messagesServer
           predicates:
             - Path=/messages/test
             - Method=GET
-        - id: account_get
+        - id: account
           uri: lb://accountServer
           predicates:
-            - Path=/account/test
-            - Method=GET
-        - id: post_get
+            - Path=/user/**,/registration,/input,/account/**
+        - id: post
           uri: lb://postServer
           predicates:
-            - Path=/post/test
-            - Method=GET
-        - id: search_get
+            - Path=/post/**
+        - id: search
           uri: lb://searchServer
           predicates:
-            - Path=/search/test
-            - Method=GET
-
+            - Path=/search, /search/**
 
 
 eureka:

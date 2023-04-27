@@ -27,16 +27,16 @@ public class ErrorInterceptorServiceImpl implements ErrorInterceptorService {
     public boolean checkIfDeletingUserSuccessful(Long userToDeleteId, String email) {
         try {
             userService.deleteUser(userToDeleteId, email);
-            return true;
-        } catch (UserOperationException e) {
             return false;
+        } catch (UserOperationException e) {
+            return true;
         }
     }
 
     @Override
-    public boolean checkIfUpdateUserSuccessful(UserDto userDto, String email) {
+    public boolean checkIfUpdateUserSuccessful(UserDto userDto, Long userId) {
         try {
-            userService.updateUser(userDto, email);
+            userService.updateUser(userDto, userId);
             return true;
         } catch (UserOperationException e) {
             return false;

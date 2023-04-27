@@ -9,6 +9,9 @@
 </head>
 <body>
 <h2 style="color:red"><#if error??>${error}<#else></#if></h2>
+<hr>
+<a href="http://localhost:8082/search"><b style="background:#FFCCCC">Поиск пользователей.</b></a>
+<hr>
 Имя: ${user.firstName} <br>
 Фамилия: ${user.lastName} <br>
 Дата рождения: ${user.birthday} <br>
@@ -16,6 +19,8 @@
 Страна: ${user.country} <br>
 Город: ${user.city} <br>
 Мой телефон: ${user.phone} <br>
+<hr>
+<a href="http://localhost:8082/post/my/all/${user.id}"><b style="background:#FFCCCC">Мои посты.</b></a>
 <hr>
 <form method="get" action="/user/change">
     <input type="submit" value="Изменить аккаунт">

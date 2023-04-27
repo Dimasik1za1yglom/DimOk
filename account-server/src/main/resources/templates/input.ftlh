@@ -10,7 +10,12 @@
 <body>
 <div style="text-align: center;">
     <h3>Авторизация</h3>
-    <h2 style="color:red"><#if error??>${error}<#else></#if></h2>
+    <#if errors??>
+        <#list errors as error>
+            <h2 style="color:red">${error}</h2>
+        </#list>
+    <#else>
+    </#if>
     <form method="post" action="/input">
         <label class="whitetext">
             Login: <input  type="text" name="email" placeholder="Email">
