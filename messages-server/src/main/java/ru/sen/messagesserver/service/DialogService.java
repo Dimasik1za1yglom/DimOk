@@ -10,5 +10,9 @@ public interface DialogService {
 
     void createDialog(DialogDto dialogDto, List<Long> usersId) throws DialogOperationException;
 
+    void deleteDialog(Long userId, Long dialogId) throws DialogOperationException;
+
     List<Dialog> getAllDialogsByUserId(Long userId);
+
+    boolean checkIfDialogExists(Long createUserId, Long userId);
 }

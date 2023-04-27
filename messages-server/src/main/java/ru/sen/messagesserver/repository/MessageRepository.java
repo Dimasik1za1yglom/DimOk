@@ -12,4 +12,6 @@ import java.util.List;
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
     List<Message> findAllByDialogId(Long dialogId, Pageable pageable);
+
+    void deleteMessagesByDialogId(Long dialogId);
 }

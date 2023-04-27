@@ -28,17 +28,19 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = MessageOperationException.class)
-    public void addMessage(MessageDto messageDto, LocalDateTime dateTime, Long userId)
-            throws MessageOperationException {
+    public Message addMessage(MessageDto messageDto, LocalDateTime dateTime, Long userId) {
         log.info("add message: {} by userId: {}", messageDto, userId);
-        try {
-            messageRepository.save(messageMapper.messageDtoToMessage(messageDto, dateTime, userId));
-            log.info("Adding a new message by userId {} was successful", userId);
-        } catch (Exception e) {
-            log.error("Adding a new message by userId {} is failed: {}", userId, e.getMessage());
-            throw new MessageOperationException("Throwing exception for demoing rollback");
-        }
+        Message message = messageRepository.save(messageMapper.messageDtoToMessage(messageDto, dateTime, userId));
+        log.info("Adding a new message {} by userId {} was successful", message, userId);
+        return message;
+    }
 
+    @Override
+    @Transactional
+    public void deleteAllMessageByDialogId(Long dialogId) {
+        log.info("delete all messsages by dialog id {}: ", dialogId);
+        messageRepository.deleteMessagesByDialogId(dialogId);
+        log.info("delete all messsages by dialog id {} was successful", dialogId);
     }
 
     @Override

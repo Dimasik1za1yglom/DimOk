@@ -8,4 +8,8 @@ import java.util.List;
 public interface DialogRepository extends JpaRepository<Dialog, Long> {
 
     List<Dialog> findAllByUserId(Long userId);
+
+    int countDialogByDialogId(Long dialogId);
+
+    void deleteByDialogIdAndUserId(Long dialogId, Long userId);
 }

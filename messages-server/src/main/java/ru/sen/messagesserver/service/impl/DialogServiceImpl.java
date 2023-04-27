@@ -11,6 +11,7 @@ import ru.sen.messagesserver.exception.DialogOperationException;
 import ru.sen.messagesserver.mapper.DialogMapper;
 import ru.sen.messagesserver.repository.DialogRepository;
 import ru.sen.messagesserver.service.DialogService;
+import ru.sen.messagesserver.service.MessageService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ public class DialogServiceImpl implements DialogService {
 
     private final DialogRepository dialogRepository;
     private final DialogMapper dialogMapper;
+    private final MessageService messageService;
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = DialogOperationException.class)
@@ -45,8 +47,32 @@ public class DialogServiceImpl implements DialogService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = DialogOperationException.class)
+    public void deleteDialog(Long userId, Long dialogId) throws DialogOperationException {
+        log.info("deleting a dialog user to id {}. ", userId);
+        try {
+            if (dialogRepository.countDialogByDialogId(dialogId) == 1) {
+                log.info("only one user id {} has the dialog messages left", userId);
+                messageService.deleteAllMessageByDialogId(dialogId);
+                log.info("delete all message dialog id {} was successful", dialogId);
+            }
+            dialogRepository.deleteByDialogIdAndUserId(dialogId, userId);
+            log.info("Delete dialog id {} by user id {} was successful", dialogId, userId);
+        } catch (Exception e) {
+            log.error("Delete dialog id {} by user id {} failed: {}", dialogId, userId, e.getMessage());
+            throw new DialogOperationException(e.getMessage());
+        }
+
+    }
+
+    @Override
     public List<Dialog> getAllDialogsByUserId(Long userId) {
         log.info("get list<Dialog> by userId: {}", userId);
         return dialogRepository.findAllByUserId(userId);
+    }
+
+    @Override
+    public boolean checkIfDialogExists(Long createUserId, Long userId) {
+        return false;
     }
 }
