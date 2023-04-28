@@ -28,7 +28,7 @@ public class DialogServiceImpl implements DialogService {
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = DialogOperationException.class)
-    public void createDialog(DialogDto dialogDto, List<Long> usersId)
+    public Long createDialog(DialogDto dialogDto, List<Long> usersId)
             throws DialogOperationException {
         Long number = usersId.get(0) + 100;
         log.info("create dialog: {} by usersId: {}", dialogDto, usersId);
@@ -39,11 +39,11 @@ public class DialogServiceImpl implements DialogService {
             log.info("creating a list dialogs for users: {}", dialogs);
             dialogRepository.saveAll(dialogs);
             log.info("Save a new dialogs was successful");
+            return number;
         } catch (Exception E) {
             log.error("Save a new dialogs is failed");
             throw new DialogOperationException("Throwing exception for demoing rollback");
         }
-
     }
 
     @Override

@@ -46,7 +46,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<Message> getAllMessageByDialogId(Long dialogId) {
         log.info("get list<Message> by dialogId: {}", dialogId);
-        return messageRepository.findAllByDialogId(dialogId, PageRequest.of(0, 5, Sort.Direction.DESC,
+        return messageRepository.findAllByDialogId(dialogId, PageRequest.of(0, 10, Sort.Direction.DESC,
                 "timeCreation"));
     }
 }
