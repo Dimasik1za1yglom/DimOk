@@ -20,11 +20,4 @@ public interface DialogApi {
                         DialogDto dialogDto,
                         @PathVariable("user-id") Long userId,
                         RedirectAttributes redirectAttributes);
-
-    @PostMapping("/delete/{dialog-id}/{user-id}")
-    String deleteDialog(@PathVariable("dialog-id") Long dialogId,
-            @PathVariable("user-id") Long userId,
-                        RedirectAttributes redirectAttributes);
-
-
 }

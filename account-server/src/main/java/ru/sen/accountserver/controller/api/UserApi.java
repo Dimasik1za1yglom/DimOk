@@ -14,7 +14,8 @@ import ru.sen.accountserver.dto.UserDto;
 public interface UserApi {
 
     @GetMapping("/profile/{user-id}")
-    String getUserProfile(@PathVariable("user-id") Long userId,
+    String getUserProfile(HttpServletRequest request,
+                          @PathVariable("user-id") Long userId,
                           Model model,
                           RedirectAttributes redirectAttributes);
 

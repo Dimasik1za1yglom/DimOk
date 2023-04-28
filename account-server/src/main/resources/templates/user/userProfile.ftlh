@@ -21,7 +21,15 @@
 <a href="http://localhost:8082/search"><b style="background:#FFCCCC">Поиск пользователей.</b></a>
 <hr>
 <a href="http://localhost:8082/post/user/all/${user.id}"><b style="background:#FFCCCC">Его посты.</b></a>
-
+<hr>
+<#if createDialog??>
+    <form method="post" action="http://localhost:8082/user/dialog/add/${user.id}">
+        <input type="hidden" name="firstName" value="${user.firstName}">
+        <input type="hidden" name="lastName" value="${user.lastName}">
+        <input type="submit" value="Создать диалог.">
+    </form>
+<#else></#if>
+<hr>
 <form method="get" action="/user/myprofile">
     <input type="submit" value="Вернуться на свою страницу.">
 </form>

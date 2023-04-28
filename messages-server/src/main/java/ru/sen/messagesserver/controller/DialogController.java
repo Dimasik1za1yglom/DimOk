@@ -15,7 +15,6 @@ import ru.sen.messagesserver.exception.DialogOperationException;
 import ru.sen.messagesserver.jwt.exception.AuthException;
 import ru.sen.messagesserver.jwt.service.AuthService;
 import ru.sen.messagesserver.service.DialogService;
-import ru.sen.messagesserver.service.ErrorInterceptorService;
 
 import java.util.List;
 
@@ -27,7 +26,6 @@ public class DialogController implements DialogApi {
 
     private final AuthService authService;
     private final DialogService dialogService;
-    private final ErrorInterceptorService interceptorService;
 
     @Override
     public String getAllDialog(Long userId, Model model, RedirectAttributes redirectAttributes) {
@@ -41,7 +39,7 @@ public class DialogController implements DialogApi {
                 model.addAttribute("dialogs", dialogs);
                 log.info("Was successful get all dialogs by user id {}: {}", userId, dialogs);
             }
-            return;
+            return "user/myDialogs";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось получить информацию об существующих диалогах, попробуйте позднее");
@@ -57,6 +55,7 @@ public class DialogController implements DialogApi {
             Long createUserId = authService.getIdUserByRefreshToken(request);
             log.info("getting the token from the request was successful:  create user id {}", userId);
             dialogService.createDialog(dialogDto, List.of(createUserId, userId));
+            //todo
             log.info("/users/dialog: create dialog user {} was successful", createUserId);
             return;
         } catch (AuthException | DialogOperationException e) {
@@ -64,18 +63,5 @@ public class DialogController implements DialogApi {
             log.error("getting the token from the request was failed: {}", e.getMessage());
             return String.format("redirect:http://localhost:8082/user/profile/%d", userId);
         }
-    }
-
-    @Override
-    public String deleteDialog(Long dialogId, Long userId, RedirectAttributes redirectAttributes) {
-        log.info("receiving a request for /users/dialog delete dialog is userId: {}", userId);
-        if (!interceptorService.checkIfDeletingDialogSuccessful(userId, dialogId)) {
-            redirectAttributes.addFlashAttribute("error",
-                    "Не удалось удалить диалог. Попробуйте позднее");
-            log.error("/delete: Error on deleting a dialog id {} by user Id: {}", dialogId, userId);
-        } else {
-            log.info("/delete: Deleting dialog id {} by user Id {} was successful", dialogId, userId);
-        }
-            return String.format("redirect:/user/dialog/my/%d", userId);
     }
 }

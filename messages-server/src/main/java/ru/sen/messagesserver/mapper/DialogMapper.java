@@ -11,6 +11,10 @@ public interface DialogMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "userId", source = "userId")
     @Mapping(target = "dialogId", source = "dialogId")
+    @Mapping(target = "name", expression = "java(dialogDtoToNameDialog(dialogDto))")
     Dialog dialogDtoToDialog(DialogDto dialogDto, Long userId, Long dialogId);
 
+    default String dialogDtoToNameDialog(DialogDto dialogDto) {
+        return String.format("%s %s", dialogDto.getFirstName(), dialogDto.getLastName());
+    }
 }
