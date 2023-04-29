@@ -16,8 +16,6 @@ public abstract class MessageMapper {
     protected DialogRepository dialogRepository;
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "userId", source = "userId")
     @Mapping(target = "timeCreation", source = "dateTime")
-    @Mapping(target = "dialogId", expression = "java(dialogRepository.getReferenceById(messageDto.getDialogId()))")
-    public abstract Message messageDtoToMessage(MessageDto messageDto, LocalDateTime dateTime, Long userId);
+    public abstract Message messageDtoToMessage(MessageDto messageDto, LocalDateTime dateTime);
 }

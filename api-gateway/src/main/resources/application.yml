@@ -15,7 +15,7 @@ spring:
         - id: messages
           uri: lb://messagesServer
           predicates:
-            - Path=/user/dialog/**
+            - Path=/user/dialog/**, /chat, /app/chat, /chat/**
         - id: account
           uri: lb://accountServer
           predicates:

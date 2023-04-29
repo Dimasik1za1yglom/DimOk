@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MessageService {
 
-    Message addMessage(MessageDto messageDto, LocalDateTime dateTime, Long userId);
+    Message addMessage(MessageDto messageDto, LocalDateTime dateTime);
 
     void deleteAllMessageByDialogId(Long dialogId);
 

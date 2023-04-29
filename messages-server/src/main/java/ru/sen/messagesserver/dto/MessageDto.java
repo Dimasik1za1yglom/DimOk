@@ -14,4 +14,7 @@ public class MessageDto {
 
     @NotNull
     private Long dialogId;
+
+    @NotNull
+    private Long userId;
 }

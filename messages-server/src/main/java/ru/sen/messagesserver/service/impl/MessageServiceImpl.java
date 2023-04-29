@@ -28,10 +28,10 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = MessageOperationException.class)
-    public Message addMessage(MessageDto messageDto, LocalDateTime dateTime, Long userId) {
-        log.info("add message: {} by userId: {}", messageDto, userId);
-        Message message = messageRepository.save(messageMapper.messageDtoToMessage(messageDto, dateTime, userId));
-        log.info("Adding a new message {} by userId {} was successful", message, userId);
+    public Message addMessage(MessageDto messageDto, LocalDateTime dateTime) {
+        log.info("add message: {} by user", messageDto);
+        Message message = messageRepository.save(messageMapper.messageDtoToMessage(messageDto, dateTime));
+        log.info("Adding a new message {} by user was successful", message);
         return message;
     }
 

@@ -53,7 +53,7 @@ public class DialogController implements DialogApi {
         log.info("receiving a request for /users/dialog create dialog is userId: {}", userId);
         try {
             Long createUserId = authService.getIdUserByRefreshToken(request);
-            log.info("getting the token from the request was successful:  create user id {}", userId);
+            log.info("getting the token from the request was successful:  create user id {}", createUserId);
             Long dialogId = dialogService.createDialog(dialogDto, List.of(createUserId, userId));
             log.info("/users/dialog: create dialog id {} user {} was successful", dialogId, createUserId);
             return String.format("/chat/%d", dialogId);

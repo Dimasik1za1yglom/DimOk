@@ -43,7 +43,6 @@ create table messages
 (
     id            bigserial primary key,
     dialog_id     bigint,
-    foreign key (dialog_id) references dialogs (dialog_id),
     user_id       bigint,
     foreign key (user_id) references users (id),
     text_message  varchar(50000) not null check ( text_message != ''
