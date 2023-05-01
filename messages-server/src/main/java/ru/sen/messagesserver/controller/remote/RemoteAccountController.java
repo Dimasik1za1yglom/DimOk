@@ -19,7 +19,7 @@ public class RemoteAccountController implements RemoteAccountApi {
     @Override
     public ResponseDto existsDialog(Long createUserId, Long userId) {
         if (dialogService.checkIfDialogExists(createUserId, userId)) {
-            log.info("There is a common dialog for two users");
+            log.info("There is yes common dialog for two users");
             return new ResponseDto(true, null);
         } else {
             log.info("There is no common dialog for two users");

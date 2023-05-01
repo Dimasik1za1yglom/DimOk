@@ -30,7 +30,7 @@ public class DialogServiceImpl implements DialogService {
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = DialogOperationException.class)
     public Long createDialog(DialogDto dialogDto, List<Long> usersId)
             throws DialogOperationException {
-        Long number = usersId.get(0) + 100;
+        Long number = usersId.get(0) * 100L + usersId.get(1);
         log.info("create dialog: {} by usersId: {}", dialogDto, usersId);
         try {
             List<Dialog> dialogs = usersId.stream()
@@ -73,6 +73,7 @@ public class DialogServiceImpl implements DialogService {
 
     @Override
     public boolean checkIfDialogExists(Long createUserId, Long userId) {
-        return false;
+        log.info("checking for the existence of a common dialog for two users");
+        return dialogRepository.getDialogIdByUsersId(createUserId, userId).isPresent();
     }
 }

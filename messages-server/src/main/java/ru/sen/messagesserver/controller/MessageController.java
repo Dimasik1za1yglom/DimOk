@@ -43,7 +43,7 @@ public class MessageController {
             model.addAttribute("messages", messages);
             model.addAttribute("dialogId", dialogId);
             log.info("/chat: receiving a request chat messages was successful: {}", messages);
-            return "chat";
+            return "user/chat";
         } catch (EntityNotFoundException | AuthException e) {
             redirectAttributes.addFlashAttribute("error",
                     "Не удалось получить информацию об существующем диалоге, попробуйте позднее");
@@ -56,6 +56,7 @@ public class MessageController {
     @MessageMapping("/chat")
     @SendTo("/topic/public")
     public Message sendMessage(@Payload MessageDto chatMessage) {
+        log.info("receiving a message: {}", chatMessage);
         Message message = messageService.addMessage(chatMessage, LocalDateTime.now());
         log.info("Add message {} user was successful", chatMessage);
         return message;

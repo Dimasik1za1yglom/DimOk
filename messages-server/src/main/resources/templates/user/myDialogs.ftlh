@@ -25,7 +25,7 @@
             <tr>
                 <td>${dialog.name}</td>
                 <td>
-                    <form method="get" action="/chat/${dialod.dialogId}">
+                    <form method="get" action="/chat/${dialog.dialogId}">
                         <input type="submit" value="Перейти к диалогу">
                     </form>
                 </td>

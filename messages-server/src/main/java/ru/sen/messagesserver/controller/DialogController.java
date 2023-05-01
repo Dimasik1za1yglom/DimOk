@@ -34,7 +34,7 @@ public class DialogController implements DialogApi {
             List<Dialog> dialogs = dialogService.getAllDialogsByUserId(userId);
             if (dialogs.isEmpty()) {
                 log.info("The user by id {} has no dialogs", userId);
-                model.addAttribute("error", "У  вас нету пока диалогов");
+                model.addAttribute("errors", List.of("У  вас нету пока диалогов"));
             } else {
                 model.addAttribute("dialogs", dialogs);
                 log.info("Was successful get all dialogs by user id {}: {}", userId, dialogs);

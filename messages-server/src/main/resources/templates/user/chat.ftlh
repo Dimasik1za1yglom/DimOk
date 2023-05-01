@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Диалог</title>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-    <script src="js/stomp.js"></script>
+    <script src="/js/stomp.js"></script>
     <script type="text/javascript">
         var stompClient = null;
 
@@ -68,20 +68,18 @@
 <#list messages as message>
     ${message.textMessage}<br>
 </#list>
-<div>
-    <div>
+<div onload="disconnect()">
+    <br>
+    <div id="conversationDiv">
+        <input type="text" id="text" placeholder="Write a message..."/>
         <input type="hidden" id="dialogId" value="${dialogId}" />
         <input type="hidden" id="userId" value="${userId}">
-    </div>
-    <br />
-    <div id="conversationDiv">
+        <button id="sendMessage" onclick="sendMessage();">Отправитьь</button>
         <p id="response"></p>
-        <input type="text" id="text" placeholder="Write a message..."/>
-        <button id="sendMessage" onclick="sendMessage();">Отправить</button>
     </div>
 </div>
 <hr>
-<a href="http://localhost:8082/chat/${dialogId}" onclick="disconnect()">
+<a href="http://localhost:8082/user/dialog/my/${userId}" onclick="disconnect()">
     <b style="background:#FFCCCC">Вернуться к своим диалогам.</b></a>
 </body>
 </html>
