@@ -6,14 +6,12 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Диалог</title>
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-    <script src="/js/stomp.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script type="text/javascript">
         var stompClient = null;
 
         function setConnected(connected) {
-            document.getElementById('connect').disabled = connected;
-            document.getElementById('disconnect').disabled = !connected;
             document.getElementById('conversationDiv').style.visibility
                 = connected ? 'visible' : 'hidden';
             document.getElementById('response').innerHTML = '';
@@ -24,7 +22,6 @@
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function(frame) {
                 setConnected(true);
-                console.log('Connected: ' + frame);
                 stompClient.subscribe('/topic/messages', function(messageOutput) {
                     showMessageOutput(JSON.parse(messageOutput.body));
                 });
@@ -36,7 +33,6 @@
                 stompClient.disconnect();
             }
             setConnected(false);
-            console.log("Disconnected");
         }
 
         function sendMessage() {
@@ -68,7 +64,7 @@
 <#list messages as message>
     ${message.textMessage}<br>
 </#list>
-<div onload="disconnect()">
+<div>
     <br>
     <div id="conversationDiv">
         <input type="text" id="text" placeholder="Write a message..."/>

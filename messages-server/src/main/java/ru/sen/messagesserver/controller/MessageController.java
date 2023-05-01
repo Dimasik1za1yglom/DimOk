@@ -2,6 +2,7 @@ package ru.sen.messagesserver.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -54,9 +55,9 @@ public class MessageController {
     }
 
     @MessageMapping("/chat")
-    @SendTo("/topic/public")
-    public Message sendMessage(@Payload MessageDto chatMessage) {
-        log.info("receiving a message: {}", chatMessage);
+    @SendTo("/topic/messages")
+    public Message sendMessage(@Valid MessageDto chatMessage) {
+        log.info("/chat receiving a message: {}", chatMessage);
         Message message = messageService.addMessage(chatMessage, LocalDateTime.now());
         log.info("Add message {} user was successful", chatMessage);
         return message;

@@ -23,7 +23,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
     implementation 'org.liquibase:liquibase-core'
     runtimeOnly 'org.postgresql:postgresql:42.5.4'
@@ -42,6 +41,8 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-core:2.14.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.2'
+    implementation 'org.springframework:spring-messaging:6.0.6'
+    implementation 'org.springframework:spring-websocket:6.0.6'
 
 }
 
