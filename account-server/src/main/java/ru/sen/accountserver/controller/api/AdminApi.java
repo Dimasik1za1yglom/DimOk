@@ -1,5 +1,6 @@
 package ru.sen.accountserver.controller.api;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,7 +13,8 @@ import ru.sen.accountserver.dto.UserDto;
 public interface AdminApi {
 
     @GetMapping("/profile/{user-id}")
-    String getUser(@PathVariable("user-id") Long userId,
+    String getUser(HttpServletRequest request,
+                   @PathVariable("user-id") Long userId,
                    Model model,
                    RedirectAttributes redirectAttributes);
 

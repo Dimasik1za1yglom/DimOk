@@ -26,6 +26,14 @@
     <input type="submit" value="Изменить профиль">
 </form>
 <hr>
+<#if createDialog??>
+    <form method="post" action="http://localhost:8082/user/dialog/add/${user.id}">
+        <input type="hidden" name="firstName" value="${user.firstName}">
+        <input type="hidden" name="lastName" value="${user.lastName}">
+        <input type="submit" value="Создать диалог.">
+    </form>
+<#else></#if>
+<hr>
 <a href="http://localhost:8082/search/admin/users/all">
     <b style="background:#FFCCCC">Вернуться ко всем пользователям.</b></a></form>
 </body>

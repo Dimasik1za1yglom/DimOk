@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.accountserver.controller.api.UserApi;
 import ru.sen.accountserver.dto.UserDto;
-import ru.sen.accountserver.dto.remote.ResponseDto;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.gateway.DialogGateway;
 import ru.sen.accountserver.jwt.entity.JwtResponse;
