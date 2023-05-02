@@ -15,6 +15,7 @@ import ru.sen.messagesserver.service.MessageService;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Service
@@ -28,13 +29,13 @@ public class DialogServiceImpl implements DialogService {
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = DialogOperationException.class)
-    public Long createDialog(DialogDto dialogDto, List<Long> usersId)
+    public Long createDialog(List<DialogDto> dialogsDto, List<Long> usersId)
             throws DialogOperationException {
         Long number = usersId.get(0) * 100L + usersId.get(1);
-        log.info("create dialog: {} by usersId: {}", dialogDto, usersId);
+        log.info("create dialogs: {} by usersId: {}", dialogsDto, usersId);
         try {
-            List<Dialog> dialogs = usersId.stream()
-                    .map(x -> dialogMapper.dialogDtoToDialog(dialogDto, x, number))
+            List<Dialog> dialogs = IntStream.range(0, usersId.size())
+                    .mapToObj(i -> dialogMapper.dialogDtoToDialog(dialogsDto.get(i), usersId.get(i), number))
                     .collect(Collectors.toList());
             log.info("creating a list dialogs for users: {}", dialogs);
             dialogRepository.saveAll(dialogs);
@@ -48,18 +49,17 @@ public class DialogServiceImpl implements DialogService {
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = DialogOperationException.class)
-    public void deleteDialog(Long userId, Long dialogId) throws DialogOperationException {
+    public void deleteDialogs(Long userId) throws DialogOperationException {
         log.info("deleting a dialog user to id {}. ", userId);
         try {
-            if (dialogRepository.countDialogByDialogId(dialogId) == 1) {
-                log.info("only one user id {} has the dialog messages left", userId);
-                messageService.deleteAllMessageByDialogId(dialogId);
-                log.info("delete all message dialog id {} was successful", dialogId);
-            }
-            dialogRepository.deleteByDialogIdAndUserId(dialogId, userId);
-            log.info("Delete dialog id {} by user id {} was successful", dialogId, userId);
+            List<Dialog> dialogs = dialogRepository.deleteDialogsByUserId(userId);
+            dialogs.stream()
+                    .filter(dialog -> dialogRepository.countDialogByDialogId(dialog.getDialogId()) == 0)
+                    .forEach(dialog -> messageService.deleteAllMessageByDialogId(dialog.getDialogId()));
+            log.info("Deleting all messages of a certain dialog if this dialog is no longer there");
+            log.info("Delete dialogs by user id {} was successful", userId);
         } catch (Exception e) {
-            log.error("Delete dialog id {} by user id {} failed: {}", dialogId, userId, e.getMessage());
+            log.error("Delete dialogs by user id {} failed: {}", userId, e.getMessage());
             throw new DialogOperationException(e.getMessage());
         }
 
@@ -72,8 +72,8 @@ public class DialogServiceImpl implements DialogService {
     }
 
     @Override
-    public boolean checkIfDialogExists(Long createUserId, Long userId) {
+    public Long checkIfDialogExists(Long createUserId, Long userId) {
         log.info("checking for the existence of a common dialog for two users");
-        return dialogRepository.getDialogIdByUsersId(createUserId, userId).isPresent();
+        return dialogRepository.getDialogIdByUsersId(createUserId, userId);
     }
 }

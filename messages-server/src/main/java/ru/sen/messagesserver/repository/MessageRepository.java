@@ -11,7 +11,19 @@ import java.util.List;
  */
 public interface MessageRepository extends JpaRepository<Message, Long> {
 
+    /**
+     * request to receive all messages by dialogId
+     *
+     * @param dialogId dialog id
+     * @param pageable instructions for how many recent messages to receive
+     * @return the list of messages sorted
+     */
     List<Message> findAllByDialogId(Long dialogId, Pageable pageable);
 
+    /**
+     * deletes all messages by dialog Id
+     *
+     * @param dialogId dialog Id
+     */
     void deleteMessagesByDialogId(Long dialogId);
 }
