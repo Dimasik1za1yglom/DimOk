@@ -56,6 +56,8 @@ public class JwtTokenProvider {
                     .signWith(jwtRefreshSecret)
                     .claim("id", data.getUser().getId())
                     .claim("role", data.getUser().getRole().getName())
+                    .claim("firstName", data.getUser().getFirstName())
+                    .claim("lastName", data.getUser().getLastName())
                     .compact();
         } else {
             return Jwts.builder()

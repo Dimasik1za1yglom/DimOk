@@ -10,6 +10,7 @@ import ru.sen.accountserver.dto.remote.ResponseDto;
 import ru.sen.accountserver.entity.AuthorizationData;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.exception.UserOperationException;
+import ru.sen.accountserver.gateway.DialogGateway;
 import ru.sen.accountserver.gateway.PostGateway;
 import ru.sen.accountserver.gateway.SearchRequestGateway;
 import ru.sen.accountserver.mappers.UserMapper;
@@ -23,11 +24,12 @@ import ru.sen.accountserver.services.UserService;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final AuthorizationDataService dataService;
-    private final UserMapper userToEntityMapper;
-    private final SearchRequestGateway searchRequestGateway;
     private final PostGateway postGateway;
+    private final DialogGateway dialogGateway;
+    private final UserRepository userRepository;
+    private final UserMapper userToEntityMapper;
+    private final AuthorizationDataService dataService;
+    private final SearchRequestGateway searchRequestGateway;
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = UserOperationException.class)
@@ -65,6 +67,12 @@ public class UserServiceImpl implements UserService {
                     log.info("Delete posts by id {} was successful", userToDeleteId);
                 } else {
                     log.error("Delete posts  by user id {} is failed: {}", userToDeleteId, response.getMessage());
+                }
+                response = dialogGateway.deleteDialogsByUser(userToDeleteId);
+                if (response.isSuccess()) {
+                    log.info("Delete dialogs by id {} was successful", userToDeleteId);
+                } else {
+                    log.error("Delete dialogs  by user id {} is failed: {}", userToDeleteId, response.getMessage());
                 }
                 userRepository.deleteById(userToDeleteId);
                 log.info("Delete user of authorization data by userId {} was successful", userToDeleteId);

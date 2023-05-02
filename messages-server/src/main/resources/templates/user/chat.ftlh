@@ -62,16 +62,16 @@
 </#if>
 <hr>
 <#list messages as message>
-    ${message.textMessage}<br>
+    ${message.userId}:
+    ${message.textMessage} (${message.timeCreation})<br>
 </#list>
+<p id="response"></p>
 <div>
-    <br>
     <div id="conversationDiv">
         <input type="text" id="text" placeholder="Write a message..."/>
         <input type="hidden" id="dialogId" value="${dialogId}" />
         <input type="hidden" id="userId" value="${userId}">
-        <button id="sendMessage" onclick="sendMessage();">Отправитьь</button>
-        <p id="response"></p>
+        <button id="sendMessage" onclick="sendMessage();">Отправить</button>
     </div>
 </div>
 <hr>

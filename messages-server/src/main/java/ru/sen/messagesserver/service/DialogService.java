@@ -6,13 +6,43 @@ import ru.sen.messagesserver.exception.DialogOperationException;
 
 import java.util.List;
 
+/**
+ * service for working with user dialogs
+ */
 public interface DialogService {
 
-    Long createDialog(DialogDto dialogDto, List<Long> usersId) throws DialogOperationException;
+    /**
+     * creates dialogs for users common dialog id
+     *
+     * @param dialogs list of dialog names
+     * @param usersId list of users who will have dialogs created
+     * @return dialog id
+     * @throws DialogOperationException
+     */
+    Long createDialog(List<DialogDto> dialogs, List<Long> usersId) throws DialogOperationException;
 
-    void deleteDialog(Long userId, Long dialogId) throws DialogOperationException;
+    /**
+     * deleting all dialogs from a specific user. It is mandatory to process the deletion of messages
+     *
+     * @param userId user Id
+     * @throws DialogOperationException
+     */
+    void deleteDialogs(Long userId) throws DialogOperationException;
 
+    /**
+     * getting all user dialogs by their id
+     *
+     * @param userId user Id
+     * @return list of dialogs of a specific user
+     */
     List<Dialog> getAllDialogsByUserId(Long userId);
 
-    boolean checkIfDialogExists(Long createUserId, Long userId);
+    /**
+     * checking for the existence of dialogs with a common dialogId for two users
+     *
+     * @param createUserId create user id
+     * @param userId       user id
+     * @return returns the number of common dialogs
+     */
+    Long checkIfDialogExists(Long createUserId, Long userId);
 }

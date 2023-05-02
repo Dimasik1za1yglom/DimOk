@@ -53,10 +53,15 @@ public class DialogController implements DialogApi {
         log.info("receiving a request for /users/dialog create dialog is userId: {}", userId);
         try {
             Long createUserId = authService.getIdUserByRefreshToken(request);
-            log.info("getting the token from the request was successful:  create user id {}", createUserId);
-            Long dialogId = dialogService.createDialog(dialogDto, List.of(createUserId, userId));
+            String lastName = authService.getLastNameByRefreshToken(request);
+            String firstName = authService.getFirstNameByRefreshToken(request);
+            log.info("getting the token from the request was successful:  create user id {}, lastName {}, firstName {} ",
+                    createUserId, lastName, firstName);
+            Long dialogId = dialogService.createDialog(
+                    List.of(dialogDto, new DialogDto(firstName, lastName)),
+                    List.of(createUserId, userId));
             log.info("/users/dialog: create dialog id {} user {} was successful", dialogId, createUserId);
-            return String.format("/chat/%d", dialogId);
+            return String.format("redirect:/chat/%d", dialogId);
         } catch (AuthException | DialogOperationException e) {
             redirectAttributes.addFlashAttribute("error", "Невозможно создать диалог, попробуйте позднее");
             log.error("getting the token from the request was failed: {}", e.getMessage());

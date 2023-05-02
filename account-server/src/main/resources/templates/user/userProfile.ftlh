@@ -28,7 +28,10 @@
         <input type="hidden" name="lastName" value="${user.lastName}">
         <input type="submit" value="Создать диалог.">
     </form>
-<#else></#if>
+<#else>
+    <a href="http://localhost:8082/chat/${dialogId}">
+        <b style="background:#FFCCCC">Перейти к диалогу</b></a>
+</#if>
 <hr>
 <form method="get" action="/user/myprofile">
     <input type="submit" value="Вернуться на свою страницу.">

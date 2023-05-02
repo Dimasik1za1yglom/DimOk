@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.accountserver.controller.api.UserApi;
 import ru.sen.accountserver.dto.UserDto;
+import ru.sen.accountserver.dto.remote.ResponseDialogDto;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.gateway.DialogGateway;
 import ru.sen.accountserver.jwt.entity.JwtResponse;
@@ -51,9 +52,14 @@ public class UserController implements UserApi {
             log.info("/profile/{user-id}: getting a user page was successful: {}", user);
             Long createUserId = authService.getIdUserByRefreshToken(request);
             log.info("getting the token from the request was successful:user id {}", userId);
-            if(!dialogGateway.existsDialog(createUserId, userId).isSuccess()) {
+            ResponseDialogDto responseDialogDto = dialogGateway.existsDialog(createUserId, userId);
+            log.info("getting a response from dialog service: {}", responseDialogDto);
+            if (!responseDialogDto.isSuccess()) {
                 model.addAttribute("createDialog", true);
                 log.info("users don't have a common dialog. Users id {}, {}", createUserId, userId);
+            } else {
+                model.addAttribute("dialogId", responseDialogDto.getDialogId());
+                log.info("users have a common dialog. Users id {}, {}", createUserId, userId);
             }
             return "user/userProfile";
         } catch (EntityNotFoundException e) {
