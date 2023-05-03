@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sen.accountserver.controller.remote.api.RemoteSearchApi;
 import ru.sen.accountserver.dto.remote.ResponseUsersDto;
+import ru.sen.accountserver.dto.remote.SearchRequestDto;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.services.UsersSearchService;
 
@@ -21,6 +22,19 @@ public class RemoteSearchController implements RemoteSearchApi {
     private final UsersSearchService usersSearchService;
 
     @Override
+    public ResponseUsersDto getUsersByFilter(SearchRequestDto searchFilter) {
+        try {
+            List<User> users = usersSearchService.getUsersBySearchFilter(searchFilter);
+            log.info("Get users by search filter was successful. Users: {}", users);
+            return new ResponseUsersDto(users, true, null);
+        } catch (EntityNotFoundException e) {
+            log.error("Get all users by search filter  is failed: {}", e.getMessage());
+            String error = "Не удалось получить пользователей по фильтру, попробуйте позднее";
+            return new ResponseUsersDto(null, false, error);
+        }
+    }
+
+    @Override
     public ResponseUsersDto getAllUsers() {
         try {
             List<User> users = usersSearchService.getAllUsers();
@@ -29,48 +43,6 @@ public class RemoteSearchController implements RemoteSearchApi {
         } catch (EntityNotFoundException e) {
             log.error("Get all users is failed: {}", e.getMessage());
             String error = "Не удалось получить всех пользователей, попробуйте позднее";
-            return new ResponseUsersDto(null, false, error);
-        }
-    }
-
-    @Override
-    public ResponseUsersDto getUsersByLastName(String lastName) {
-        try {
-            List<User> users = usersSearchService.getUsersByLastName(lastName);
-            log.info("Get users by last name was successful. Users: {}", users);
-            return new ResponseUsersDto(users, true, null);
-        } catch (EntityNotFoundException e) {
-            log.error("Get users by last name is failed: {}", e.getMessage());
-            String error = String.format("Не удалось получить пользователей c фамилией %s, попробуйте позднее",
-                    lastName);
-            return new ResponseUsersDto(null, false, error);
-        }
-    }
-
-    @Override
-    public ResponseUsersDto getUsersByFirstName(String firstName) {
-        try {
-            List<User> users = usersSearchService.getUsersByFirstName(firstName);
-            log.info("Get users by first name was successful. Users: {}", users);
-            return new ResponseUsersDto(users, true, null);
-        } catch (EntityNotFoundException e) {
-            log.error("Get users by last name is failed: {}", e.getMessage());
-            String error = String.format("Не удалось получить пользователей c именем %s, попробуйте позднее",
-                    firstName);
-            return new ResponseUsersDto(null, false, error);
-        }
-    }
-
-    @Override
-    public ResponseUsersDto getUsersByFirstNameAndLastName(String lastName, String firstName) {
-        try {
-            List<User> users = usersSearchService.getUsersByFirstNameAndLastName(lastName, firstName);
-            log.info("Get users by full name was successful. Users: {}", users);
-            return new ResponseUsersDto(users, true, null);
-        } catch (EntityNotFoundException e) {
-            log.error("Get users by full name is failed: {}", e.getMessage());
-            String error = String.format("Не удалось получить пользователей c именем и фамлией %s %s," +
-                    " попробуйте позднее", firstName, lastName);
             return new ResponseUsersDto(null, false, error);
         }
     }

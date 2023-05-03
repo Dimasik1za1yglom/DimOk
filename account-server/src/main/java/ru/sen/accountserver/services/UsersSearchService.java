@@ -1,5 +1,6 @@
 package ru.sen.accountserver.services;
 
+import ru.sen.accountserver.dto.remote.SearchRequestDto;
 import ru.sen.accountserver.entity.User;
 
 import java.util.List;
@@ -17,28 +18,11 @@ public interface UsersSearchService {
     List<User> getAllUsers();
 
     /**
-     * returns a list of users by last name
+     * returns a list of users by search filter
      *
-     * @param lastName last name
+     * @param searchFilter first name and last name
      * @return list of user
      */
-    List<User> getUsersByLastName(String lastName);
-
-    /**
-     * returns a list of users by first name
-     *
-     * @param firstName firstName
-     * @return list of user
-     */
-    List<User> getUsersByFirstName(String firstName);
-
-    /**
-     * returns a list of users by first name and last name
-     *
-     * @param lastName lastName
-     * @param firstName firstName
-     * @return list of user
-     */
-    List<User> getUsersByFirstNameAndLastName(String lastName, String firstName);
+    List<User> getUsersBySearchFilter(SearchRequestDto searchFilter);
 
 }
