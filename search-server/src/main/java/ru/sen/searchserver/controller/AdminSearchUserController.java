@@ -70,8 +70,8 @@ public class AdminSearchUserController implements AdminSearchUsersApi, SearchUse
         }
         try {
             Long userId = authService.getIdUserByRefreshToken(request);
-            List<User> users = searchUserService.getAllUsersByTextRequest(requestDto).stream()
-                    .filter(user -> !user.getId().equals(userId)).toList();
+            model.addAttribute("myUserId", userId);
+            List<User> users = searchUserService.getAllUsersByTextRequest(requestDto);
             model.addAttribute("request", requestDto);
             if (users.isEmpty()) {
                 List<String> errors = List.of("Пользователей по данному запросу не существует.");

@@ -35,8 +35,13 @@
                 <td>${user.lastName}</td>
                 <td>${user.birthday}</td>
                 <td>
-                    <a href="http://localhost:8082/user/profile/${user.id}">
-                        <b style="background:#FFCCCC">Посмотреть профиль.</b></a>
+                    <#if user.id == myUserId>
+                        <a href="http://localhost:8082/user/myprofile">
+                            <b style="background:#FFCCCC">Посмотреть свою страницу.</b></a>
+                    <#else>
+                        <a href="http://localhost:8082/user/profile/${user.id}">
+                            <b style="background:#FFCCCC">Посмотреть профиль.</b></a>
+                    </#if>
                 </td>
             </tr>
         </#list>

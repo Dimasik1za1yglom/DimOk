@@ -42,11 +42,16 @@
                 <td>${user.birthday}</td>
                 <td>${user.role.name}</td>
                 <td>
-                    <a href="http://localhost:8082/account/admin/profile/${user.id}">
-                        <b style="background:#FFCCCC">Посмотреть страницу пользователя.</b></a>
-                    <form method="get" action="/search/admin/requests/${user.id}">
-                        <input type="submit" value="Посмотреть историю поиска">
-                    </form>
+                    <#if user.id == myUserId>
+                        <a href="http://localhost:8082/user/myprofile">
+                            <b style="background:#FFCCCC">Посмотреть свою страницу.</b></a>
+                    <#else>
+                        <a href="http://localhost:8082/account/admin/profile/${user.id}">
+                            <b style="background:#FFCCCC">Посмотреть страницу пользователя.</b></a>
+                        <form method="get" action="/search/admin/requests/${user.id}">
+                            <input type="submit" value="Посмотреть историю поиска">
+                        </form>
+                    </#if>
                 </td>
             </tr>
         </#list>
