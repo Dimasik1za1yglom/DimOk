@@ -41,6 +41,14 @@ public class AuthService {
         }
     }
 
+    public JwtResponse getRefresh(HttpServletRequest request) throws AuthException {
+        final String token = jwtTokenProvider.getTokenFromRequest(request);
+        if (token != null) {
+            return getRefresh(token);
+        }
+        throw new AuthException("Отсутсвует JWT токен");
+    }
+
     public JwtResponse getRefresh(@NonNull String refreshToken) throws AuthException {
         if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtTokenProvider.getRefreshClaims(refreshToken);
@@ -55,14 +63,6 @@ public class AuthService {
             }
         }
         throw new AuthException("Невалидный JWT токен");
-    }
-
-    public JwtResponse getRefresh(HttpServletRequest request) throws AuthException {
-        final String token = jwtTokenProvider.getTokenFromRequest(request);
-        if (token != null) {
-            return getRefresh(token);
-        }
-        throw new AuthException("Отсутсвует JWT токен");
     }
 
     public Long getIdUserByRefreshToken(HttpServletRequest request) throws AuthException {

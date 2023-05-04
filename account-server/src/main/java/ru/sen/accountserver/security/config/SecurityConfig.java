@@ -26,12 +26,7 @@ public class SecurityConfig {
         http
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/registration", "/input", "/app/**").permitAll()
-                        .anyRequest().authenticated()
-                        .and()
-                        .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                )
+                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout", "GET"))
                 .invalidateHttpSession(true)

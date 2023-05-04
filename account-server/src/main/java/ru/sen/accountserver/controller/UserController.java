@@ -128,7 +128,7 @@ public class UserController implements UserApi {
                 return "redirect:/user/myprofile";
             } catch (AuthException e) {
                 errors.add("Пользователь добавлен, но возникли ошибки. Попробуйте зайти заного");
-                log.error("/add: Adding fields to the user's page was successful");
+                log.error("/add: Adding fields to the user's page wasn't successful");
                 redirectAttributes.addFlashAttribute("errors", errors.build().toList());
                 return "redirect:/user/logout";
             }

@@ -7,7 +7,7 @@ spring:
     name: messagesServer
   datasource:
     driver-class-name: org.postgresql.Driver
-    jdbc-url: jdbc:postgresql://localhost:5432/social_network
+    url: jdbc:postgresql://localhost:5432/social_network
     username: postgres
     password: "112348Diman"
   liquibase:
