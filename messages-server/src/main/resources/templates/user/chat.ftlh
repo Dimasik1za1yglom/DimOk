@@ -47,8 +47,8 @@
             var response = document.getElementById('response');
             var p = document.createElement('p');
             p.style.wordWrap = 'break-word';
-            p.appendChild(document.createTextNode(messageOutput.userId + ": "
-                + messageOutput.textMessage + " (" + messageOutput.timeCreation + ")"));
+            p.appendChild(document.createTextNode(messageOutput.userName + ": "
+                + messageOutput.message.textMessage + " (" + messageOutput.message.timeCreation + ")"));
             response.appendChild(p);
         }
     </script>
@@ -62,8 +62,8 @@
 </#if>
 <hr>
 <#list messages as message>
-    ${message.userId}:
-    ${message.textMessage} (${message.timeCreation})<br>
+    ${message.userName}:
+    ${message.message.textMessage} (${message.message.timeCreation})<br>
 </#list>
 <p id="response"></p>
 <div>

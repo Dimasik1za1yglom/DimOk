@@ -1,6 +1,7 @@
 package ru.sen.messagesserver.controller.api;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +18,7 @@ public interface DialogApi {
 
     @PostMapping("/add/{user-id}")
     String createDialog(HttpServletRequest request,
-                        DialogDto dialogDto,
+                        @Valid DialogDto dialogDto,
                         @PathVariable("user-id") Long userId,
                         RedirectAttributes redirectAttributes);
 }
