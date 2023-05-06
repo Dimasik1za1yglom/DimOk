@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .deleteCookies("JWT-TOKEN")
-                .logoutSuccessUrl("/registration");
+                .logoutSuccessUrl("/input");
 
         return http.build();
     }
