@@ -7,10 +7,19 @@ package ru.sen.messagesserver.service;
 public interface ErrorInterceptorService {
 
     /**
-     * checking for deleting a dialog from a specific user
+     * checking for deleting a all dialogs from a specific user
      *
-     * @param userId id of the user whose dialog  need to be deleted
+     * @param userId id of the user whose dialogs  need to be deleted
      * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
      */
     boolean checkIfDeletingDialogSuccessful(Long userId);
+
+    /**
+     * checking for deleting a dialog by id from a specific user
+     *
+     * @param userId   id of the user whose dialog  need to be deleted
+     * @param dialogId dialog id
+     * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
+     */
+    boolean checkIfDeletingDialogSuccessful(Long userId, Long dialogId);
 }

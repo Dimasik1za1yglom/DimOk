@@ -28,6 +28,9 @@
                     <form method="get" action="/chat/${dialog.dialogId}">
                         <input type="submit" value="Перейти к диалогу">
                     </form>
+                    <form method="post" action="/user/dialog/delete/${dialog.dialogId}/${dialog.userId}">
+                        <input type="submit" value="Удалить диалог">
+                    </form>
                 </td>
             </tr>
         </#list>

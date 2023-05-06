@@ -45,4 +45,13 @@ public interface DialogService {
      * @return returns the number of common dialogs
      */
     Long checkIfDialogExists(Long createUserId, Long userId);
+
+    /**
+     * deleting a dialog from a specific user
+     *
+     * @param userId   user id
+     * @param dialogId dialog id
+     * @throws DialogOperationException
+     */
+    void deleteDialog(Long userId, Long dialogId) throws DialogOperationException;
 }

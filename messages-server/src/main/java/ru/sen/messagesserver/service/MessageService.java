@@ -34,4 +34,6 @@ public interface MessageService {
      * @return list of response messages
      */
     List<MessageOutput> getAllMessageByDialogId(Long dialogId);
+
+    Long getDialogIdByUsers(List<Long> usersId);
 }

@@ -20,4 +20,14 @@ public class ErrorInterceptorServiceImpl implements ErrorInterceptorService {
             return false;
         }
     }
+
+    @Override
+    public boolean checkIfDeletingDialogSuccessful(Long userId, Long dialogId) {
+        try {
+            dialogService.deleteDialog(userId, dialogId);
+            return true;
+        } catch (DialogOperationException e) {
+            return false;
+        }
+    }
 }

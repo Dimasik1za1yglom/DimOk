@@ -88,4 +88,10 @@ public class MessageServiceImpl implements MessageService {
         log.info("creating reply messages: {}", messageOutputs);
         return messageOutputs;
     }
+
+    @Override
+    public Long getDialogIdByUsers(List<Long> usersId) {
+        log.info("getting a dialog id among messages by list usersId: {}", usersId);
+        return messageRepository.getDialogIdByTwoUserId(usersId.get(0), usersId.get(1));
+    }
 }

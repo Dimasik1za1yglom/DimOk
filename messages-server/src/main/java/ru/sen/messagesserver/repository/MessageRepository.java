@@ -2,6 +2,7 @@ package ru.sen.messagesserver.repository;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.sen.messagesserver.entity.Message;
 
 import java.util.List;
@@ -26,4 +27,14 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
      * @param dialogId dialog Id
      */
     void deleteMessagesByDialogId(Long dialogId);
+
+    /**
+     * request to get dialogid among the messages of two users if there are any
+     * @param oneUserId user id
+     * @param twoUserId user id
+     * @return dialog id
+     */
+    @Query(nativeQuery = true,
+            value = "select dialog_id from messages where user_id = 3 or user_id = 2 group by dialog_id")
+    Long getDialogIdByTwoUserId(Long oneUserId, Long twoUserId);
 }

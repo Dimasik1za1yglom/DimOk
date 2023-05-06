@@ -31,19 +31,30 @@ public class DialogServiceImpl implements DialogService {
     @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = DialogOperationException.class)
     public Long createDialog(List<DialogDto> dialogsDto, List<Long> usersId)
             throws DialogOperationException {
-        Long number = usersId.get(0) * 100L + usersId.get(1);
-        log.info("create dialogs: {} by usersId: {}", dialogsDto, usersId);
-        try {
-            List<Dialog> dialogs = IntStream.range(0, usersId.size())
-                    .mapToObj(i -> dialogMapper.dialogDtoToDialog(dialogsDto.get(i), usersId.get(i), number))
-                    .collect(Collectors.toList());
-            log.info("creating a list dialogs for users: {}", dialogs);
-            dialogRepository.saveAll(dialogs);
-            log.info("Save a new dialogs was successful");
-            return number;
-        } catch (Exception E) {
-            log.error("Save a new dialogs is failed");
-            throw new DialogOperationException("Throwing exception for demoing rollback");
+        Long dialogId = messageService.getDialogIdByUsers(usersId);
+        log.info("get a possible dialogId of an already existing shared dialog between users: {}", dialogId);
+        if (dialogId == null) {
+            log.info("there is no existing general dialog for users {}", usersId);
+            Long number = usersId.get(0) * 100L + usersId.get(1);
+            log.info("create dialogs: {} by usersId: {}", dialogsDto, usersId);
+            try {
+                List<Dialog> dialogs = IntStream.range(0, usersId.size())
+                        .mapToObj(i -> dialogMapper.dialogDtoToDialog(dialogsDto.get(i), usersId.get(i), number))
+                        .collect(Collectors.toList());
+                log.info("creating a list dialogs for users: {}", dialogs);
+                dialogRepository.saveAll(dialogs);
+                log.info("Save a new dialogs was successful");
+                return number;
+            } catch (Exception E) {
+                log.error("Save a new dialogs is failed");
+                throw new DialogOperationException("Throwing exception for demoing rollback");
+            }
+        } else {
+            log.info("The users {} had a shared dialog in the past, but one was deleted earlier", usersId);
+            Dialog dialog = dialogMapper.dialogDtoToDialog(dialogsDto.get(0), usersId.get(0), dialogId);
+            dialogRepository.save(dialog);
+            log.info("Save dialog by dialogId {} of userId {} was successful", dialogId, usersId);
+            return dialogId;
         }
     }
 
@@ -75,5 +86,24 @@ public class DialogServiceImpl implements DialogService {
     public Long checkIfDialogExists(Long createUserId, Long userId) {
         log.info("checking for the existence of a common dialog for two users");
         return dialogRepository.getDialogIdByUsersId(createUserId, userId);
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = DialogOperationException.class)
+    public void deleteDialog(Long userId, Long dialogId) throws DialogOperationException {
+        log.info("deleting a dialog user to id {}. ", userId);
+        try {
+            if (dialogRepository.countDialogByDialogId(dialogId) == 1) {
+                log.info("only one user id {} has the dialog messages left", userId);
+                messageService.deleteAllMessageByDialogId(dialogId);
+                log.info("delete all message dialog id {} was successful", dialogId);
+            }
+            dialogRepository.deleteByDialogIdAndUserId(dialogId, userId);
+            log.info("Delete dialog id {} by user id {} was successful", dialogId, userId);
+        } catch (Exception e) {
+            log.error("Delete dialog id {} by user id {} failed: {}", dialogId, userId, e.getMessage());
+            throw new DialogOperationException(e.getMessage());
+        }
+
     }
 }

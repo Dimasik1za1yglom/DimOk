@@ -46,4 +46,12 @@ public interface DialogRepository extends JpaRepository<Dialog, Long> {
             value = "select dialog_id from dialogs where user_id = :createUserId or user_id = :userId " +
                     "group by dialog_id having count(*) > 1")
     Long getDialogIdByUsersId(Long createUserId, Long userId);
+
+    /**
+     * request to delete a dialog from a specific user
+     *
+     * @param dialogId dialog id
+     * @param userId   user Id
+     */
+    void deleteByDialogIdAndUserId(Long dialogId, Long userId);
 }
