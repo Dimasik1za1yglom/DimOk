@@ -22,4 +22,13 @@ public interface ErrorInterceptorService {
      * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
      */
     boolean checkIfDeletingDialogSuccessful(Long userId, Long dialogId);
+
+    /**
+     * checking for change a name dialog by user id from a specific user
+     *
+     * @param newNameDialog new name dialog
+     * @param userId        user Id
+     * @return handles transaction errors, if an exception is thrown, it returns false, otherwise true
+     */
+    boolean checkIfChangeDialogsNameSuccessful(String newNameDialog, Long userId);
 }

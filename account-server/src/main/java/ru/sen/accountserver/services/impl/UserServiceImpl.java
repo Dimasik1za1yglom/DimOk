@@ -100,6 +100,13 @@ public class UserServiceImpl implements UserService {
             User user = userToEntityMapper.userDtoToUser(userDto);
             user.setId(userId);
             userRepository.save(user);
+            ResponseDto response = dialogGateway.changeDialogNameLinkedByUser(
+                    String.format("%s %s", user.getFirstName(), user.getLastName()), userId);
+            if (response.isSuccess()) {
+                log.info("Change name dialogs linked by user id {} was successful", userId);
+            } else {
+                log.error("Delete search requests by user id {} is failed: {}", userId, response.getMessage());
+            }
             log.info("User update was successful");
         } catch (Exception e) {
             log.error("Update user and his authorization data false: {}", e.getMessage());

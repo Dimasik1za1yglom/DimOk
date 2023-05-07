@@ -104,6 +104,22 @@ public class DialogServiceImpl implements DialogService {
             log.error("Delete dialog id {} by user id {} failed: {}", dialogId, userId, e.getMessage());
             throw new DialogOperationException(e.getMessage());
         }
+    }
 
+    @Override
+    @Transactional(isolation = Isolation.SERIALIZABLE, rollbackFor = DialogOperationException.class)
+    public void changeDialogsNameLinkedByUserId(String newDialogName, Long userId) throws DialogOperationException {
+        log.info("change name a dialogs linked by user to id {}. ", userId);
+        try {
+            List<Dialog> dialogs = dialogRepository.getDialogsLinkedByUsersId(userId);
+            log.info("get list dialog linked by user id {}: {}", userId, dialogs);
+            dialogs.forEach(dialog -> dialog.setName(newDialogName));
+            dialogRepository.saveAll(dialogs);
+            log.info("change name {} a dialogs linked by user to id {} was successful", newDialogName, userId);
+        } catch (Exception e) {
+            log.error("change name {} a dialogs linked by user to id {} is failed: {}",
+                    newDialogName, userId, e.getMessage());
+            throw new DialogOperationException(e.getMessage());
+        }
     }
 }

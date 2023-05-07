@@ -42,4 +42,16 @@ public class RemoteAccountController implements RemoteAccountApi {
             return new ResponseDto(true, null);
         }
     }
+
+    @Override
+    public ResponseDto changeDialogsName(String newNameDialog, Long userId) {
+        if (!interceptorService.checkIfChangeDialogsNameSuccessful(newNameDialog, userId)) {
+            String error = "Не удалось имзенить имя диалогов. Попробуйте позднее";
+            log.error("Error on change name a dialogs under user id: {}", userId);
+            return new ResponseDto(false, error);
+        } else {
+            log.info("Change name dialogs was successful user id: {}", userId);
+            return new ResponseDto(true, null);
+        }
+    }
 }

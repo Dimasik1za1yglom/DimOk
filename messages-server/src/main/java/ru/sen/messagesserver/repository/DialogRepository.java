@@ -54,4 +54,15 @@ public interface DialogRepository extends JpaRepository<Dialog, Long> {
      * @param userId   user Id
      */
     void deleteByDialogIdAndUserId(Long dialogId, Long userId);
+
+    /**
+     * request to receive dialogs that all users have with the user who userId
+     *
+     * @param userId userId
+     * @return list dialogs
+     */
+    @Query(nativeQuery = true,
+            value = "select * from dialogs where user_id != :userId and dialog_id = " +
+                    "(select dialog_id from dialogs where user_id = :userId)")
+    List<Dialog> getDialogsLinkedByUsersId(Long userId);
 }

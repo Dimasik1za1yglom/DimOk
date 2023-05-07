@@ -11,6 +11,7 @@ import ru.sen.messagesserver.service.ErrorInterceptorService;
 public class ErrorInterceptorServiceImpl implements ErrorInterceptorService {
 
     private final DialogService dialogService;
+
     @Override
     public boolean checkIfDeletingDialogSuccessful(Long userId) {
         try {
@@ -25,6 +26,16 @@ public class ErrorInterceptorServiceImpl implements ErrorInterceptorService {
     public boolean checkIfDeletingDialogSuccessful(Long userId, Long dialogId) {
         try {
             dialogService.deleteDialog(userId, dialogId);
+            return true;
+        } catch (DialogOperationException e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean checkIfChangeDialogsNameSuccessful(String newNameDialog, Long userId) {
+        try {
+            dialogService.changeDialogsNameLinkedByUserId(newNameDialog, userId);
             return true;
         } catch (DialogOperationException e) {
             return false;

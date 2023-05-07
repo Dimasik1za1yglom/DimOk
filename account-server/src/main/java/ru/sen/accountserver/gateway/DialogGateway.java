@@ -45,4 +45,18 @@ public class DialogGateway {
                 .bodyToMono(ResponseDto.class)
                 .block();
     }
+
+    public ResponseDto changeDialogNameLinkedByUser(String newNameDialog, Long userId) {
+        return webClient
+                .build()
+                .post()
+                .uri("http://messagesServer/app/dialog/change",
+                        uriBuilder -> uriBuilder
+                                .queryParam("newNameDialog", newNameDialog)
+                                .queryParam("userId", userId)
+                                .build())
+                .retrieve()
+                .bodyToMono(ResponseDto.class)
+                .block();
+    }
 }

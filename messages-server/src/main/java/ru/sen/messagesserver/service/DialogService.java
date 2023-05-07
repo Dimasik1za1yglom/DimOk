@@ -54,4 +54,12 @@ public interface DialogService {
      * @throws DialogOperationException
      */
     void deleteDialog(Long userId, Long dialogId) throws DialogOperationException;
+
+    /**
+     * change a name dialog by user id from a specific user
+     *
+     * @param newDialogName new dialog name
+     * @param userId        user id
+     */
+    void changeDialogsNameLinkedByUserId(String newDialogName, Long userId) throws DialogOperationException;
 }

@@ -13,4 +13,7 @@ public interface RemoteAccountApi {
 
     @PostMapping("/delete")
     ResponseDto deleteDialogs(@RequestParam Long userId);
+
+    @PostMapping("/change")
+    ResponseDto changeDialogsName(@RequestParam String newNameDialog, @RequestParam Long userId);
 }
