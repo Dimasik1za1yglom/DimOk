@@ -32,14 +32,18 @@ public class AdminSearchUserController implements AdminSearchUsersApi, SearchUse
     private final AuthService authService;
 
     @Override
-    public String getAllUsers(Model model, RedirectAttributes redirectAttributes) {
+    public String getAllUsers(HttpServletRequest request,
+                              Model model,
+                              RedirectAttributes redirectAttributes) {
         log.info("receiving a request for /admin/users/all");
         try {
             List<User> users = searchUserService.getAllUsers();
             model.addAttribute("users", users);
             log.info("Was successful get all users: {}", users);
+            Long userId = authService.getIdUserByRefreshToken(request);
+            model.addAttribute("myUserId", userId);
             return "admin/adminSearchUsers";
-        } catch (SearchUsersException e) {
+        } catch (SearchUsersException | AuthException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             log.error("Failed get all users: {}", e.getMessage());
             return "redirect:admin/adminSearchUsers";

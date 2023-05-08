@@ -48,10 +48,10 @@
                     <#else>
                         <a href="http://localhost:8082/account/admin/profile/${user.id}">
                             <b style="background:#FFCCCC">Посмотреть страницу пользователя.</b></a>
-                        <form method="get" action="/search/admin/requests/${user.id}">
-                            <input type="submit" value="Посмотреть историю поиска">
-                        </form>
                     </#if>
+                    <form method="get" action="/search/admin/requests/${user.id}">
+                        <input type="submit" value="Посмотреть историю поиска">
+                    </form>
                 </td>
             </tr>
         </#list>

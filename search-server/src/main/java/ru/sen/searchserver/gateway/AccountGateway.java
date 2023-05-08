@@ -3,7 +3,9 @@ package ru.sen.searchserver.gateway;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import ru.sen.searchserver.dto.SearchRequestDto;
 import ru.sen.searchserver.dto.remote.ResponseUsersDto;
@@ -33,15 +35,13 @@ public class AccountGateway {
     public ResponseUsersDto getUsersByFilter(SearchRequestDto searchRequestDto) {
         return webClient
                 .build()
-                .get()
-                .uri("http://accountServer/app/users/filter",
-                        uriBuilder -> uriBuilder
-                                .queryParam("searchFilter", searchRequestDto)
-                                .build())
+                .post()
+                .uri("http://accountServer/app/users/filter")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(searchRequestDto))
                 .retrieve()
                 .bodyToMono(ResponseUsersDto.class)
                 .block();
-
     }
 
     /**

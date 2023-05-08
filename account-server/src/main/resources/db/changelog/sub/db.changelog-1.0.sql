@@ -34,7 +34,6 @@ create table dialogs
     id        bigserial primary key,
     name      varchar(100) not null,
     user_id   bigint,
-    foreign key (user_id) references users (id),
     dialog_id bigint
 );
 
@@ -44,7 +43,6 @@ create table messages
     id            bigserial primary key,
     dialog_id     bigint,
     user_id       bigint,
-    foreign key (user_id) references users (id),
     text_message  varchar(50000) not null check ( text_message != ''
         ),
     time_creation timestamp      not null
@@ -76,13 +74,4 @@ create table authorization_data
     password varchar(500)             not null,
     user_id  bigint,
     foreign key (user_id) references users (id)
-);
-
---changeset dim_ok:9
-create table permissions
-(
-    id      bigserial primary key,
-    name    varchar(180) not null,
-    role_id bigint       not null,
-    foreign key (role_id) references roles (id)
 );

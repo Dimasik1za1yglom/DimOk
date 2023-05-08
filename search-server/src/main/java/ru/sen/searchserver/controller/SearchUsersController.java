@@ -57,8 +57,8 @@ public class SearchUsersController implements SearchUsersApi {
             Long userId = authService.getIdUserByRefreshToken(request);
             log.info("getting the token from the request was successful: user id {}", userId);
             model.addAttribute("myUserId", userId);
-            searchRequestService.addSearchRequest(requestDto, LocalDateTime.now(), userId);
             List<User> users = searchUserService.getAllUsersByTextRequest(requestDto);
+            searchRequestService.addSearchRequest(requestDto, LocalDateTime.now(), userId);
             model.addAttribute("user", requestDto);
             if (users.isEmpty()) {
                 List<String> errors = List.of("Пользователей по данному запросу не существует.");
