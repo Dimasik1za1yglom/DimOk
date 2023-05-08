@@ -10,6 +10,7 @@ import ru.sen.accountserver.dto.remote.ResponseDto;
 import ru.sen.accountserver.entity.AuthorizationData;
 import ru.sen.accountserver.entity.User;
 import ru.sen.accountserver.exception.UserOperationException;
+import ru.sen.accountserver.gateway.DialogGateway;
 import ru.sen.accountserver.gateway.PostGateway;
 import ru.sen.accountserver.gateway.SearchRequestGateway;
 import ru.sen.accountserver.mappers.UserMapper;
@@ -23,11 +24,12 @@ import ru.sen.accountserver.services.UserService;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final AuthorizationDataService dataService;
-    private final UserMapper userToEntityMapper;
-    private final SearchRequestGateway searchRequestGateway;
     private final PostGateway postGateway;
+    private final DialogGateway dialogGateway;
+    private final UserRepository userRepository;
+    private final UserMapper userToEntityMapper;
+    private final AuthorizationDataService dataService;
+    private final SearchRequestGateway searchRequestGateway;
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = UserOperationException.class)
@@ -66,6 +68,12 @@ public class UserServiceImpl implements UserService {
                 } else {
                     log.error("Delete posts  by user id {} is failed: {}", userToDeleteId, response.getMessage());
                 }
+                response = dialogGateway.deleteDialogsByUser(userToDeleteId);
+                if (response.isSuccess()) {
+                    log.info("Delete dialogs by id {} was successful", userToDeleteId);
+                } else {
+                    log.error("Delete dialogs  by user id {} is failed: {}", userToDeleteId, response.getMessage());
+                }
                 userRepository.deleteById(userToDeleteId);
                 log.info("Delete user of authorization data by userId {} was successful", userToDeleteId);
             } else {
@@ -92,6 +100,13 @@ public class UserServiceImpl implements UserService {
             User user = userToEntityMapper.userDtoToUser(userDto);
             user.setId(userId);
             userRepository.save(user);
+            ResponseDto response = dialogGateway.changeDialogNameLinkedByUser(
+                    String.format("%s %s", user.getFirstName(), user.getLastName()), userId);
+            if (response.isSuccess()) {
+                log.info("Change name dialogs linked by user id {} was successful", userId);
+            } else {
+                log.error("Delete search requests by user id {} is failed: {}", userId, response.getMessage());
+            }
             log.info("User update was successful");
         } catch (Exception e) {
             log.error("Update user and his authorization data false: {}", e.getMessage());

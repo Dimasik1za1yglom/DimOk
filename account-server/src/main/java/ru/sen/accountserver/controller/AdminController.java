@@ -1,6 +1,7 @@
 package ru.sen.accountserver.controller;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -13,7 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.accountserver.controller.api.AdminApi;
 import ru.sen.accountserver.dto.UserDto;
+import ru.sen.accountserver.dto.remote.ResponseDialogDto;
 import ru.sen.accountserver.entity.User;
+import ru.sen.accountserver.gateway.DialogGateway;
+import ru.sen.accountserver.jwt.exception.AuthException;
+import ru.sen.accountserver.jwt.service.AuthService;
 import ru.sen.accountserver.security.details.UserDetailsImpl;
 import ru.sen.accountserver.services.ErrorInterceptorService;
 import ru.sen.accountserver.services.UserService;
@@ -29,16 +34,29 @@ public class AdminController implements AdminApi {
 
     private final UserService userService;
     private final ErrorInterceptorService interceptorService;
+    private final DialogGateway dialogGateway;
+    private final AuthService authService;
 
     @Override
-    public String getUser(Long userId, Model model, RedirectAttributes redirectAttributes) {
+    public String getUser(HttpServletRequest request, Long userId, Model model, RedirectAttributes redirectAttributes) {
         log.info("/account/admin/profile/{user-id}: request to receive the user's page by id {}", userId);
         try {
             User user = userService.getUserById(userId);
             model.addAttribute("user", user);
             log.info("/profile/{user-id}: getting a user page was successful: {}", user);
+            Long createUserId = authService.getIdUserByRefreshToken(request);
+            log.info("getting the token from the request was successful:user id {}", userId);
+            ResponseDialogDto responseDialogDto = dialogGateway.existsDialog(createUserId, userId);
+            log.info("getting a response from dialog service: {}", responseDialogDto );
+            if(!responseDialogDto.isSuccess()) {
+                model.addAttribute("createDialog", true);
+                log.info("users don't have a common dialog. Users id {}, {}", createUserId, userId);
+            } else {
+                model.addAttribute("dialogId", responseDialogDto.getDialogId());
+                log.info("users have a common dialog. Users id {}, {}", createUserId, userId);
+            }
             return "admin/adminUserProfile";
-        } catch (EntityNotFoundException e) {
+        } catch (EntityNotFoundException | AuthException e) {
             redirectAttributes.addFlashAttribute("error", "Пользователь отсутсвует");
             log.error("/profile/{user-id}: Getting a user page is failed: {}", e.getMessage());
             return "redirect:http://localhost:8082/search/admin/users/all";

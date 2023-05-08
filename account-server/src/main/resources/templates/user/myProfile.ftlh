@@ -22,6 +22,8 @@
 <hr>
 <a href="http://localhost:8082/post/my/all/${user.id}"><b style="background:#FFCCCC">Мои посты.</b></a>
 <hr>
+<a href="http://localhost:8082/user/dialog/my/${user.id}"><b style="background:#FFCCCC">Мои диалоги.</b></a>
+<hr>
 <form method="get" action="/user/change">
     <input type="submit" value="Изменить аккаунт">
 </form>

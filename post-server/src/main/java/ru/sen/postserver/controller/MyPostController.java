@@ -39,7 +39,7 @@ public class MyPostController implements PostApi, GetPostApi {
             List<Post> posts = postService.getAllPostByUserId(userId);
             if (posts.isEmpty()) {
                 log.info("The user by id {} has no posts", userId);
-                model.addAttribute("error", "У  вас нету пока постов");
+                model.addAttribute("errors", List.of("У вас нету пока постов"));
             } else {
                 posts.forEach(post -> {
                     if (post.getText().length() > 33) {

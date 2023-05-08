@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.accountserver.controller.api.UserApi;
 import ru.sen.accountserver.dto.UserDto;
+import ru.sen.accountserver.dto.remote.ResponseDialogDto;
 import ru.sen.accountserver.entity.User;
+import ru.sen.accountserver.gateway.DialogGateway;
 import ru.sen.accountserver.jwt.entity.JwtResponse;
 import ru.sen.accountserver.jwt.exception.AuthException;
 import ru.sen.accountserver.jwt.service.AuthService;
@@ -39,19 +41,34 @@ public class UserController implements UserApi {
     private final ErrorInterceptorService interceptorService;
     private final UserService userService;
     private final AuthService authService;
+    private final DialogGateway dialogGateway;
 
     @Override
-    public String getUserProfile(Long userId, Model model, RedirectAttributes redirectAttributes) {
+    public String getUserProfile(HttpServletRequest request, Long userId, Model model, RedirectAttributes redirectAttributes) {
         log.info("/profile/{user-id}: request to receive the user's page by id {}", userId);
         try {
             User user = userService.getUserById(userId);
             model.addAttribute("user", user);
             log.info("/profile/{user-id}: getting a user page was successful: {}", user);
+            Long createUserId = authService.getIdUserByRefreshToken(request);
+            log.info("getting the token from the request was successful:user id {}", userId);
+            ResponseDialogDto responseDialogDto = dialogGateway.existsDialog(createUserId, userId);
+            log.info("getting a response from dialog service: {}", responseDialogDto);
+            if (!responseDialogDto.isSuccess()) {
+                model.addAttribute("createDialog", true);
+                log.info("users don't have a common dialog. Users id {}, {}", createUserId, userId);
+            } else {
+                model.addAttribute("dialogId", responseDialogDto.getDialogId());
+                log.info("users have a common dialog. Users id {}, {}", createUserId, userId);
+            }
             return "user/userProfile";
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("error", "Пользователь отсутсвует");
             log.error("/profile/{user-id}: Getting a user page is failed: {}", e.getMessage());
             return "redirect:user/searchUsers";
+        } catch (AuthException e) {
+            log.error("getting the token from the request was failed: {}", e.getMessage());
+            return "redirect:/user/logout";
         }
     }
 
@@ -111,7 +128,7 @@ public class UserController implements UserApi {
                 return "redirect:/user/myprofile";
             } catch (AuthException e) {
                 errors.add("Пользователь добавлен, но возникли ошибки. Попробуйте зайти заного");
-                log.error("/add: Adding fields to the user's page was successful");
+                log.error("/add: Adding fields to the user's page wasn't successful");
                 redirectAttributes.addFlashAttribute("errors", errors.build().toList());
                 return "redirect:/user/logout";
             }
