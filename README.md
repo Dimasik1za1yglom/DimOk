@@ -48,7 +48,7 @@ ___
 - Liquibase 4.1
 - Docker 3.9
 - Gradle 7.6
-- Spring Cloud 2022.0.1 (Service discovery: Eureka Server, Gateway)
+- Spring Cloud 2022.0.1 (Service discovery: Eureka Server; Gateway)
 - Lombok 1.18.24
 - Freemarker 2.3.31
 - Jsonwebtoken 0.11.5
@@ -64,3 +64,4 @@ ___
 ### Дополнительно:
 - Сделать пользователя с правами администратора нужно через ручное изменение роли в баззе данных.
 - Функционал администратора доступен по пути /seacrh/admin
+- Аутентификационный ключ для создания и проверки JWT токена хранитья в каждом сервисе в файле конфигурации application.yml в поле jwt.secret.refresh. Для создания нового ключа в AccountServerApplication в пакете jwt.util в классе GenerateKeys нужно запустить метод main.
