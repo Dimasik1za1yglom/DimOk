@@ -14,5 +14,4 @@ public interface AuthorizationDataRepository extends JpaRepository<Authorization
      */
     void deleteByUserId(Long userId);
 
-
 }

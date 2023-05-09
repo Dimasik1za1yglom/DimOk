@@ -41,8 +41,8 @@ public class SignUpController implements SignUpApi {
             return "redirect:/registration";
         }
         if (authorizationDataService.checkIfEmailExists(dataDto.getEmail())) {
-            String error = "Пользователь с таким e-mail уже существует, попробуйте войти в систему";
-            redirectAttributes.addFlashAttribute("error", error);
+            List<String> errors = List.of("Пользователь с таким e-mail уже существует, попробуйте войти в систему");
+            redirectAttributes.addFlashAttribute("errors", errors);
             log.error("/registration: Attempt to register a user who is already in the system: {}", dataDto);
             return "redirect:/registration";
         }

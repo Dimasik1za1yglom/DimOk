@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Мои посты</title>
+</head>
+<body>
+<#if errors??>
+    <#list errors as error>
+        <h2 style="color:red">${error}</h2>
+    </#list>
+<#else>
+</#if>
+<hr>
+<form method="post" action="/post/my/add">
+    <textarea name="text" cols="60" rows="10" placeholder="Текст Поста"></textarea>
+    <input type="submit" value="Добавить новый постик">
+</form>
+<hr>
+<#if posts??>
+<table>
+    <tr>
+        <th>Содержание</th>
+        <th>Время создания</th>
+        <th>Действия</th>
+    </tr>
+    <#list posts as post>
+        <tr>
+            <td>${post.text}</td>
+            <td>${post.timeCreation}</td>
+            <td>
+                <form method="get" action="/post/my/${post.id}/${post.userId}">
+                    <input type="submit" value="Посмотреть">
+                </form>
+            </td>
+        </tr>
+    </#list>
+</table>
+<#else>
+</#if>
+<hr>
+<a href="http://localhost:8082/user/myprofile">
+    <b style="background:#FFCCCC">Вернуться на свою страницу.</b></a>
+</body>
+</html>
