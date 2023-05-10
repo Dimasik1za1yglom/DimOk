@@ -59,4 +59,13 @@ public interface UserService {
      * @return true if such a number exists, and false if there is not
      */
     boolean checkIfPhoneExists(String phone);
+
+    /**
+     * change the user role. Only a user with a role higher than his can change the user's role
+     *
+     * @param changeUserId id of the user whose role needs to be changed
+     * @param userId       id of the user who wants to change the role
+     * @param newRoleId    id new Role
+     */
+    void changeRoleUser(Long changeUserId, Long userId, Long newRoleId) throws UserOperationException;
 }

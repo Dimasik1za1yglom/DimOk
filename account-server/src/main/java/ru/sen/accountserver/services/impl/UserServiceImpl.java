@@ -16,6 +16,7 @@ import ru.sen.accountserver.gateway.SearchRequestGateway;
 import ru.sen.accountserver.mappers.UserMapper;
 import ru.sen.accountserver.repository.UserRepository;
 import ru.sen.accountserver.services.AuthorizationDataService;
+import ru.sen.accountserver.services.RoleService;
 import ru.sen.accountserver.services.UserService;
 
 @Slf4j
@@ -30,12 +31,13 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userToEntityMapper;
     private final AuthorizationDataService dataService;
     private final SearchRequestGateway searchRequestGateway;
+    private final RoleService roleService;
 
     @Override
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = UserOperationException.class)
     public void addUser(UserDto userDto, String email) throws UserOperationException {
         try {
-            User user = userRepository.save(userToEntityMapper.userDtoToUser(userDto));
+            User user = userRepository.save(userToEntityMapper.userDtoToUser(userDto, 1L));
             dataService.updateData(email, user);
             log.info("Adding a new user and update his authorization data was successful");
         } catch (Exception e) {
@@ -97,7 +99,7 @@ public class UserServiceImpl implements UserService {
     public void updateUser(UserDto userDto, Long userId) throws UserOperationException {
         log.info("Update a user: {}", userDto);
         try {
-            User user = userToEntityMapper.userDtoToUser(userDto);
+            User user = userToEntityMapper.userDtoToUser(userDto, getUserById(userId).getRole().getId());
             user.setId(userId);
             userRepository.save(user);
             ResponseDto response = dialogGateway.changeDialogNameLinkedByUser(
@@ -119,5 +121,26 @@ public class UserServiceImpl implements UserService {
         String phoneNotEmpty = phone.strip();
         log.info("Checking existing user fields phone : {}", phoneNotEmpty);
         return userRepository.existsByPhone(phone);
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = UserOperationException.class)
+    public void changeRoleUser(Long changeUserId, Long userId, Long newRoleId) throws UserOperationException {
+        log.info("Change a role user by user Id: {}", userId);
+        try {
+            User changeUser = getUserById(changeUserId);
+            log.info("get change user {}", changeUser);
+            if (getUserById(userId).getRole().getId().equals(2L)) {
+                log.info("Satisfaction of the conditions for change role the user");
+                changeUser.setRole(roleService.getRoleById(newRoleId));
+                userRepository.save(changeUser);
+            } else {
+                log.error("verification of the conditions for change user role failed");
+                throw new UserOperationException("Insufficient rights to change user role");
+            }
+        } catch (Exception e) {
+            log.error("Change role user by user id {} is failed: {}", userId, e.getMessage());
+            throw new UserOperationException(e.getMessage());
+        }
     }
 }

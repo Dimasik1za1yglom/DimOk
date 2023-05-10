@@ -26,6 +26,16 @@
     <input type="submit" value="Изменить профиль">
 </form>
 <hr>
+<form method="post" action="/account/admin/${user.id}/change/role">
+    <#if user.role.id == 1>
+        <input type="hidden" value="2">
+        <input type="submit" value="Сделать администратором">
+    <#else>
+        <input type="hidden" value="1">
+        <input type="submit" value="Сделать простым пользователем">
+    </#if>
+</form>
+<hr>
 <#if createDialog??>
     <form method="post" action="http://localhost:8082/user/dialog/add/${user.id}">
         <input type="hidden" name="firstName" value="${user.firstName}">

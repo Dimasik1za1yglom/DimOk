@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.sen.accountserver.dto.UserDto;
 
@@ -32,4 +33,7 @@ public interface AdminApi {
 
     @GetMapping("/{user-id}/change")
     String changeUserFields(@PathVariable("user-id") Long userId, Model model, RedirectAttributes redirectAttributes);
+
+    @PostMapping("/user-id/change/role")
+    String changeRoleUser(@PathVariable("user-id") Long userId, @RequestParam Long )
 }
