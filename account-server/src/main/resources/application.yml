@@ -20,7 +20,22 @@ spring:
         persistence:
           sharedCache:
             mode: UNSPECIFIED
+  kafka:
+    producer:
+      bootstrap-servers: "127.0.0.1:9092"
+      client-id: "producer"
+      properties:
+        spring:
+          json:
+            add:
+              type:
+                headers: false
+      value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
 
+
+application:
+  kafka:
+    topic: "alertUser"
 
 eureka:
   instance:

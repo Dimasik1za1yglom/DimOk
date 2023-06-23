@@ -21,6 +21,7 @@ import ru.sen.accountserver.jwt.entity.JwtResponse;
 import ru.sen.accountserver.jwt.exception.AuthException;
 import ru.sen.accountserver.jwt.service.AuthService;
 import ru.sen.accountserver.jwt.util.cookie.CookieUtil;
+import ru.sen.accountserver.kafka.producer.service.KafkaAlertService;
 import ru.sen.accountserver.security.details.UserDetailsImpl;
 import ru.sen.accountserver.services.AuthorizationDataService;
 import ru.sen.accountserver.services.ErrorInterceptorService;
@@ -42,6 +43,7 @@ public class UserController implements UserApi {
     private final UserService userService;
     private final AuthService authService;
     private final DialogGateway dialogGateway;
+    private final KafkaAlertService kafkaAlertService;
 
     @Override
     public String getUserProfile(HttpServletRequest request, Long userId, Model model, RedirectAttributes redirectAttributes) {
@@ -125,6 +127,8 @@ public class UserController implements UserApi {
                 JwtResponse response = authService.getRefresh(request);
                 CookieUtil.create(httpServletResponse, jwtTokenCookieName, response, -1, "localhost");
                 log.info("/add:Changing the user's token to a new one was successful");
+                kafkaAlertService.sendAlertNewUser(userDto);
+                log.info("sending a notification about a new user");
                 return "redirect:/user/myprofile";
             } catch (AuthException e) {
                 errors.add("Пользователь добавлен, но возникли ошибки. Попробуйте зайти заного");

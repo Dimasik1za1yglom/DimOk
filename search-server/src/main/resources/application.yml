@@ -21,6 +21,16 @@ spring:
         persistence:
           sharedCache:
             mode: UNSPECIFIED
+  kafka:
+    consumer:
+      group-id: "groupUser"
+      bootstrap-servers: "localhost:9092"
+      client-id: "demo-consumer"
+      auto-offset-reset: earliest
+
+application:
+  kafka:
+    topic: "alertUser"
 
 eureka:
   instance:
